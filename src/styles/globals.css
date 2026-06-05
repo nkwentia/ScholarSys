@@ -1,0 +1,48 @@
+/* src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Phase 3: CSS Print Styles for reports & timetables */
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+
+  body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+  }
+
+  th {
+    background-color: #1e3a5f !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .report-card {
+    page-break-after: always;
+  }
+
+  .report-card:last-child {
+    page-break-after: avoid;
+  }
+}
+
+/* Brand */
+:root {
+  --brand-900: #1e3a5f;
+  --brand-600: #2563eb;
+}

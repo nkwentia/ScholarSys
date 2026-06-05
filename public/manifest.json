@@ -1,0 +1,17 @@
+{
+  "name": "SchoolMan",
+  "short_name": "SchoolMan",
+  "description": "School Management System — Finance, Grades, Timetable",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e3a5f",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en"
+}
