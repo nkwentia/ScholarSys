@@ -430,18 +430,173 @@
     .grade-C { color: var(--gold); font-weight: 700; }
     .grade-F { color: var(--red); font-weight: 700; }
 
-    /* ── Reports ────────────────────────────────────────── */
-    .report-card-preview {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      max-width: 680px;
+    /* ── Report Card (JATEC Style) ──────────────────────── */
+    .rc {
       background: #fff;
+      max-width: 760px;
+      margin: 0 auto 32px;
+      border: 1px solid #ccc;
+      font-family: Arial, sans-serif;
+      font-size: .78rem;
+      color: #000;
     }
 
-    .rc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-    .rc-school { font-family: var(--serif); font-size: 1.4rem; color: var(--navy); }
-    .rc-term { font-size: .8rem; color: var(--muted); }
+    /* Bilingual header */
+    .rc-header {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 14px 6px;
+      border-bottom: 2px solid #000;
+    }
+    .rc-header-left  { font-size: .68rem; line-height: 1.55; }
+    .rc-header-center { text-align: center; }
+    .rc-header-center img { max-height: 70px; max-width: 90px; object-fit: contain; }
+    .rc-header-right { font-size: .68rem; line-height: 1.55; text-align: right; font-weight: 600; }
+
+    .rc-school-name {
+      font-weight: 800; font-size: .82rem;
+      text-align: center; text-transform: uppercase;
+      margin: 4px 0 2px;
+    }
+    .rc-contact {
+      font-size: .65rem; text-align: center; color: #444;
+      border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 0;
+    }
+    .rc-year-badge {
+      background: #1a3a5c; color: #fff;
+      font-size: .7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 12px;
+      display: inline-block; margin-top: 4px;
+    }
+
+    /* Title bar */
+    .rc-title-bar {
+      background: #e8e8e8;
+      text-align: center;
+      font-weight: 800;
+      font-size: .88rem;
+      letter-spacing: .06em;
+      padding: 5px 0;
+      border-bottom: 1px solid #000;
+      text-transform: uppercase;
+    }
+
+    /* Student info row */
+    .rc-info {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0;
+      border-bottom: 1px solid #000;
+    }
+    .rc-info-fields {
+      padding: 6px 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 14px;
+      font-size: .73rem;
+    }
+    .rc-info-field { display: flex; gap: 6px; align-items: baseline; }
+    .rc-info-label { color: #555; white-space: nowrap; }
+    .rc-info-value { font-weight: 700; border-bottom: 1px solid #888; flex: 1; min-width: 60px; }
+    .rc-photo-box {
+      width: 90px; min-height: 110px;
+      border-left: 1px solid #000;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; background: #f5f5f5;
+    }
+    .rc-photo-box img { width: 90px; height: 110px; object-fit: cover; }
+    .rc-photo-placeholder {
+      width: 90px; height: 110px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #bbb; font-size: .65rem; text-align: center;
+    }
+
+    /* Marks table */
+    .rc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .72rem;
+    }
+    .rc-table th, .rc-table td {
+      border: 1px solid #aaa;
+      padding: 3px 5px;
+      text-align: center;
+    }
+    .rc-table th {
+      background: #1a3a5c;
+      color: #fff;
+      font-weight: 700;
+      font-size: .68rem;
+      white-space: nowrap;
+    }
+    .rc-table td:nth-child(2) { text-align: left; }
+    .rc-table .group-header td {
+      background: #2c2c2c; color: #fff;
+      font-weight: 700; font-size: .7rem;
+      text-align: left; padding: 3px 8px;
+    }
+    .rc-table .group-total td {
+      background: #f0f0f0; font-weight: 700; font-size: .7rem;
+    }
+    .rc-score-red { color: #cc0000; font-weight: 700; }
+
+    /* Bottom section */
+    .rc-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-top: 2px solid #000;
+      font-size: .7rem;
+    }
+    .rc-bottom > div {
+      padding: 7px 10px;
+      border-right: 1px solid #aaa;
+    }
+    .rc-bottom > div:last-child { border-right: none; }
+    .rc-bottom-title {
+      font-weight: 800; font-size: .72rem;
+      text-align: center; background: #e8e8e8;
+      border-bottom: 1px solid #aaa; padding: 3px;
+      margin: -7px -10px 5px; display: block;
+    }
+    .rc-bottom table { width: 100%; font-size: .68rem; }
+    .rc-bottom td { padding: 1px 3px; }
+    .rc-bottom td:first-child { color: #555; }
+    .rc-bottom td:last-child { font-weight: 700; }
+
+    /* Signature row */
+    .rc-sigs {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-top: 1px solid #aaa;
+      font-size: .68rem;
+    }
+    .rc-sigs > div {
+      padding: 6px 10px;
+      border-right: 1px solid #aaa;
+      min-height: 54px;
+    }
+    .rc-sigs > div:last-child { border-right: none; }
+    .rc-sig-label { font-weight: 700; font-size: .65rem; margin-bottom: 16px; }
+
+    /* Summary bar */
+    .rc-summary-bar {
+      background: #1a3a5c; color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 14px;
+      font-size: .78rem; font-weight: 700;
+      border-top: 2px solid #000;
+    }
+
+    @media print {
+      .rc { border: 1px solid #000 !important; page-break-after: always; max-width: 100%; }
+      .rc-table th { background: #1a3a5c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .rc-bottom-title { background: #e8e8e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .rc-title-bar { background: #e8e8e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .rc-summary-bar { background: #1a3a5c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
 
     /* ── Toast ──────────────────────────────────────────── */
     .toast {
@@ -772,15 +927,162 @@
       .main { margin-left: 0; }
     }
 
+    /* ── Class List / Mark Sheet ────────────────────────── */
+    .classlist-toolbar {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 20px; align-items: center;
+    }
+    .classlist-toolbar select, .classlist-toolbar input {
+      width: auto; flex: none;
+    }
+
+    .mark-sheet {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .mark-sheet-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .mark-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+
+    .mark-table th {
+      background: var(--navy);
+      color: #fff;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      white-space: nowrap;
+    }
+
+    .mark-table th:nth-child(2) { text-align: left; }
+
+    .mark-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #eef2f7;
+      text-align: center;
+      color: var(--text);
+    }
+
+    .mark-table td:nth-child(2) { text-align: left; font-weight: 500; }
+
+    .mark-table tbody tr:hover td { background: #f7fafd; }
+
+    .mark-table input[type=number] {
+      width: 58px;
+      padding: 4px 6px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: .8rem;
+      text-align: center;
+      background: #fff;
+    }
+
+    .mark-table input[type=number]:focus {
+      border-color: var(--sky);
+      box-shadow: 0 0 0 2px rgba(59,158,221,.15);
+      outline: none;
+    }
+
+    .calc-cell {
+      font-weight: 600;
+      color: var(--navy);
+      background: #f0f4f9;
+    }
+
+    .calc-cell.gtotal {
+      background: var(--navy);
+      color: #fff;
+      font-family: var(--serif);
+      font-size: .9rem;
+    }
+
+    /* ── Letterhead (print header) ──────────────────────── */
+    .letterhead {
+      display: none; /* shown only on print */
+    }
+
+    .letterhead-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0 10px;
+      border-bottom: 3px double var(--navy);
+      margin-bottom: 14px;
+    }
+
+    .lh-left  { font-size: .78rem; line-height: 1.5; color: var(--navy); }
+    .lh-center img { max-height: 72px; max-width: 120px; object-fit: contain; }
+    .lh-right { font-size: .78rem; line-height: 1.5; color: var(--navy); text-align: right; }
+
+    /* ── Settings page ──────────────────────────────────── */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .lh-preview-box {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      background: #fff;
+      min-height: 100px;
+    }
+
+    .logo-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s;
+      background: var(--bg);
+    }
+
+    .logo-upload-zone:hover { border-color: var(--sky); background: #eef5fb; }
+    .logo-upload-zone img { max-height: 80px; max-width: 160px; object-fit: contain; margin: 0 auto; display: block; }
+
     /* ── Print ──────────────────────────────────────────── */
     @media print {
-      .sidebar, .topbar, .btn, .modal-overlay { display: none !important; }
+      .sidebar, .topbar, .btn, .modal-overlay,
+      .classlist-toolbar, .search-bar, .no-print { display: none !important; }
       .main { margin-left: 0; }
       .content { padding: 0; }
+      .page { display: block !important; }
+      .page:not(.active) { display: none !important; }
+      .letterhead { display: block !important; }
+      .mark-sheet { border: none; border-radius: 0; }
+      .mark-table { font-size: var(--print-fs, .78rem); }
+      .mark-table input[type=number] {
+        border: none; background: transparent;
+        width: auto; font-weight: 600;
+      }
     }
   </style>
 </head>
 <body>
+
+<!-- ═══════════════════════════════════════════════════════ LETTERHEAD (print only) -->
+<div class="letterhead" id="letterhead">
+  <div class="letterhead-inner">
+    <div class="lh-left" id="lh-left-display"></div>
+    <div class="lh-center"><img id="lh-logo-display" src="" alt="" style="display:none" /></div>
+    <div class="lh-right" id="lh-right-display"></div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════ LOGIN -->
 <div class="login-screen" id="login-screen">
@@ -880,6 +1182,13 @@
     </a>
 
     <div class="nav-section-label" id="nav-admin-section">Admin</div>
+
+    <a class="nav-link" id="nav-settings" onclick="showPage('settings', this)">
+      <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      Settings
+    </a>
 
     <a class="nav-link" id="nav-access" onclick="showPage('access', this)">
       <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1026,7 +1335,7 @@
           <option>Form 3A</option><option>Form 3B</option>
           <option>Form 4A</option><option>Form 5A</option>
         </select>
-        <button class="btn btn-primary" onclick="openAddModal()">+ Add Student</button>
+        <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button>
       </div>
       <div class="panel">
         <div class="panel-header">
@@ -1044,28 +1353,84 @@
       </div>
     </div>
 
-    <!-- ═══════════ GRADES PAGE -->
+    <!-- ═══════════ CLASS LIST / MARK SHEET PAGE -->
     <div class="page" id="page-grades">
-      <div class="search-bar">
-        <select id="grades-class">
-          <option>Form 1A</option><option>Form 2A</option><option>Form 3A</option>
+
+      <!-- Print letterhead placeholder (pulls from global letterhead) -->
+      <div id="classlist-print-header" style="display:none"></div>
+
+      <div class="classlist-toolbar no-print">
+        <select id="grades-class" onchange="renderClassList()">
+          <option value="">— Select Class —</option>
+          <option>Form 1A</option><option>Form 1B</option>
+          <option>Form 2A</option><option>Form 2B</option>
+          <option>Form 3A</option><option>Form 3B</option>
+          <option>Form 4A</option><option>Form 5A</option>
         </select>
-        <select id="grades-term">
-          <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option>
+        <select id="grades-term" onchange="renderClassList()">
+          <option value="1">Term 1</option>
+          <option value="2">Term 2</option>
+          <option value="3">Term 3</option>
         </select>
-        <button class="btn btn-primary" onclick="openGradeModal()">+ Enter Grades</button>
+        <select id="grades-subject" onchange="renderClassList()">
+          <option value="">— Select Subject —</option>
+          <option>Mathematics</option><option>English Language</option>
+          <option>Physics</option><option>Chemistry</option>
+          <option>Biology</option><option>Computer Science</option>
+          <option>History</option><option>Geography</option>
+          <option>French</option><option>Economics</option>
+          <option>ICT</option>
+        </select>
+        <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" />
+        <input type="number" id="grades-seq" placeholder="Seq No." style="max-width:80px" min="1" max="6" value="1" onchange="renderClassList()" />
+        <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
       </div>
-      <div class="panel">
-        <div class="panel-header">
-          <span class="panel-title">Grade Sheet</span>
-          <button class="btn btn-ghost" style="font-size:.78rem;padding:5px 12px" onclick="window.print()">🖨 Print</button>
+
+      <!-- Formula bar — admin only -->
+      <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end">
+        <div class="form-group" style="margin:0;flex:1;min-width:180px">
+          <label>CA Max Score</label>
+          <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" />
         </div>
-        <div class="panel-body">
-          <table>
+        <div class="form-group" style="margin:0;flex:1;min-width:180px">
+          <label>Exam Max Score</label>
+          <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" />
+        </div>
+        <div class="form-group" style="margin:0;flex:1;min-width:180px">
+          <label>Default Coeff</label>
+          <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" />
+        </div>
+        <div style="font-size:.78rem;color:var(--muted);align-self:center">
+          Total/100 = CA + Exam &nbsp;|&nbsp; Total/20 = (Total/100 ÷ 100) × 20 &nbsp;|&nbsp; G.Total = Total/20 × Coeff
+        </div>
+      </div>
+
+      <div class="mark-sheet" id="mark-sheet-container">
+        <div class="mark-sheet-header">
+          <div>
+            <div style="font-family:var(--serif);font-size:1.1rem;color:var(--navy)" id="cl-title">Class List</div>
+            <div style="font-size:.78rem;color:var(--muted)" id="cl-subtitle">Select a class and subject above</div>
+          </div>
+          <div style="font-size:.78rem;color:var(--muted);text-align:right" id="cl-meta"></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="mark-table" id="mark-table">
             <thead>
-              <tr><th>Student</th><th>Maths</th><th>English</th><th>Physics</th><th>Chemistry</th><th>Biology</th><th>Average</th><th>Grade</th></tr>
+              <tr>
+                <th style="width:36px">No</th>
+                <th style="text-align:left;min-width:180px">Names and First Name</th>
+                <th style="width:36px">Sex</th>
+                <th id="th-ca" style="width:60px">CA/<span id="th-ca-max">30</span></th>
+                <th id="th-exam" style="width:70px">Exam/<span id="th-exam-max">70</span></th>
+                <th style="width:70px">Total/100</th>
+                <th style="width:60px">Total/20</th>
+                <th style="width:50px">Coeff</th>
+                <th style="width:60px">G.Total</th>
+              </tr>
             </thead>
-            <tbody id="grades-body"></tbody>
+            <tbody id="classlist-body">
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -1107,13 +1472,15 @@
 
     <!-- ═══════════ REPORTS PAGE -->
     <div class="page" id="page-reports">
-      <div class="search-bar">
+      <div class="search-bar no-print">
         <select id="report-student">
           <option value="">Select student…</option>
         </select>
         <select id="report-term">
           <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option>
         </select>
+        <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" />
+        <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px" min="1" value="40" />
         <button class="btn btn-primary" onclick="generateReport()">Generate Report Card</button>
         <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
       </div>
@@ -1179,12 +1546,12 @@
             <span class="panel-title">Staff Accounts & Permissions</span>
             <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" onclick="openAddStaffModal()">+ Add Staff Account</button>
           </div>
-          <div class="panel-body">
+          <div class="panel-body" style="overflow-x:auto">
             <table class="perm-table">
               <thead>
                 <tr>
                   <th>Name</th><th>Username</th><th>Role</th>
-                  <th>Dashboard</th><th>Students</th><th>Grades</th>
+                  <th>Dashboard</th><th>Students</th><th>Class List</th>
                   <th>Timetable</th><th>Reports</th><th>Finance</th><th>Teachers</th>
                   <th>Actions</th>
                 </tr>
@@ -1200,7 +1567,7 @@
             <div class="panel-header"><span class="panel-title">Role Descriptions</span></div>
             <div style="padding:16px 20px;font-size:.82rem;line-height:1.9;color:var(--text)">
               <div style="margin-bottom:8px"><span class="role-badge role-admin">Admin</span> — Full access to everything including Finance and Access Control.</div>
-              <div style="margin-bottom:8px"><span class="role-badge role-teacher">Teacher</span> — Default: Students, Grades, Timetable, Reports. No Finance.</div>
+              <div style="margin-bottom:8px"><span class="role-badge role-teacher">Teacher</span> — Default: Timetable only. Admin can grant additional access.</div>
               <div style="margin-bottom:8px"><span class="role-badge role-staff">Staff</span> — Custom: individually toggle each section below.</div>
               <div><span class="role-badge role-readonly">Read Only</span> — Can view but not edit any records.</div>
             </div>
@@ -1226,6 +1593,99 @@
   </div><!-- /content -->
 </div><!-- /main -->
 
+<!-- ═══════════ SETTINGS PAGE (outside main, full width) -->
+<div class="page" id="page-settings" style="display:none">
+  <div style="margin-left:240px;padding:32px">
+
+    <div class="settings-grid">
+
+      <!-- Left: Letterhead text fields -->
+      <div>
+        <div class="panel" style="margin-bottom:20px">
+          <div class="panel-header"><span class="panel-title">Letterhead — Left Side (English)</span></div>
+          <div style="padding:20px">
+            <div class="form-group">
+              <label>School Name (line 1)</label>
+              <input type="text" id="lh-line1" placeholder="ST. JOSEPH FOUNDATION SCHOOL" oninput="updateLHPreview()" />
+            </div>
+            <div class="form-group">
+              <label>Motto / Tagline (line 2)</label>
+              <input type="text" id="lh-line2" placeholder="Excellence in Education" oninput="updateLHPreview()" />
+            </div>
+            <div class="form-group">
+              <label>Address / Tel (line 3)</label>
+              <input type="text" id="lh-line3" placeholder="P.O. Box 1234, Yaoundé · Tel: 677 000 001" oninput="updateLHPreview()" />
+            </div>
+            <div class="form-group">
+              <label>Extra line (line 4 — optional)</label>
+              <input type="text" id="lh-line4" placeholder="Email: info@school.cm" oninput="updateLHPreview()" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Letterhead — Right Side (French)</span></div>
+          <div style="padding:20px">
+            <div class="form-group">
+              <label>Nom de l'école (ligne 1)</label>
+              <input type="text" id="lh-fr1" placeholder="ÉCOLE FONDATION SAINT JOSEPH" oninput="updateLHPreview()" />
+            </div>
+            <div class="form-group">
+              <label>Devise (ligne 2)</label>
+              <input type="text" id="lh-fr2" placeholder="Intégrité · Travail · Excellence" oninput="updateLHPreview()" />
+            </div>
+            <div class="form-group">
+              <label>Adresse / Tél (ligne 3)</label>
+              <input type="text" id="lh-fr3" placeholder="B.P. 1234, Yaoundé · Tél: 677 000 001" oninput="updateLHPreview()" />
+            </div>
+            <div class="form-group">
+              <label>Ligne supplémentaire (ligne 4 — facultatif)</label>
+              <input type="text" id="lh-fr4" placeholder="Email: info@ecole.cm" oninput="updateLHPreview()" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Logo + Preview -->
+      <div>
+        <div class="panel" style="margin-bottom:20px">
+          <div class="panel-header"><span class="panel-title">School Logo</span></div>
+          <div style="padding:20px">
+            <div class="logo-upload-zone" onclick="document.getElementById('logo-file-input').click()" id="logo-drop-zone">
+              <img id="logo-preview-img" src="" alt="" style="display:none;margin-bottom:8px" />
+              <div id="logo-upload-hint">
+                <div style="font-size:2rem;margin-bottom:6px">🏫</div>
+                <div style="font-size:.85rem;color:var(--muted)">Click to upload school logo</div>
+                <div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG, JPG or SVG · max 2MB</div>
+              </div>
+            </div>
+            <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="handleLogoUpload(event)" />
+            <button class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="clearLogo()">✕ Remove Logo</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">Letterhead Preview</span></div>
+          <div style="padding:16px 20px">
+            <div class="lh-preview-box">
+              <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center">
+                <div style="font-size:.72rem;line-height:1.6" id="lh-prev-left"></div>
+                <div><img id="lh-prev-logo" src="" style="max-height:60px;max-width:100px;object-fit:contain;display:none" /></div>
+                <div style="font-size:.72rem;line-height:1.6;text-align:right" id="lh-prev-right"></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:10px">
+              <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveLH()">💾 Save Letterhead</button>
+              <button class="btn btn-ghost" onclick="window.print()">🖨 Test Print</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════════ MODALS -->
 
 <!-- Add Student Modal -->
@@ -1236,25 +1696,43 @@
       <button class="modal-close" onclick="closeModal('modal-student')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" id="s-fname" placeholder="John" /></div>
-        <div class="form-group"><label>Last Name</label><input type="text" id="s-lname" placeholder="Doe" /></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Student Number</label><input type="text" id="s-num" placeholder="2024001" /></div>
-        <div class="form-group">
-          <label>Class</label>
-          <select id="s-class">
-            <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option>
-            <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option>
-            <option>Form 4A</option><option>Form 5A</option>
-          </select>
+      <!-- Photo upload -->
+      <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px">
+        <div>
+          <div id="s-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('s-photo-input').click()">
+            <img id="s-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" />
+            <span id="s-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px">📷<br>Photo</span>
+          </div>
+          <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('s-photo-input','s-photo-img','s-photo-hint')" />
+        </div>
+        <div style="flex:1">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="s-fname" placeholder="John" /></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="s-lname" placeholder="Doe" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Matricule / ID</label><input type="text" id="s-num" placeholder="JATEC24001" /></div>
+            <div class="form-group">
+              <label>Class</label>
+              <select id="s-class">
+                <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option>
+                <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option>
+                <option>Form 4A</option><option>Form 5A</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" /></div>
+        <div class="form-group"><label>Place of Birth</label><input type="text" id="s-pob" placeholder="Yaoundé" /></div>
+      </div>
+      <div class="form-row">
         <div class="form-group"><label>Gender</label>
           <select id="s-gender"><option value="M">Male</option><option value="F">Female</option></select>
+        </div>
+        <div class="form-group"><label>Repeater?</label>
+          <select id="s-repeater"><option value="No">No</option><option value="Yes">Yes</option></select>
         </div>
       </div>
       <div class="form-group"><label>Parent / Guardian Name</label><input type="text" id="s-parent" placeholder="Mr. John Doe Sr." /></div>
@@ -1317,19 +1795,42 @@
     </div>
     <div class="modal-body">
       <input type="hidden" id="es-id" />
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input type="text" id="es-fname" /></div>
-        <div class="form-group"><label>Last Name</label><input type="text" id="es-lname" /></div>
+      <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px">
+        <div>
+          <div id="es-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('es-photo-input').click()">
+            <img id="es-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" />
+            <span id="es-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px">📷<br>Photo</span>
+          </div>
+          <input type="file" id="es-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('es-photo-input','es-photo-img','es-photo-hint')" />
+        </div>
+        <div style="flex:1">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="es-fname" /></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="es-lname" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Matricule / ID</label><input type="text" id="es-num" /></div>
+            <div class="form-group">
+              <label>Class</label>
+              <select id="es-class">
+                <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option>
+                <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option>
+                <option>Form 4A</option><option>Form 5A</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Student Number</label><input type="text" id="es-num" /></div>
-        <div class="form-group">
-          <label>Class</label>
-          <select id="es-class">
-            <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option>
-            <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option>
-            <option>Form 4A</option><option>Form 5A</option>
-          </select>
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="es-dob" /></div>
+        <div class="form-group"><label>Place of Birth</label><input type="text" id="es-pob" placeholder="Yaoundé" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Gender</label>
+          <select id="es-gender"><option value="M">Male</option><option value="F">Female</option></select>
+        </div>
+        <div class="form-group"><label>Repeater?</label>
+          <select id="es-repeater"><option value="No">No</option><option value="Yes">Yes</option></select>
         </div>
       </div>
       <div class="form-group"><label>Parent / Guardian Name</label><input type="text" id="es-parent" /></div>
@@ -1695,37 +2196,64 @@ let ttSlots = load('sm_ttslots', [
 // ── Navigation ───────────────────────────────────────────
 const pageTitles = {
   dashboard: 'Dashboard',   students: 'Students',
-  grades: 'Grades',         timetable: 'Timetable',
+  grades: 'Class List',     timetable: 'Timetable',
   reports: 'Report Cards',  payments: 'Payments',
   teachers: 'Teachers',     access: 'Access Control',
+  settings: 'Settings',
 };
 
 const actionLabels = {
-  dashboard: null,         students: '+ Add Student',
-  grades: '+ Enter Grades', timetable: null,
-  reports: null,           payments: '+ Record Payment',
+  dashboard: null,           students: '+ Add Student',
+  grades: null,              timetable: null,
+  reports: null,             payments: '+ Record Payment',
   teachers: '+ Add Teacher', access: '+ Add User',
+  settings: null,
+};
+
+const actionHandlers = {
+  students: function() { openAddModal(); },
+  grades:   function() { openGradeModal(); },
+  teachers: function() { openTeacherModal(); },
+  access:   function() { openAddStaffModal(); },
 };
 
 function showPage(name, linkEl) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  if (linkEl) linkEl.classList.add('active');
-  document.getElementById('page-title').textContent = pageTitles[name];
-  const btn = document.getElementById('topbar-action');
-  if (actionLabels[name]) {
+  // Permission check: admin always has full access
+  if (currentUser && currentUser.role !== 'admin' && currentUser.perms[name] === false) {
+    showToast('\u26d4 You do not have access to this section');
+    return;
+  }
+
+  // Switch active page (includes settings which is outside .content)
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
+  var pageEl = document.getElementById('page-' + name);
+  if (pageEl) { pageEl.classList.add('active'); pageEl.style.display = 'block'; }
+
+  // Update nav active state
+  document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active'); });
+  if (linkEl) {
+    linkEl.classList.add('active');
+  } else {
+    var match = document.querySelector('.nav-link[onclick*="\'' + name + '\'"]');
+    if (match) match.classList.add('active');
+  }
+
+  // Update topbar title
+  document.getElementById('page-title').textContent = pageTitles[name] || name;
+
+  // Update topbar action button
+  var btn = document.getElementById('topbar-action');
+  if (actionLabels[name] && actionHandlers[name]) {
     btn.style.display = '';
     btn.textContent = actionLabels[name];
-    btn.onclick = () => {
-      if (name === 'students') openAddModal();
-      else if (name === 'grades') openGradeModal();
-      else if (name === 'teachers') openTeacherModal();
-      else if (name === 'access') openAddStaffModal();
-    };
+    btn.onclick = actionHandlers[name];
   } else {
     btn.style.display = 'none';
   }
+
+  // Show formula bar only for admin on grades page
+  var fb = document.getElementById('formula-bar');
+  if (fb) fb.style.display = (name === 'grades' && currentUser && currentUser.role === 'admin') ? 'flex' : 'none';
   renderAll();
 }
 
@@ -1733,11 +2261,12 @@ function showPage(name, linkEl) {
 function renderAll() {
   renderStudents();
   renderPayments();
-  renderGrades();
+  renderClassList();
   renderTimetable();
   renderTeachers();
   populateSelects();
   updateDashboardStats();
+  if (typeof renderAccessControl === 'function') renderAccessControl();
 }
 
 function getStudentName(id) {
@@ -1795,7 +2324,30 @@ function renderStudents() {
     (!cls || s.cls === cls)
   );
   document.getElementById('student-count').textContent = `${filtered.length} students`;
-  document.getElementById('students-body').innerHTML = filtered.map(s => {
+
+  const isTeacher = currentUser && currentUser.role === 'teacher';
+
+  // Show/hide Add Student button
+  const addBtn = document.getElementById('btn-add-student');
+  if (addBtn) addBtn.style.display = isTeacher ? 'none' : '';
+
+  // Update table header based on role
+  const thead = document.querySelector('#page-students table thead tr');
+  if (isTeacher) {
+    thead.innerHTML = '<th>S/N</th><th>Name</th><th>Class</th>';
+  } else {
+    thead.innerHTML = '<th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Actions</th>';
+  }
+
+  document.getElementById('students-body').innerHTML = filtered.map((s, idx) => {
+    if (isTeacher) {
+      return `
+      <tr>
+        <td><span style="font-family:monospace;font-size:.78rem;color:var(--muted)">S${idx + 1}</span></td>
+        <td><strong>${s.fname} ${s.lname}</strong></td>
+        <td><span class="badge badge-blue">${s.cls}</span></td>
+      </tr>`;
+    }
     const pCount = payments.filter(p => p.studentId === s.id).length;
     const gCount = grades.filter(g => g.studentId === s.id).length;
     const hasData = pCount > 0 || gCount > 0;
@@ -1841,75 +2393,184 @@ function renderPayments() {
 
 function filterPayments() { renderPayments(); }
 
-function renderGrades() {
-  const subjects = ['Mathematics', 'English', 'Physics', 'Chemistry', 'Biology'];
-  document.getElementById('grades-body').innerHTML = students.map(s => {
-    const scores = subjects.map(sub => {
-      const g = grades.find(x => x.studentId === s.id && x.subject === sub);
-      return g ? g.score : null;
-    });
-    const valid = scores.filter(x => x !== null);
-    const avg = valid.length ? Math.round(valid.reduce((a, b) => a + b, 0) / valid.length) : null;
-    const gl = avg !== null ? gradeLetter(avg) : '—';
-    return `
-      <tr>
-        <td><strong>${s.fname} ${s.lname}</strong></td>
-        ${scores.map(sc => `<td>${sc !== null ? sc : '<span style="color:var(--muted)">—</span>'}</td>`).join('')}
-        <td><strong>${avg !== null ? avg + '%' : '—'}</strong></td>
-        <td class="${gradeClass(gl)}">${gl}</td>
-      </tr>`;
+function renderClassList() {
+  var cls     = (document.getElementById('grades-class')?.value || '').trim();
+  var subject = (document.getElementById('grades-subject')?.value || '').trim();
+  var term    = parseInt(document.getElementById('grades-term')?.value || '1');
+  var teacher = (document.getElementById('grades-teacher')?.value || '').trim();
+  var seqNo   = (document.getElementById('grades-seq')?.value || '1');
+
+  var formula = loadFormula();
+  var caMax   = formula.caMax;
+  var examMax = formula.examMax;
+  var defCoeff= formula.coeff;
+
+  // Update header labels
+  var thCaMax = document.getElementById('th-ca-max');
+  var thExMax = document.getElementById('th-exam-max');
+  if (thCaMax) thCaMax.textContent = caMax;
+  if (thExMax) thExMax.textContent = examMax;
+  if (document.getElementById('formula-ca-max'))   document.getElementById('formula-ca-max').value   = caMax;
+  if (document.getElementById('formula-exam-max')) document.getElementById('formula-exam-max').value = examMax;
+  if (document.getElementById('formula-coeff'))    document.getElementById('formula-coeff').value    = defCoeff;
+
+  var titleEl    = document.getElementById('cl-title');
+  var subtitleEl = document.getElementById('cl-subtitle');
+  var metaEl     = document.getElementById('cl-meta');
+
+  if (!cls || !subject) {
+    if (titleEl)    titleEl.textContent    = 'Class List';
+    if (subtitleEl) subtitleEl.textContent = 'Select a class and subject above';
+    if (metaEl)     metaEl.innerHTML       = '';
+    document.getElementById('classlist-body').innerHTML =
+      '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr>';
+    return;
+  }
+
+  if (titleEl)    titleEl.textContent    = cls + ' — ' + subject;
+  if (subtitleEl) subtitleEl.textContent = 'Term ' + term + ' | Sequence ' + seqNo + (teacher ? ' | Teacher: ' + teacher : '');
+  if (metaEl)     metaEl.innerHTML       = 'Academic Year: 2025/2026';
+
+  // Get students for this class, sorted alphabetically by last name then first name
+  var clsStudents = students.filter(function(s) { return s.cls === cls; });
+  clsStudents.sort(function(a, b) {
+    var nameA = (a.lname + ' ' + a.fname).toUpperCase();
+    var nameB = (b.lname + ' ' + b.fname).toUpperCase();
+    return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+  });
+
+  // Auto-scale font based on student count
+  var count = clsStudents.length;
+  var fs = count <= 20 ? '0.85rem' : count <= 35 ? '0.78rem' : count <= 50 ? '0.72rem' : '0.65rem';
+  var markTable = document.getElementById('mark-table');
+  if (markTable) markTable.style.fontSize = fs;
+  // Store for print
+  document.documentElement.style.setProperty('--print-fs', fs);
+
+  var isAdmin = currentUser && currentUser.role === 'admin';
+
+  document.getElementById('classlist-body').innerHTML = clsStudents.map(function(s, idx) {
+    // Load saved marks for this student/subject/term
+    var key = 'sm_marks_' + s.id + '_' + subject.replace(/\s+/g,'_') + '_' + term;
+    var saved = load(key, { ca: '', exam: '', coeff: defCoeff });
+    var ca    = saved.ca   !== '' ? parseFloat(saved.ca)   : '';
+    var exam  = saved.exam !== '' ? parseFloat(saved.exam) : '';
+    var coeff = saved.coeff !== undefined ? saved.coeff : defCoeff;
+
+    // Calculate
+    var total100 = (ca !== '' && exam !== '') ? (parseFloat(ca) + parseFloat(exam)) : '';
+    var total20  = total100 !== '' ? ((total100 / 100) * 20).toFixed(1) : '';
+    var gtotal   = (total20 !== '' && coeff !== '') ? (parseFloat(total20) * parseFloat(coeff)).toFixed(1) : '';
+
+    var caIn   = isAdmin ? '<input type="number" min="0" max="' + caMax + '" step="0.1" value="' + ca + '" style="width:52px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'ca\',this.value,' + defCoeff + ');recalcRow(this)" />' : (ca !== '' ? ca : '—');
+    var exIn   = isAdmin ? '<input type="number" min="0" max="' + examMax + '" step="0.1" value="' + exam + '" style="width:58px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'exam\',this.value,' + defCoeff + ');recalcRow(this)" />' : (exam !== '' ? exam : '—');
+    var coeffIn= isAdmin ? '<input type="number" min="1" max="10" step="1" value="' + coeff + '" style="width:44px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'coeff\',this.value,' + defCoeff + ');recalcRow(this)" />' : coeff;
+
+    return '<tr data-sid="' + s.id + '" data-subject="' + subject + '" data-term="' + term + '" data-camax="' + caMax + '" data-exammax="' + examMax + '">' +
+      '<td style="text-align:center;color:var(--muted);font-size:.75rem">' + (idx+1) + '</td>' +
+      '<td>' + s.lname.toUpperCase() + ' ' + s.fname + '</td>' +
+      '<td style="text-align:center">' + (s.sex || s.gender || '—') + '</td>' +
+      '<td style="text-align:center">' + caIn + '</td>' +
+      '<td style="text-align:center">' + exIn + '</td>' +
+      '<td class="calc-cell" data-t100>' + (total100 !== '' ? parseFloat(total100).toFixed(1) : '—') + '</td>' +
+      '<td class="calc-cell" data-t20>' + (total20 !== '' ? total20 : '—') + '</td>' +
+      '<td style="text-align:center">' + coeffIn + '</td>' +
+      '<td class="calc-cell gtotal" data-gt>' + (gtotal !== '' ? gtotal : '—') + '</td>' +
+    '</tr>';
   }).join('');
 }
 
+function recalcRow(inputEl) {
+  var tr     = inputEl.closest('tr');
+  var caMax  = parseFloat(tr.dataset.camax) || 30;
+  var exMax  = parseFloat(tr.dataset.exammax) || 70;
+
+  var caEl   = tr.querySelector('input[onchange*=",\'ca\'"]');
+  var exEl   = tr.querySelector('input[onchange*=",\'exam\'"]');
+  var cEl    = tr.querySelector('input[onchange*=",\'coeff\'"]');
+
+  var ca     = caEl && caEl.value !== '' ? parseFloat(caEl.value) : null;
+  var exam   = exEl && exEl.value !== '' ? parseFloat(exEl.value) : null;
+  var coeff  = cEl  && cEl.value  !== '' ? parseFloat(cEl.value)  : 2;
+
+  var t100El = tr.querySelector('[data-t100]');
+  var t20El  = tr.querySelector('[data-t20]');
+  var gtEl   = tr.querySelector('[data-gt]');
+
+  if (ca !== null && exam !== null) {
+    var t100 = ca + exam;
+    var t20  = ((t100 / 100) * 20).toFixed(1);
+    var gt   = (parseFloat(t20) * coeff).toFixed(1);
+    if (t100El) t100El.textContent = t100.toFixed(1);
+    if (t20El)  t20El.textContent  = t20;
+    if (gtEl)   gtEl.textContent   = gt;
+  } else {
+    if (t100El) t100El.textContent = '—';
+    if (t20El)  t20El.textContent  = '—';
+    if (gtEl)   gtEl.textContent   = '—';
+  }
+}
+
+function saveMark(sid, subject, term, field, value, defCoeff) {
+  var key  = 'sm_marks_' + sid + '_' + subject.replace(/\s+/g,'_') + '_' + term;
+  var data = load(key, { ca:'', exam:'', coeff: defCoeff });
+  data[field] = value;
+  save(key, data);
+}
+
+function loadFormula() {
+  return load('sm_formula', { caMax: 30, examMax: 70, coeff: 2 });
+}
+
+function saveFormula() {
+  var caMax  = parseInt(document.getElementById('formula-ca-max')?.value)  || 30;
+  var exMax  = parseInt(document.getElementById('formula-exam-max')?.value) || 70;
+  var coeff  = parseInt(document.getElementById('formula-coeff')?.value)    || 2;
+  save('sm_formula', { caMax: caMax, examMax: exMax, coeff: coeff });
+  renderClassList();
+}
+
 function renderTimetable() {
-  const DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  const PERIODS = [1,2,3,4,5,6,7,8];
-  const BREAK   = 4;
+  var DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var PERIODS = [1,2,3,4,5,6,7,8];
+  var BREAK   = 4;
+  var isTeacher = currentUser && currentUser.role === 'teacher';
 
-  const selCls  = document.getElementById('tt-class')?.value  || '';
-  const selTerm = parseInt(document.getElementById('tt-term')?.value || '1');
+  var selCls  = document.getElementById('tt-class')?.value  || '';
+  var selTerm = parseInt(document.getElementById('tt-term')?.value || '1');
 
-  const title = selCls ? `Weekly Timetable — ${selCls}` : 'Weekly Timetable — All Classes';
-  const el = document.getElementById('tt-panel-title');
+  var title = selCls ? 'Weekly Timetable — ' + selCls : 'Weekly Timetable — All Classes';
+  var el = document.getElementById('tt-panel-title');
   if (el) el.textContent = title;
 
-  document.getElementById('timetable-body').innerHTML = PERIODS.map(period => {
+  document.getElementById('timetable-body').innerHTML = PERIODS.map(function(period) {
     if (period === BREAK) {
-      return `<tr>
-        <td style="font-weight:600;text-align:center;color:var(--muted);font-size:.8rem">Break</td>
-        ${DAYS.map(() => `<td style="background:#f7fafd;text-align:center;color:var(--muted);font-size:.8rem">—</td>`).join('')}
-      </tr>`;
+      return '<tr><td style="font-weight:600;text-align:center;color:var(--muted);font-size:.8rem">Break</td>' +
+        DAYS.map(function() { return '<td style="background:#f7fafd;text-align:center;color:var(--muted);font-size:.8rem">—</td>'; }).join('') +
+      '</tr>';
     }
-    return `<tr>
-      <td style="font-weight:700;text-align:center;color:var(--muted);font-size:.82rem">${period}</td>
-      ${DAYS.map(day => {
-        const slot = ttSlots.find(s =>
-          s.day === day && s.period === period &&
-          s.term === selTerm &&
-          (selCls ? s.cls === selCls : true)
-        );
+    return '<tr><td style="font-weight:700;text-align:center;color:var(--muted);font-size:.82rem">' + period + '</td>' +
+      DAYS.map(function(day) {
+        var slot = ttSlots.find(function(s) {
+          return s.day === day && s.period === period &&
+            s.term === selTerm &&
+            (selCls ? s.cls === selCls : true);
+        });
         if (slot) {
-          const t = teachers.find(x => x.id === slot.teacherId);
-          const tName = t ? `${t.fname[0]}. ${t.lname}` : '?';
-          return `<td>
-            <div class="tt-cell">
-              <strong>${slot.subject}</strong>
-              <span>${tName}</span>
-              ${selCls ? '' : `<span style="font-size:.65rem;color:var(--sky)">${slot.cls}</span>`}
-              <span class="tt-remove" onclick="removeTTSlot('${slot.id}')">✕ Remove</span>
-            </div>
-          </td>`;
+          var t = teachers.find(function(x) { return x.id === slot.teacherId; });
+          var tName = t ? (t.fname[0] + '. ' + t.lname) : '?';
+          var removeBtn = (!isTeacher) ? '<span class="tt-remove" onclick="removeTTSlot(\'' + slot.id + '\')">✕ Remove</span>' : '';
+          return '<td><div class="tt-cell"><strong>' + slot.subject + '</strong><span>' + tName + '</span>' +
+            (selCls ? '' : '<span style="font-size:.65rem;color:var(--sky)">' + slot.cls + '</span>') +
+            removeBtn + '</div></td>';
         }
-        if (!selCls) return `<td><span style="color:var(--border)">—</span></td>`;
-        // Check if any teacher available this slot
-        const available = teachers.filter(t => (t.availability[day] || []).includes(period));
-        return `<td>
-          <div class="tt-empty" onclick="openTTAssign('${selCls}','${day}',${period},${selTerm})">
-            ${available.length ? '+ Assign' : '<span style="color:var(--border)">—</span>'}
-          </div>
-        </td>`;
-      }).join('')}
-    </tr>`;
+        if (!selCls) return '<td><span style="color:var(--border)">—</span></td>';
+        if (isTeacher) return '<td><span style="color:var(--border)">—</span></td>';
+        var available = teachers.filter(function(t2) { return (t2.availability[day] || []).includes(period); });
+        return '<td><div class="tt-empty" onclick="openTTAssign(\'' + selCls + '\',\'' + day + '\',' + period + ',' + selTerm + ')">' +
+          (available.length ? '+ Assign' : '<span style="color:var(--border)">—</span>') + '</div></td>';
+      }).join('') +
+    '</tr>';
   }).join('');
 }
 
@@ -1960,20 +2621,42 @@ function populateSelects() {
 }
 
 // ── CRUD Actions ─────────────────────────────────────────
+// ── Student Photo Preview ─────────────────────────────────
+function previewStudentPhoto(inputId, imgId, hintId) {
+  const file = document.getElementById(inputId)?.files?.[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) { showToast('Photo must be under 3MB'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img  = document.getElementById(imgId);
+    const hint = document.getElementById(hintId);
+    if (img)  { img.src = e.target.result; img.style.display = 'block'; }
+    if (hint) hint.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
 function addStudent() {
-  const fname = document.getElementById('s-fname').value.trim();
-  const lname = document.getElementById('s-lname').value.trim();
-  const num   = document.getElementById('s-num').value.trim();
-  const cls   = document.getElementById('s-class').value;
-  const parent= document.getElementById('s-parent').value.trim();
-  const phone = document.getElementById('s-phone').value.trim();
-  const email = document.getElementById('s-email').value.trim();
+  const fname    = document.getElementById('s-fname').value.trim();
+  const lname    = document.getElementById('s-lname').value.trim();
+  const num      = document.getElementById('s-num').value.trim();
+  const cls      = document.getElementById('s-class').value;
+  const gender   = document.getElementById('s-gender').value;
+  const dob      = document.getElementById('s-dob')?.value || '';
+  const pob      = document.getElementById('s-pob')?.value.trim() || '';
+  const repeater = document.getElementById('s-repeater')?.value || 'No';
+  const parent   = document.getElementById('s-parent').value.trim();
+  const phone    = document.getElementById('s-phone').value.trim();
+  const email    = document.getElementById('s-email').value.trim();
+  const photoImg = document.getElementById('s-photo-img');
+  const photo    = (photoImg && photoImg.src && !photoImg.src.endsWith(window.location.href)) ? photoImg.src : '';
   if (!fname || !lname || !num) return showToast('Please fill required fields');
   if (students.find(s => s.num === num)) return showToast('Student number already exists');
-  students.push({ id: 'S' + Date.now(), num, fname, lname, cls, parent, phone, email });
+  students.push({ id: 'S' + Date.now(), num, fname, lname, cls, gender, dob, pob, repeater, parent, phone, email, photo });
   save('sm_students', students);
-  // Clear form
-  ['s-fname','s-lname','s-num','s-parent','s-phone','s-email'].forEach(id => document.getElementById(id).value = '');
+  ['s-fname','s-lname','s-num','s-parent','s-phone','s-email','s-pob'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const pi = document.getElementById('s-photo-img'); if(pi){pi.src='';pi.style.display='none';}
+  const ph = document.getElementById('s-photo-hint'); if(ph) ph.style.display='';
   closeModal('modal-student');
   renderAll();
   showToast('Student added successfully ✓');
@@ -1983,14 +2666,23 @@ function addStudent() {
 function openEditStudent(id) {
   const s = students.find(x => x.id === id);
   if (!s) return;
-  document.getElementById('es-id').value    = s.id;
-  document.getElementById('es-fname').value = s.fname;
-  document.getElementById('es-lname').value = s.lname;
-  document.getElementById('es-num').value   = s.num;
-  document.getElementById('es-class').value = s.cls;
-  document.getElementById('es-parent').value= s.parent;
-  document.getElementById('es-phone').value = s.phone;
-  document.getElementById('es-email').value = s.email || '';
+  document.getElementById('es-id').value      = s.id;
+  document.getElementById('es-fname').value   = s.fname;
+  document.getElementById('es-lname').value   = s.lname;
+  document.getElementById('es-num').value     = s.num;
+  document.getElementById('es-class').value   = s.cls;
+  document.getElementById('es-gender').value  = s.gender || 'M';
+  document.getElementById('es-dob').value     = s.dob || '';
+  document.getElementById('es-pob').value     = s.pob || '';
+  document.getElementById('es-repeater').value= s.repeater || 'No';
+  document.getElementById('es-parent').value  = s.parent;
+  document.getElementById('es-phone').value   = s.phone;
+  document.getElementById('es-email').value   = s.email || '';
+  // Photo
+  const pi = document.getElementById('es-photo-img');
+  const ph = document.getElementById('es-photo-hint');
+  if (s.photo) { pi.src = s.photo; pi.style.display = 'block'; if(ph) ph.style.display='none'; }
+  else { pi.src = ''; pi.style.display = 'none'; if(ph) ph.style.display=''; }
 
   // Show linked data summary inside modal
   const pCount = payments.filter(p => p.studentId === id).length;
@@ -2006,24 +2698,28 @@ function openEditStudent(id) {
 }
 
 function saveEditStudent() {
-  const id     = document.getElementById('es-id').value;
-  const fname  = document.getElementById('es-fname').value.trim();
-  const lname  = document.getElementById('es-lname').value.trim();
-  const num    = document.getElementById('es-num').value.trim();
-  const cls    = document.getElementById('es-class').value;
-  const parent = document.getElementById('es-parent').value.trim();
-  const phone  = document.getElementById('es-phone').value.trim();
-  const email  = document.getElementById('es-email').value.trim();
+  const id       = document.getElementById('es-id').value;
+  const fname    = document.getElementById('es-fname').value.trim();
+  const lname    = document.getElementById('es-lname').value.trim();
+  const num      = document.getElementById('es-num').value.trim();
+  const cls      = document.getElementById('es-class').value;
+  const gender   = document.getElementById('es-gender').value;
+  const dob      = document.getElementById('es-dob')?.value || '';
+  const pob      = document.getElementById('es-pob')?.value.trim() || '';
+  const repeater = document.getElementById('es-repeater')?.value || 'No';
+  const parent   = document.getElementById('es-parent').value.trim();
+  const phone    = document.getElementById('es-phone').value.trim();
+  const email    = document.getElementById('es-email').value.trim();
+  const photoImg = document.getElementById('es-photo-img');
+  const photo    = (photoImg && photoImg.src && !photoImg.src.endsWith(window.location.href)) ? photoImg.src : '';
 
   if (!fname || !lname || !num) return showToast('Please fill required fields');
-
-  // Check num clash with another student
   const clash = students.find(s => s.num === num && s.id !== id);
   if (clash) return showToast('That student number belongs to another student');
 
   const idx = students.findIndex(s => s.id === id);
   if (idx < 0) return;
-  students[idx] = { ...students[idx], fname, lname, num, cls, parent, phone, email };
+  students[idx] = { ...students[idx], fname, lname, num, cls, gender, dob, pob, repeater, parent, phone, email, photo };
   save('sm_students', students);
   closeModal('modal-edit-student');
   renderAll();
@@ -2385,63 +3081,244 @@ function confirmTTAssign() {
 
 // ── Report Card ───────────────────────────────────────────
 function generateReport() {
-  const sid = document.getElementById('report-student').value;
-  const term = document.getElementById('report-term').value;
+  const sid         = document.getElementById('report-student').value;
+  const term        = parseInt(document.getElementById('report-term').value || '1');
+  const classMaster = (document.getElementById('report-classteacher')?.value || '').trim();
+  const enrolled    = parseInt(document.getElementById('report-enrolled')?.value || '40');
   if (!sid) return showToast('Select a student first');
   const s = students.find(x => x.id === sid);
-  const sg = grades.filter(g => g.studentId === sid && String(g.term) === term);
   if (!s) return;
-  const avg = sg.length ? Math.round(sg.reduce((a, g) => a + g.score, 0) / sg.length) : 0;
-  const gl = gradeLetter(avg);
+
+  const lh  = loadLH();
+  const termLabel = ['First','Second','Third'][term - 1] || 'First';
+
+  // Load mark-sheet data for this student
+  // We'll pull from all subjects across two sequences and the term average
+  // Marks keyed as sm_marks_{sid}_{subject}_{term}
+  // Subject groups as seen on the JATEC card:
+  const SUBJECT_GROUPS = [
+    {
+      label: 'PROFESSIONAL SUBJECTS',
+      subjects: ['Materials','Mechanical Technology','Mechanical Drawing','Praticals',
+                 'Electrical and Electronic Technology','Textile Technology','Building Technology',
+                 'Technical Drawing','CJ Technology']
+    },
+    {
+      label: 'GENERAL SUBJECTS',
+      subjects: ['English','French','Mathematics','Engineering Science','Chemistry',
+                 'Economic Geography','Industrial Computing','Law and Government',
+                 'Entrepreneurship','Physical Education','Manual Labour']
+    },
+    {
+      label: 'HUMAN CAPACITIES',
+      subjects: ['Civics','Life Skills']
+    }
+  ];
+
+  // Build subject rows from saved marks
+  let allRows = [];
+  let grandTotal = 0;
+  let totalCoeff = 0;
+
+  const groupSections = SUBJECT_GROUPS.map(grp => {
+    let grpRows = [];
+    let grpTotal = 0; let grpCoeff = 0;
+    grp.subjects.forEach(subj => {
+      const key = 'sm_marks_' + sid + '_' + subj.replace(/\s+/g,'_') + '_' + term;
+      const m = load(key, null);
+      if (!m || (m.ca === '' && m.exam === '')) return; // skip empty
+      const ca   = m.ca   !== '' ? parseFloat(m.ca)   : null;
+      const exam = m.exam !== '' ? parseFloat(m.exam) : null;
+      const coeff= parseFloat(m.coeff || 2);
+      const t100 = (ca !== null && exam !== null) ? ca + exam : null;
+      const t20  = t100 !== null ? (t100 / 100 * 20) : null;
+      const gt   = t20  !== null ? t20 * coeff : null;
+      if (gt !== null) { grpTotal += gt; grpCoeff += coeff; }
+      grpRows.push({ subj, ca, exam, coeff, t100, t20, gt });
+    });
+    grandTotal += grpTotal;
+    totalCoeff += grpCoeff;
+    return { label: grp.label, rows: grpRows, total: grpTotal, coeff: grpCoeff };
+  });
+
+  const overallAvg = totalCoeff > 0 ? (grandTotal / totalCoeff).toFixed(2) : '—';
+  const termNames = ['Term 1','Term 2','Term 3'];
+
+  // Photo
+  const photoHtml = s.photo
+    ? `<img src="${s.photo}" alt="Photo" />`
+    : `<div class="rc-photo-placeholder">📷<br>No Photo</div>`;
+
+  // DOB format
+  const dobStr = s.dob ? new Date(s.dob).toLocaleDateString('en-GB') : '—';
+
+  // Build subject table rows
+  const tableRows = groupSections.map(grp => {
+    if (grp.rows.length === 0) return '';
+    const headerRow = `<tr class="group-header"><td colspan="10">${grp.label}<span style="float:right;font-size:.65rem;font-weight:400">Coeff: ${grp.coeff}</span></td></tr>`;
+    const dataRows = grp.rows.map((r,idx) => {
+      const caClass  = r.ca   !== null && r.ca   < 10 ? 'rc-score-red' : '';
+      const exClass  = r.exam !== null && r.exam < 35 ? 'rc-score-red' : '';
+      return `<tr>
+        <td style="text-align:center;color:#666;font-size:.68rem">${idx+1}</td>
+        <td style="text-align:left">${r.subj}</td>
+        <td>${r.coeff.toFixed(2)}</td>
+        <td class="${caClass}">${r.ca !== null ? r.ca.toFixed(2) : '—'}</td>
+        <td class="${exClass}">${r.exam !== null ? r.exam.toFixed(2) : '—'}</td>
+        <td>${r.t100 !== null ? r.t100.toFixed(2) : '—'}</td>
+        <td>${r.t20 !== null ? r.t20.toFixed(2) : '—'}</td>
+        <td>${r.gt !== null ? r.gt.toFixed(2) : '—'}</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`;
+    }).join('');
+    const totalRow = grp.rows.length > 0 ? `<tr class="group-total">
+      <td colspan="2" style="text-align:right">Group Total</td>
+      <td>${grp.coeff}</td>
+      <td colspan="4"></td>
+      <td>${grp.total.toFixed(2)}</td>
+      <td colspan="2">Avg: ${grp.coeff > 0 ? (grp.total/grp.coeff).toFixed(2) : '—'}</td>
+    </tr>` : '';
+    return headerRow + dataRows + totalRow;
+  }).join('');
+
   document.getElementById('report-output').innerHTML = `
-    <div class="report-card-preview">
-      <div class="rc-header">
-        <div>
-          <div class="rc-school">SchoolMan Academy</div>
-          <div class="rc-term">Student Report Card — Term ${term}, 2024/2025</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:.8rem;color:var(--muted)">Student No.</div>
-          <div style="font-weight:700">${s.num}</div>
-        </div>
+  <div class="rc">
+
+    <!-- Bilingual Header -->
+    <div class="rc-header">
+      <div class="rc-header-left">
+        REPUBLIQUE DU CAMEROUN<br>
+        Paix - Travail - Patrie<br>
+        Ministère des Enseignements Secondaires<br>
+        Délégation Régionale du Centre<br>
+        Délégation Départementale du Mfoundi<br>
+        <strong>ST JOSEPH'S FOUNDATION ANGLO-SAXON<br>TECHNICAL COLLEGE (ST. JATEC)</strong>
+        <div><span class="rc-year-badge">Année scolaire 2025-2026</span></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;background:var(--bg);padding:14px;border-radius:10px">
-        <div><span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Student Name</span><br><strong>${s.fname} ${s.lname}</strong></div>
-        <div><span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Class</span><br><strong>${s.cls}</strong></div>
-        <div><span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Parent</span><br><strong>${s.parent}</strong></div>
-        <div><span style="font-size:.72rem;color:var(--muted);text-transform:uppercase">Academic Year</span><br><strong>2024/2025</strong></div>
+      <div class="rc-header-center">
+        ${lh.logo ? `<img src="${lh.logo}" alt="Logo" />` : '<div style="width:70px;height:70px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#aaa;text-align:center">School<br>Logo</div>'}
       </div>
-      <table style="margin-bottom:20px">
-        <thead><tr><th>Subject</th><th>Score</th><th>Max</th><th>%</th><th>Grade</th></tr></thead>
-        <tbody>
-          ${sg.map(g => {
-            const pct = Math.round((g.score / g.max) * 100);
-            const gl2 = gradeLetter(g.score, g.max);
-            return `<tr>
-              <td>${g.subject}</td>
-              <td>${g.score}</td>
-              <td>${g.max}</td>
-              <td>${pct}%</td>
-              <td class="${gradeClass(gl2)}">${gl2}</td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
-      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;padding:14px 20px;border-radius:10px">
-        <div><span style="font-size:.72rem;opacity:.6;text-transform:uppercase">Overall Average</span><br><strong style="font-size:1.4rem;font-family:var(--serif)">${avg}%</strong></div>
-        <div style="text-align:center"><span style="font-size:.72rem;opacity:.6;text-transform:uppercase">Final Grade</span><br><strong style="font-size:2rem;font-family:var(--serif)">${gl}</strong></div>
-        <div style="text-align:right"><span style="font-size:.72rem;opacity:.6">Class Teacher</span><br><strong>_________________</strong></div>
+      <div class="rc-header-right">
+        REPUBLIC OF CAMEROON<br>
+        Peace - Work - Fatherland<br>
+        Ministry of Secondary Education<br><br>
+        ST JOSEPH'S FOUNDATION ANGLO-SAXON<br>TECHNICAL COLLEGE (ST. JATEC)
+        <div><span class="rc-year-badge">Academic Year 2025-2026</span></div>
       </div>
-    </div>`;
+    </div>
+
+    <div class="rc-contact">
+      Tel: 673900245 / 677956018 / 650186262 / 677133702 &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE
+    </div>
+
+    <!-- Term Title -->
+    <div class="rc-title-bar">${termLabel} Term Report Card</div>
+
+    <!-- Student Info + Photo -->
+    <div class="rc-info">
+      <div class="rc-info-fields">
+        <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div>
+      </div>
+      <div class="rc-photo-box">${photoHtml}</div>
+    </div>
+
+    <!-- Marks Table -->
+    <table class="rc-table">
+      <thead>
+        <tr>
+          <th style="width:24px">#</th>
+          <th style="text-align:left;min-width:140px">Subject</th>
+          <th>Coef</th>
+          <th>Seq 1</th>
+          <th>Seq 2</th>
+          <th>Term</th>
+          <th>Total</th>
+          <th>Rank</th>
+          <th>Range</th>
+          <th>Appreciation</th>
+        </tr>
+      </thead>
+      <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term. Enter marks in the Class List page first.</td></tr>'}</tbody>
+    </table>
+
+    <!-- Summary Bar -->
+    <div class="rc-summary-bar">
+      <span>STUDENT RESULT: <strong style="font-size:1rem">${totalCoeff.toFixed(2)}</strong></span>
+      <span>TOTAL: <strong style="font-size:1rem">${grandTotal.toFixed(2)}</strong></span>
+      <span>AVERAGE: <strong style="font-size:1.1rem">${overallAvg}</strong></span>
+      <span>RANK: <strong>—</strong></span>
+    </div>
+
+    <!-- Bottom: Class Profile | Discipline | Academic Appreciation -->
+    <div class="rc-bottom">
+      <div>
+        <span class="rc-bottom-title">CLASS PROFILE</span>
+        <table>
+          <tr><td>Avg of 1st Student</td><td>—</td></tr>
+          <tr><td>Avg of last Student</td><td>—</td></tr>
+          <tr><td>Class Average</td><td>—</td></tr>
+          <tr><td>N° with Average</td><td>—</td></tr>
+          <tr><td>% Passed</td><td>—</td></tr>
+          <tr><td>% Failed</td><td>—</td></tr>
+        </table>
+      </div>
+      <div>
+        <span class="rc-bottom-title">DISCIPLINE</span>
+        <table>
+          <tr><td>Unjustified Absences</td><td></td></tr>
+          <tr><td>Justified Absences</td><td></td></tr>
+          <tr><td>Late coming</td><td></td></tr>
+          <tr><td>Punishments</td><td></td></tr>
+          <tr><td>Warnings</td><td></td></tr>
+          <tr><td>Disciplinary Council</td><td></td></tr>
+        </table>
+      </div>
+      <div>
+        <span class="rc-bottom-title">ACADEMIC APPRECIATION</span>
+        <table>
+          <tr><td>Distinction</td><td></td></tr>
+          <tr><td>Honour Roll</td><td></td></tr>
+          <tr><td>Merit</td><td></td></tr>
+          <tr><td>Passed</td><td>${parseFloat(overallAvg) >= 10 ? 'Yes' : '—'}</td></tr>
+          <tr><td>Failed</td><td>${parseFloat(overallAvg) < 10 ? 'Yes' : 'No'}</td></tr>
+          <tr><td>Absent</td><td></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Signature row -->
+    <div class="rc-sigs">
+      <div>
+        <div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div>
+      </div>
+      <div>
+        <div class="rc-sig-label">Discipline Master's Observation/Signature</div>
+      </div>
+      <div>
+        <div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div>
+      </div>
+    </div>
+
+  </div>`;
 }
 
 // ── Modal Helpers ─────────────────────────────────────────
 function openAddModal() {
-  // Reset form fields before opening
-  ['s-fname','s-lname','s-num','s-parent','s-phone','s-email'].forEach(id => {
+  ['s-fname','s-lname','s-num','s-parent','s-phone','s-email','s-pob'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const pi = document.getElementById('s-photo-img'); if(pi){pi.src='';pi.style.display='none';}
+  const ph = document.getElementById('s-photo-hint'); if(ph) ph.style.display='';
+  const fi = document.getElementById('s-photo-input'); if(fi) fi.value='';
   document.getElementById('modal-student').classList.add('open');
 }
 function openGradeModal()   { document.getElementById('modal-grade').classList.add('open'); }
@@ -2460,10 +3337,113 @@ function showToast(msg) {
 }
 
 // ══════════════════════════════════════════════════════════
+// LETTERHEAD & SETTINGS
+// ══════════════════════════════════════════════════════════
+
+function loadLH() {
+  return load('sm_letterhead', { line1:'', line2:'', line3:'', line4:'', fr1:'', fr2:'', fr3:'', fr4:'', logo:'' });
+}
+
+function applyLHToPage() {
+  var lh = loadLH();
+  // Populate settings fields if on settings page
+  ['line1','line2','line3','line4','fr1','fr2','fr3','fr4'].forEach(function(k) {
+    var el = document.getElementById('lh-' + k);
+    if (el) el.value = lh[k] || '';
+  });
+  // Update live letterhead elements
+  var leftLines  = [lh.line1, lh.line2, lh.line3, lh.line4].filter(Boolean);
+  var rightLines = [lh.fr1, lh.fr2, lh.fr3, lh.fr4].filter(Boolean);
+  var leftHtml   = leftLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
+  var rightHtml  = rightLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
+  ['lh-left-display','lh-prev-left'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.innerHTML = leftHtml;
+  });
+  ['lh-right-display','lh-prev-right'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.innerHTML = rightHtml;
+  });
+  // Logo
+  ['lh-logo-display','lh-prev-logo','logo-preview-img'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (lh.logo) { el.src = lh.logo; el.style.display = 'block'; }
+    else { el.src = ''; el.style.display = 'none'; }
+  });
+  var hint = document.getElementById('logo-upload-hint');
+  if (hint) hint.style.display = lh.logo ? 'none' : '';
+}
+
+function updateLHPreview() {
+  var leftLines = [
+    document.getElementById('lh-line1')?.value,
+    document.getElementById('lh-line2')?.value,
+    document.getElementById('lh-line3')?.value,
+    document.getElementById('lh-line4')?.value
+  ].filter(Boolean);
+  var rightLines = [
+    document.getElementById('lh-fr1')?.value,
+    document.getElementById('lh-fr2')?.value,
+    document.getElementById('lh-fr3')?.value,
+    document.getElementById('lh-fr4')?.value
+  ].filter(Boolean);
+  var pl = document.getElementById('lh-prev-left');
+  var pr = document.getElementById('lh-prev-right');
+  if (pl) pl.innerHTML = leftLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
+  if (pr) pr.innerHTML = rightLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
+}
+
+function handleLogoUpload(evt) {
+  var file = evt.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Logo must be under 2MB'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var src = e.target.result;
+    ['lh-logo-display','lh-prev-logo','logo-preview-img'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.src = src; el.style.display = 'block'; }
+    });
+    var hint = document.getElementById('logo-upload-hint');
+    if (hint) hint.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearLogo() {
+  ['lh-logo-display','lh-prev-logo','logo-preview-img'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.src = ''; el.style.display = 'none'; }
+  });
+  var hint = document.getElementById('logo-upload-hint');
+  if (hint) hint.style.display = '';
+  document.getElementById('logo-file-input').value = '';
+  var lh = loadLH(); lh.logo = ''; save('sm_letterhead', lh);
+  showToast('Logo removed');
+}
+
+function saveLH() {
+  var logoEl = document.getElementById('lh-prev-logo');
+  var lh = {
+    line1: document.getElementById('lh-line1')?.value || '',
+    line2: document.getElementById('lh-line2')?.value || '',
+    line3: document.getElementById('lh-line3')?.value || '',
+    line4: document.getElementById('lh-line4')?.value || '',
+    fr1:   document.getElementById('lh-fr1')?.value   || '',
+    fr2:   document.getElementById('lh-fr2')?.value   || '',
+    fr3:   document.getElementById('lh-fr3')?.value   || '',
+    fr4:   document.getElementById('lh-fr4')?.value   || '',
+    logo:  (logoEl && logoEl.src && logoEl.src !== window.location.href) ? logoEl.src : '',
+  };
+  save('sm_letterhead', lh);
+  applyLHToPage();
+  showToast('Letterhead saved ✓');
+}
+
+// ══════════════════════════════════════════════════════════
 // AUTH & ACCESS CONTROL
 // ══════════════════════════════════════════════════════════
 
-const PAGES = ['dashboard','students','grades','timetable','reports','payments','teachers','access'];
+const PAGES = ['dashboard','students','grades','timetable','reports','payments','teachers','access','settings'];
 
 // Default staff accounts — password stored as plain text here (use hashing in production)
 let staffAccounts = load('sm_staff_accounts', [
@@ -2475,12 +3455,12 @@ let staffAccounts = load('sm_staff_accounts', [
   {
     id: 'acc_t1', name: 'Akor Nkwenti', username: 'akor.nkwenti',
     password: 'teacher123', role: 'teacher',
-    perms: { dashboard:true, students:true, grades:true, timetable:true, reports:true, payments:false, teachers:false, access:false }
+    perms: { dashboard:false, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false, settings:false }
   },
   {
     id: 'acc_t2', name: 'Mary Bih', username: 'mary.bih',
     password: 'teacher123', role: 'teacher',
-    perms: { dashboard:true, students:true, grades:true, timetable:true, reports:true, payments:false, teachers:false, access:false }
+    perms: { dashboard:false, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false, settings:false }
   },
 ]);
 
@@ -2510,8 +3490,28 @@ function doLogin() {
 
   errEl.classList.remove('show');
   currentUser = account;
+
+  // ── Migration: reset teacher accounts to timetable-only (fix stale localStorage) ──
+  let migrated = false;
+  staffAccounts.forEach((acc, idx) => {
+    if (acc.role === 'teacher') {
+      const correct = { dashboard:false, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false, settings:false };
+      const needsFix = JSON.stringify(acc.perms) !== JSON.stringify(correct);
+      if (needsFix) { staffAccounts[idx].perms = correct; migrated = true; }
+    }
+    // Ensure settings perm exists
+    if (acc.perms.settings === undefined) {
+      staffAccounts[idx].perms.settings = acc.role === 'admin';
+      migrated = true;
+    }
+  });
+  if (migrated) save('sm_staff_accounts', staffAccounts);
+  // Update currentUser perms if this account was migrated
+  currentUser = staffAccounts.find(function(a) { return a.id === account.id; });
+
   document.getElementById('login-screen').classList.add('hidden');
   applyUserSession();
+  applyLHToPage();
   renderAll();
   showToast(`Welcome, ${account.name.split(' ')[0]} ✓`);
 }
@@ -2543,43 +3543,47 @@ function applyUserSession() {
   PAGES.forEach(page => {
     const link = document.querySelector(`.nav-link[onclick*="'${page}'"]`);
     if (!link) return;
-    const allowed = u.perms[page] !== false;
+    const allowed = u.role === 'admin' || u.perms[page] !== false;
     link.classList.toggle('locked', !allowed);
   });
 
-  // Hide admin nav section for non-admins
-  const adminSec = document.getElementById('nav-admin-section');
-  const accessLink = document.getElementById('nav-access');
+  // Hide admin nav section (Settings + Access Control) for non-admins
+  const adminSec    = document.getElementById('nav-admin-section');
+  const accessLink  = document.getElementById('nav-access');
+  const settingsLink= document.getElementById('nav-settings');
   if (u.role !== 'admin') {
-    if (adminSec) adminSec.style.display = 'none';
-    if (accessLink) accessLink.style.display = 'none';
+    if (adminSec)     adminSec.style.display    = 'none';
+    if (accessLink)   accessLink.style.display  = 'none';
+    if (settingsLink) settingsLink.style.display = 'none';
   } else {
-    if (adminSec) adminSec.style.display = '';
-    if (accessLink) accessLink.style.display = '';
+    if (adminSec)     adminSec.style.display    = '';
+    if (accessLink)   accessLink.style.display  = '';
+    if (settingsLink) settingsLink.style.display = '';
+  }
+
+  // For teachers: only timetable allowed from non-admin nav
+  if (u.role === 'teacher') {
+    document.querySelectorAll('.nav-link').forEach(function(lnk) {
+      const onclick = lnk.getAttribute('onclick') || '';
+      const allowed = onclick.includes("'timetable'") || onclick.includes("'dashboard'");
+      lnk.classList.toggle('locked', !allowed);
+    });
   }
 
   // If current page not allowed, redirect to dashboard
   const activePage = document.querySelector('.page.active');
   if (activePage) {
     const pname = activePage.id.replace('page-','');
-    if (!u.perms[pname]) showPage('dashboard', document.querySelector('.nav-link'));
+    if (u.role === 'teacher' && pname !== 'timetable' && pname !== 'dashboard') {
+      showPage('timetable', document.querySelector('.nav-link[onclick*="\'timetable\'"]'));
+    }
   }
-}
-
-// ── Check permission before showing a page ────────────────
-const _origShowPage = showPage;
-function showPage(name, linkEl) {
-  if (currentUser && currentUser.perms[name] === false) {
-    showToast('⛔ You do not have access to this section');
-    return;
-  }
-  _origShowPage(name, linkEl);
 }
 
 // ── Render Access Control page ────────────────────────────
 function renderAccessControl() {
   const PERM_LABELS = {
-    dashboard:'Dashboard', students:'Students', grades:'Grades',
+    dashboard:'Dashboard', students:'Students', grades:'Class List',
     timetable:'Timetable', reports:'Reports', payments:'Finance',
     teachers:'Teachers'
   };
@@ -2631,8 +3635,8 @@ function togglePerm(accId, key, value) {
 
 function applyPreset(preset) {
   const presets = {
-    teacher:  { dashboard:true, students:true, grades:true, timetable:true, reports:true, payments:false, teachers:false, access:false },
-    readonly: { dashboard:true, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false },
+    teacher:  { dashboard:false, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false, settings:false },
+    readonly: { dashboard:true,  students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false, settings:false },
     nofinance:{ payments:false },
   };
   const p = presets[preset];
@@ -2651,10 +3655,10 @@ function applyPreset(preset) {
 
 // ── Add / Edit Staff Account ──────────────────────────────
 const DEFAULT_PERMS = {
-  admin:    { dashboard:true, students:true, grades:true, timetable:true, reports:true, payments:true, teachers:true, access:true },
-  teacher:  { dashboard:true, students:true, grades:true, timetable:true, reports:true, payments:false, teachers:false, access:false },
-  staff:    { dashboard:true, students:true, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false },
-  readonly: { dashboard:true, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false },
+  admin:    { dashboard:true,  students:true,  grades:true,  timetable:true,  reports:true,  payments:true,  teachers:true,  access:true,  settings:true  },
+  teacher:  { dashboard:false, students:false, grades:false, timetable:true,  reports:false, payments:false, teachers:false, access:false, settings:false },
+  staff:    { dashboard:true,  students:true,  grades:false, timetable:true,  reports:false, payments:false, teachers:false, access:false, settings:false },
+  readonly: { dashboard:true,  students:false, grades:false, timetable:true,  reports:false, payments:false, teachers:false, access:false, settings:false },
 };
 
 const PERM_DISPLAY = {
@@ -2849,13 +3853,6 @@ function togglePwVis(inputId, btn) {
   inp.type = inp.type === 'password' ? 'text' : 'password';
   btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
-
-// ── Patch renderAll to include access control ──────────────
-const _baseRenderAll = renderAll;
-renderAll = function() {
-  _baseRenderAll();
-  renderAccessControl();
-};
 
 // ── Init: show login screen, don't render app yet ──────────
 // (renderAll will be called after login)
