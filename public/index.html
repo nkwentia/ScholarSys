@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SchoolMan — Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
@@ -541,7 +542,8 @@
     .rc-table .group-total td {
       background: #f0f0f0; font-weight: 700; font-size: .7rem;
     }
-    .rc-score-red { color: #cc0000; font-weight: 700; }
+    .rc-score-red  { color: #cc0000; font-weight: 700; }
+    .rc-score-blue { color: #0055cc; font-weight: 700; }
 
     /* Bottom section */
     .rc-bottom {
@@ -590,12 +592,229 @@
       border-top: 2px solid #000;
     }
 
+    /* ── JATEC Timetable Layout ─────────────────────────── */
+    .jt-table {
+      border-collapse: collapse;
+      font-size: .68rem;
+      width: 100%;
+      min-width: 900px;
+    }
+    .jt-table th, .jt-table td {
+      border: 1px solid #999;
+      padding: 2px 3px;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .jt-table thead th {
+      background: #1a3a5c;
+      color: #fff;
+      font-size: .65rem;
+      padding: 4px 3px;
+      font-weight: 700;
+    }
+    .jt-table thead th.th-time {
+      font-size: .6rem;
+      min-width: 52px;
+      line-height: 1.3;
+    }
+    .jt-day-cell {
+      background: #1a3a5c;
+      color: #fff;
+      font-weight: 800;
+      font-size: .7rem;
+      letter-spacing: .05em;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      padding: 6px 3px;
+      min-width: 22px;
+    }
+    .jt-class-cell {
+      background: #e8edf4;
+      font-weight: 700;
+      font-size: .68rem;
+      color: #1a3a5c;
+      min-width: 38px;
+    }
+    .jt-preps-cell {
+      background: #f5f5f5;
+      font-size: .6rem;
+      color: #666;
+      min-width: 42px;
+      font-weight: 600;
+    }
+    .jt-slot {
+      min-width: 52px;
+      max-width: 80px;
+      cursor: pointer;
+      position: relative;
+      padding: 2px 3px;
+      vertical-align: middle;
+    }
+    .jt-slot:hover { background: #eef5fb; }
+    .jt-slot-inner {
+      font-size: .65rem;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .jt-slot-inner .jt-subj {
+      display: block;
+      font-weight: 700;
+      color: #1a3a5c;
+      font-size: .64rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .jt-slot-inner .jt-teacher {
+      display: block;
+      font-weight: 500;
+      color: #444;
+      font-size: .62rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .jt-slot-inner.free {
+      color: #bbb;
+      font-weight: 400;
+      font-size: .65rem;
+    }
+    .jt-slot .jt-remove {
+      display: none;
+      position: absolute;
+      top: 1px; right: 1px;
+      color: #cc0000;
+      font-size: .6rem;
+      cursor: pointer;
+      line-height: 1;
+      background: #fff;
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+    .jt-slot:hover .jt-remove { display: block; }
+    .jt-break-cell {
+      background: #fffde7;
+      color: #888;
+      font-size: .62rem;
+      font-style: italic;
+    }
+    .jt-x { color: #bbb; font-size: .7rem; }
+
+    /* ── Timetable multi-entry cells (legacy) ───────────── */
+    .tt-cell-entry {
+      background: #eef5fb;
+      border-left: 3px solid var(--sky);
+      border-radius: 5px;
+      padding: 4px 7px;
+      margin-bottom: 4px;
+      font-size: .75rem;
+      position: relative;
+    }
+    .tt-cell-entry strong { display:block; color:var(--navy); font-size:.78rem; }
+    .tt-teacher-name { display:block; color:var(--muted); font-size:.68rem; }
+    .tt-class-pill {
+      display:inline-block; background:var(--sky); color:#fff;
+      font-size:.62rem; padding:1px 5px; border-radius:8px; margin-top:2px;
+    }
+    .tt-remove {
+      position:absolute; top:3px; right:5px;
+      cursor:pointer; color:#cc0000; font-size:.7rem; font-weight:700;
+      opacity:0; transition:opacity .15s;
+    }
+    .tt-cell-entry:hover .tt-remove { opacity:1; }
+    .tt-empty {
+      border: 1px dashed var(--border);
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: .72rem;
+      color: var(--sky);
+      cursor: pointer;
+      text-align: center;
+      transition: background .15s;
+    }
+    .tt-empty:hover { background: #eef5fb; }
+
+    /* ── Receipt ────────────────────────────────────────── */
+    .receipt {
+      background:#fff; max-width:420px; margin:0 auto 24px;
+      border:2px solid #1a3a5c; border-radius:10px;
+      font-family:Arial,sans-serif; font-size:.8rem; overflow:hidden;
+    }
+    .receipt-header {
+      background:#1a3a5c; color:#fff;
+      padding:12px 16px; text-align:center;
+    }
+    .receipt-header h3 { margin:0; font-size:.95rem; letter-spacing:.05em; }
+    .receipt-header p  { margin:2px 0 0; font-size:.7rem; opacity:.8; }
+    .receipt-body { padding:14px 18px; }
+    .receipt-row {
+      display:flex; justify-content:space-between;
+      padding:5px 0; border-bottom:1px dashed #ddd;
+      font-size:.78rem;
+    }
+    .receipt-row:last-child { border-bottom:none; }
+    .receipt-row span:first-child { color:#555; }
+    .receipt-row span:last-child  { font-weight:700; }
+    .receipt-total {
+      background:#f0f4f9; margin:10px -18px -14px;
+      padding:10px 18px;
+      display:flex; justify-content:space-between;
+      font-weight:800; font-size:.92rem; color:#1a3a5c;
+    }
+    .receipt-stamp {
+      text-align:center; padding:10px;
+      font-size:.68rem; color:#888;
+      border-top:1px dashed #ccc; margin-top:8px;
+    }
+
+    /* ── Print: clean layout, visible borders ── */
     @media print {
-      .rc { border: 1px solid #000 !important; page-break-after: always; max-width: 100%; }
-      .rc-table th { background: #1a3a5c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .rc-bottom-title { background: #e8e8e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .rc-title-bar { background: #e8e8e8 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .rc-summary-bar { background: #1a3a5c !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      /* Hide app chrome */
+      .sidebar, .topbar, .classlist-toolbar, .search-bar,
+      .no-print, .modal-overlay, .btn, #formula-bar { display:none !important; }
+      .main { margin-left:0 !important; }
+      .content { padding:0 !important; }
+      body { margin:0; padding:0; }
+
+      /* Show only active page */
+      .page { display:none !important; }
+      .page.active { display:block !important; }
+
+      /* Letterhead: ONLY via .page-lh-inject — suppress all other letterhead elements */
+      .letterhead, .letterhead-print-top, #tt-print-header { display:none !important; }
+
+      @page { margin:14mm 12mm; }
+
+      /* All tables: visible borders */
+      table { border-collapse:collapse !important; width:100% !important; }
+      table th, table td { border:1px solid #555 !important; padding:4px 6px !important; font-size:.75rem !important; }
+      table th { background:#1a3a5c !important; color:#fff !important;
+        -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+      /* Mark sheet */
+      .mark-sheet { border:none !important; border-radius:0 !important; }
+      .mark-table { font-size:var(--print-fs,.76rem) !important; }
+      .mark-table input[type=number] { border:none !important; background:transparent !important; width:auto !important; font-weight:700; }
+
+      /* Report card */
+      .rc { border:1px solid #000 !important; page-break-after:always; max-width:100%; }
+      .rc-table th { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .rc-bottom-title { background:#e8e8e8 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .rc-title-bar    { background:#e8e8e8 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .rc-summary-bar  { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .rc-score-red  { color:#cc0000 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .rc-score-blue { color:#0055cc !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+      /* Receipt */
+      .receipt { border:2px solid #1a3a5c !important; max-width:100%; }
+      .receipt-header { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+      /* Timetable */
+      .tt-remove, .jt-remove { display:none !important; }
+      .jt-table th { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .jt-day-cell  { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
     }
 
     /* ── Toast ──────────────────────────────────────────── */
@@ -620,7 +839,7 @@
     /* ── Teacher Modal — assignment rows ───────────────── */
     .assign-row {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
+      grid-template-columns: 1fr 1fr 90px auto;
       gap: 8px;
       align-items: end;
       margin-bottom: 8px;
@@ -1008,24 +1227,16 @@
       font-size: .9rem;
     }
 
-    /* ── Letterhead (print header) ──────────────────────── */
-    .letterhead {
-      display: none; /* shown only on print */
-    }
+    /* ── Letterhead ─────────────────────────────────────── */
+    .letterhead          { display: none; }   /* global div — hidden always, not used for print */
+    .letterhead-print-top{ display: none; }   /* legacy — unused */
+    .letterhead-inner    { display: none; }   /* legacy — unused */
 
-    .letterhead-inner {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0 10px;
-      border-bottom: 3px double var(--navy);
-      margin-bottom: 14px;
+    /* The ONLY letterhead mechanism: injected at top of each .page */
+    .page-lh-inject { display: none; }        /* hidden on screen */
+    @media print {
+      .page-lh-inject { display: block !important; margin-bottom: 12px; }
     }
-
-    .lh-left  { font-size: .78rem; line-height: 1.5; color: var(--navy); }
-    .lh-center img { max-height: 72px; max-width: 120px; object-fit: contain; }
-    .lh-right { font-size: .78rem; line-height: 1.5; color: var(--navy); text-align: right; }
 
     /* ── Settings page ──────────────────────────────────── */
     .settings-grid {
@@ -1033,7 +1244,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
-
     .lh-preview-box {
       border: 1px dashed var(--border);
       border-radius: var(--radius);
@@ -1041,7 +1251,6 @@
       background: #fff;
       min-height: 100px;
     }
-
     .logo-upload-zone {
       border: 2px dashed var(--border);
       border-radius: 10px;
@@ -1051,38 +1260,13 @@
       transition: all .15s;
       background: var(--bg);
     }
-
     .logo-upload-zone:hover { border-color: var(--sky); background: #eef5fb; }
     .logo-upload-zone img { max-height: 80px; max-width: 160px; object-fit: contain; margin: 0 auto; display: block; }
 
     /* ── Print ──────────────────────────────────────────── */
-    @media print {
-      .sidebar, .topbar, .btn, .modal-overlay,
-      .classlist-toolbar, .search-bar, .no-print { display: none !important; }
-      .main { margin-left: 0; }
-      .content { padding: 0; }
-      .page { display: block !important; }
-      .page:not(.active) { display: none !important; }
-      .letterhead { display: block !important; }
-      .mark-sheet { border: none; border-radius: 0; }
-      .mark-table { font-size: var(--print-fs, .78rem); }
-      .mark-table input[type=number] {
-        border: none; background: transparent;
-        width: auto; font-weight: 600;
-      }
-    }
   </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════════════════ LETTERHEAD (print only) -->
-<div class="letterhead" id="letterhead">
-  <div class="letterhead-inner">
-    <div class="lh-left" id="lh-left-display"></div>
-    <div class="lh-center"><img id="lh-logo-display" src="" alt="" style="display:none" /></div>
-    <div class="lh-right" id="lh-right-display"></div>
-  </div>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════ LOGIN -->
 <div class="login-screen" id="login-screen">
@@ -1313,7 +1497,7 @@
               </div>
               <div class="form-group">
                 <label>Receipt No.</label>
-                <input type="text" id="qp-receipt" placeholder="RCP-0001" />
+                <input type="text" id="qp-receipt" placeholder="Auto-generated (or enter manually)" />
               </div>
             </div>
             <button class="btn btn-success" style="width:100%;justify-content:center" onclick="recordPayment()">
@@ -1438,50 +1622,43 @@
 
     <!-- ═══════════ TIMETABLE PAGE -->
     <div class="page" id="page-timetable">
-      <div class="search-bar">
-        <select id="tt-class" onchange="renderTimetable()">
-          <option value="">All Classes</option>
-          <option>Form 1A</option><option>Form 1B</option>
-          <option>Form 2A</option><option>Form 2B</option>
-          <option>Form 3A</option><option>Form 3B</option>
-          <option>Form 4A</option><option>Form 5A</option>
-        </select>
+      <div class="search-bar no-print">
         <select id="tt-term" onchange="renderTimetable()">
           <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option>
         </select>
-        <button class="btn btn-ghost" onclick="window.print()">🖨 Print Timetable</button>
+        <button class="btn btn-primary no-print" onclick="autoGenerateAll()">⚡ Auto-Generate (This Term)</button>
+        <button class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()">⚡ Generate All Terms</button>
+        <button class="btn btn-ghost no-print" onclick="clearTimetable()">🗑 Clear All</button>
+        <button class="btn btn-ghost no-print" onclick="window.print()">🖨 Print</button>
       </div>
-      <div class="panel">
-        <div class="panel-header">
+      <div class="panel" style="overflow-x:auto">
+        <div class="panel-header no-print">
           <span class="panel-title" id="tt-panel-title">Weekly Timetable</span>
-          <span style="font-size:.8rem;color:var(--muted)">Click empty slot to assign · hover slot to remove</span>
+          <span style="font-size:.78rem;color:var(--muted)">Click any cell to assign · ✕ to remove</span>
         </div>
-        <div class="panel-body tt-grid">
-          <table class="tt-table">
-            <thead>
-              <tr>
-                <th style="width:64px">Period</th>
-                <th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th>
-              </tr>
-            </thead>
-            <tbody id="timetable-body"></tbody>
-          </table>
-        </div>
+        <div id="timetable-wrap" style="overflow-x:auto;font-size:.72rem"></div>
       </div>
     </div>
 
     <!-- ═══════════ REPORTS PAGE -->
     <div class="page" id="page-reports">
       <div class="search-bar no-print">
-        <select id="report-student">
+        <select id="report-mode" onchange="toggleReportMode()">
+          <option value="individual">Individual Student</option>
+          <option value="class">Entire Class</option>
+        </select>
+        <select id="report-student" style="display:block">
           <option value="">Select student…</option>
+        </select>
+        <select id="report-class-sel" style="display:none">
+          <option value="">— Select Class —</option>
         </select>
         <select id="report-term">
           <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option>
         </select>
         <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" />
         <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px" min="1" value="40" />
-        <button class="btn btn-primary" onclick="generateReport()">Generate Report Card</button>
+        <button class="btn btn-primary" onclick="generateReport()">Generate</button>
         <button class="btn btn-ghost" onclick="window.print()">🖨 Print</button>
       </div>
       <div id="report-output"></div>
@@ -1506,7 +1683,7 @@
         <div class="panel-body">
           <table>
             <thead>
-              <tr><th>Receipt</th><th>Student</th><th>Type</th><th>Amount (XAF)</th><th>Term</th><th>Date</th></tr>
+              <tr><th>Receipt</th><th>Student</th><th>Type</th><th>Amount (XAF)</th><th>Term</th><th>Date</th><th class="no-print">Action</th></tr>
             </thead>
             <tbody id="payments-body"></tbody>
           </table>
@@ -1518,6 +1695,9 @@
     <div class="page" id="page-teachers">
       <div class="search-bar">
         <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="renderTeachers()" />
+        <button class="btn btn-ghost" onclick="openImportTeachersModal()">📥 Import (CSV/Excel)</button>
+        <button class="btn btn-ghost" onclick="exportTeachers('csv')">📤 Export CSV</button>
+        <button class="btn btn-ghost" onclick="exportTeachers('xlsx')">📤 Export Excel</button>
         <button class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button>
       </div>
       <div class="panel">
@@ -1599,90 +1779,175 @@
 
     <div class="settings-grid">
 
-      <!-- Left: Letterhead text fields -->
+      <!-- Left text (English) + Right text (French) -->
       <div>
         <div class="panel" style="margin-bottom:20px">
           <div class="panel-header"><span class="panel-title">Letterhead — Left Side (English)</span></div>
           <div style="padding:20px">
-            <div class="form-group">
-              <label>School Name (line 1)</label>
-              <input type="text" id="lh-line1" placeholder="ST. JOSEPH FOUNDATION SCHOOL" oninput="updateLHPreview()" />
-            </div>
-            <div class="form-group">
-              <label>Motto / Tagline (line 2)</label>
-              <input type="text" id="lh-line2" placeholder="Excellence in Education" oninput="updateLHPreview()" />
-            </div>
-            <div class="form-group">
-              <label>Address / Tel (line 3)</label>
-              <input type="text" id="lh-line3" placeholder="P.O. Box 1234, Yaoundé · Tel: 677 000 001" oninput="updateLHPreview()" />
-            </div>
-            <div class="form-group">
-              <label>Extra line (line 4 — optional)</label>
-              <input type="text" id="lh-line4" placeholder="Email: info@school.cm" oninput="updateLHPreview()" />
-            </div>
+            <div class="form-group"><label>School Name (line 1)</label>
+              <input type="text" id="lh-line1" placeholder="ST. JOSEPH FOUNDATION SCHOOL COMPLEX" oninput="updateLHPreview()" /></div>
+            <div class="form-group"><label>Motto / Tagline (line 2)</label>
+              <input type="text" id="lh-line2" placeholder="Integrity · Work · Excellence" oninput="updateLHPreview()" /></div>
+            <div class="form-group"><label>Address / Tel (line 3)</label>
+              <input type="text" id="lh-line3" placeholder="P.O. Box 19042, Yaoundé · Tel: 677 000 001" oninput="updateLHPreview()" /></div>
           </div>
         </div>
-
         <div class="panel">
           <div class="panel-header"><span class="panel-title">Letterhead — Right Side (French)</span></div>
           <div style="padding:20px">
-            <div class="form-group">
-              <label>Nom de l'école (ligne 1)</label>
-              <input type="text" id="lh-fr1" placeholder="ÉCOLE FONDATION SAINT JOSEPH" oninput="updateLHPreview()" />
-            </div>
-            <div class="form-group">
-              <label>Devise (ligne 2)</label>
-              <input type="text" id="lh-fr2" placeholder="Intégrité · Travail · Excellence" oninput="updateLHPreview()" />
-            </div>
-            <div class="form-group">
-              <label>Adresse / Tél (ligne 3)</label>
-              <input type="text" id="lh-fr3" placeholder="B.P. 1234, Yaoundé · Tél: 677 000 001" oninput="updateLHPreview()" />
-            </div>
-            <div class="form-group">
-              <label>Ligne supplémentaire (ligne 4 — facultatif)</label>
-              <input type="text" id="lh-fr4" placeholder="Email: info@ecole.cm" oninput="updateLHPreview()" />
-            </div>
+            <div class="form-group"><label>Nom de l'école (ligne 1)</label>
+              <input type="text" id="lh-fr1" placeholder="ÉCOLE FONDATION SAINT JOSEPH" oninput="updateLHPreview()" /></div>
+            <div class="form-group"><label>Devise (ligne 2)</label>
+              <input type="text" id="lh-fr2" placeholder="Intégrité · Travail · Excellence" oninput="updateLHPreview()" /></div>
+            <div class="form-group"><label>Adresse / Tél (ligne 3)</label>
+              <input type="text" id="lh-fr3" placeholder="B.P. 19042, Yaoundé · Tél: 677 000 001" oninput="updateLHPreview()" /></div>
           </div>
         </div>
       </div>
 
-      <!-- Right: Logo + Preview -->
+      <!-- Logo + Preview -->
       <div>
         <div class="panel" style="margin-bottom:20px">
-          <div class="panel-header"><span class="panel-title">School Logo</span></div>
+          <div class="panel-header"><span class="panel-title">School Logo (Centre)</span></div>
           <div style="padding:20px">
             <div class="logo-upload-zone" onclick="document.getElementById('logo-file-input').click()" id="logo-drop-zone">
-              <img id="logo-preview-img" src="" alt="" style="display:none;margin-bottom:8px" />
+              <img id="logo-preview-img" src="" alt="" style="display:none;max-height:80px;max-width:160px;object-fit:contain;margin:0 auto" />
               <div id="logo-upload-hint">
                 <div style="font-size:2rem;margin-bottom:6px">🏫</div>
                 <div style="font-size:.85rem;color:var(--muted)">Click to upload school logo</div>
-                <div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG, JPG or SVG · max 2MB</div>
+                <div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG, JPG or SVG · max 3MB</div>
               </div>
             </div>
             <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="handleLogoUpload(event)" />
-            <button class="btn btn-ghost" style="width:100%;margin-top:10px;justify-content:center" onclick="clearLogo()">✕ Remove Logo</button>
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center" onclick="clearLogo()">✕ Remove Logo</button>
           </div>
         </div>
-
         <div class="panel">
           <div class="panel-header"><span class="panel-title">Letterhead Preview</span></div>
           <div style="padding:16px 20px">
-            <div class="lh-preview-box">
-              <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center">
-                <div style="font-size:.72rem;line-height:1.6" id="lh-prev-left"></div>
-                <div><img id="lh-prev-logo" src="" style="max-height:60px;max-width:100px;object-fit:contain;display:none" /></div>
-                <div style="font-size:.72rem;line-height:1.6;text-align:right" id="lh-prev-right"></div>
+            <div class="lh-preview-box" style="font-size:.72rem;overflow:hidden">
+              <div style="color:var(--muted);font-size:.78rem;text-align:center;padding:20px">
+                Fill in the fields and click Save to see preview
               </div>
             </div>
-            <div style="margin-top:16px;display:flex;gap:10px">
+            <div style="margin-top:14px;display:flex;gap:10px">
               <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveLH()">💾 Save Letterhead</button>
-              <button class="btn btn-ghost" onclick="window.print()">🖨 Test Print</button>
             </div>
           </div>
         </div>
       </div>
 
+    </div><!-- /settings-grid -->
+
+    <div style="margin-top:24px">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">🕐 Time Slots / Periods</span></div>
+        <div style="padding:20px">
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Define your school's daily schedule — periods, breaks and duration. Labels appear on the timetable and in teacher hour totals.</p>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:.8rem" id="timeslots-table">
+              <thead>
+                <tr style="background:var(--navy);color:#fff">
+                  <th style="padding:7px 10px;text-align:left">#</th>
+                  <th style="padding:7px 10px;text-align:left">Label</th>
+                  <th style="padding:7px 10px">Start</th>
+                  <th style="padding:7px 10px">End</th>
+                  <th style="padding:7px 10px">Duration</th>
+                  <th style="padding:7px 10px">Break?</th>
+                  <th style="padding:7px 10px" class="no-print">Remove</th>
+                </tr>
+              </thead>
+              <tbody id="timeslots-body"></tbody>
+            </table>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="addTimeSlotRow(false)">+ Add Period</button>
+            <button class="btn btn-ghost" onclick="addTimeSlotRow(true)">+ Add Break</button>
+            <button class="btn btn-ghost" onclick="resetTimeSlots()">Reset to Default</button>
+            <button class="btn btn-primary" style="margin-left:auto" onclick="saveTimeSlots()">💾 Save Schedule</button>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div style="margin-top:24px">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">📚 Subjects &amp; Pairing Rules</span></div>
+        <div style="padding:20px">
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px">
+            Manage all subjects. Define which subjects <strong style="color:#0e7a4e">can run in the same period</strong> across different classes,
+            and which <strong style="color:#cc3300">cannot</strong>.
+            Compulsory subjects (Maths, English, French) for F1–F5 are enforced automatically.
+          </p>
+
+          <!-- Subject list -->
+          <div style="margin-bottom:18px">
+            <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">All Subjects</div>
+            <div id="subjects-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:36px;padding:8px;border:1px solid var(--border);border-radius:8px;background:#f9fafb"></div>
+            <div style="display:flex;gap:6px">
+              <input type="text" id="new-subject-input" placeholder="e.g. Technical Drawing" style="flex:1;max-width:260px" onkeydown="if(event.key==='Enter')addSubject()" />
+              <button class="btn btn-primary" onclick="addSubject()">+ Add Subject</button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+            <!-- CAN be paired -->
+            <div>
+              <div style="font-weight:600;font-size:.82rem;margin-bottom:6px;color:#0e7a4e">✅ Can Run in Same Period</div>
+              <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">These subject pairs are allowed to run simultaneously in the same time slot across different classes.</p>
+              <div id="canpair-list" style="min-height:40px;padding:8px;border:1px solid #c3e8d0;border-radius:8px;background:#f0fbf5;margin-bottom:10px;max-height:180px;overflow-y:auto"></div>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <select id="canpair-a" style="flex:1;min-width:110px"><option value="">Subject A…</option></select>
+                <span style="font-size:.8rem;color:#0e7a4e;font-weight:700">+</span>
+                <select id="canpair-b" style="flex:1;min-width:110px"><option value="">Subject B…</option></select>
+                <button class="btn btn-ghost" style="color:#0e7a4e;border-color:#0e7a4e" onclick="addCanPairRule()">+ Add</button>
+              </div>
+            </div>
+
+            <!-- CANNOT be paired -->
+            <div>
+              <div style="font-weight:600;font-size:.82rem;margin-bottom:6px;color:#cc3300">🚫 Cannot Run in Same Period</div>
+              <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">These subject pairs must never be placed in the same time slot, even across different classes.</p>
+              <div id="nopair-list" style="min-height:40px;padding:8px;border:1px solid #f5c6b8;border-radius:8px;background:#fff8f0;margin-bottom:10px;max-height:180px;overflow-y:auto"></div>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <select id="nopair-a" style="flex:1;min-width:110px"><option value="">Subject A…</option></select>
+                <span style="font-size:.8rem;color:#cc3300;font-weight:700">≠</span>
+                <select id="nopair-b" style="flex:1;min-width:110px"><option value="">Subject B…</option></select>
+                <button class="btn btn-ghost" style="color:#cc3300;border-color:#cc3300" onclick="addNoPairRule()">+ Add</button>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="margin-top:16px;padding:10px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)">
+            <strong>Compulsory for F1–F5:</strong> Mathematics, English, French are always enforced when auto-generating.
+            When another teacher tries to take the same time slot already used by one of these subjects in the same class group, the slot shows <strong>"TAKEN"</strong>.
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:8px">
+            <button class="btn btn-ghost" onclick="resetSubjects()">Reset to Default</button>
+            <button class="btn btn-primary" style="margin-left:auto" onclick="saveSubjects()">💾 Save Subjects &amp; Rules</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">⚙ Custom Classes</span></div>
+        <div style="padding:20px">
+          <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Define your school's class names. These appear in all class dropdowns across the app.</p>
+          <div id="custom-classes-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="new-class-input" placeholder="e.g. Form 3C" style="max-width:160px" onkeydown="if(event.key==='Enter')addCustomClass()" />
+            <button class="btn btn-primary" onclick="addCustomClass()">+ Add Class</button>
+            <button class="btn btn-ghost" onclick="resetCustomClasses()">Reset to Default</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1889,7 +2154,10 @@
         <div class="form-group"><label>Last Name *</label><input type="text" id="t-lname" placeholder="Akor" /></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label>Teacher Code *</label><input type="text" id="t-code" placeholder="e.g. ENG 10" style="text-transform:uppercase" /></div>
         <div class="form-group"><label>Email</label><input type="email" id="t-email" placeholder="teacher@school.cm" /></div>
+      </div>
+      <div class="form-row">
         <div class="form-group"><label>Phone</label><input type="tel" id="t-phone" placeholder="677000002" /></div>
       </div>
 
@@ -1908,12 +2176,64 @@
         <!-- Rendered by JS -->
       </div>
       <p style="font-size:.75rem;color:var(--muted);margin-top:6px">
-        Each row = one class this teacher teaches a subject in. These populate the timetable automatically.
+        Each row = one class this teacher teaches a subject in, plus how many periods per week (Periods/Wk). These populate the timetable automatically — the auto-generator will try to spread them across different days first.
       </p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-teacher')">Cancel</button>
       <button class="btn btn-primary" onclick="saveTeacher()">Save Teacher</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Teachers (CSV/Excel) modal -->
+<div class="modal-overlay" id="modal-import-teachers">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <span class="modal-title">📥 Import Teachers (CSV / Excel)</span>
+      <button class="modal-close" onclick="closeModal('modal-import-teachers')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div id="import-step-upload">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">
+          Upload a <strong>.csv</strong>, <strong>.xls</strong> or <strong>.xlsx</strong> file. The first row should be column headers.
+        </p>
+        <div class="logo-upload-zone" onclick="document.getElementById('import-file-input').click()" style="padding:30px">
+          <div style="font-size:2rem;margin-bottom:6px">📄</div>
+          <div style="font-size:.85rem;color:var(--muted)">Click to choose a file</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:4px" id="import-file-name">No file selected</div>
+        </div>
+        <input type="file" id="import-file-input" accept=".csv,.xls,.xlsx" style="display:none" onchange="handleImportFileSelect(event)" />
+
+        <div style="margin-top:16px;padding:12px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)">
+          <strong>Expected columns</strong> (case-insensitive, order doesn't matter):<br>
+          <code>First Name</code>, <code>Last Name</code>, <code>Code</code>, <code>Email</code>, <code>Phone</code>,
+          <code>Class</code>, <code>Subject</code>, <code>Periods/Week</code><br>
+          <span style="color:var(--muted)">If a teacher teaches multiple class/subject combos, repeat the row with the same First+Last Name for each combo — they'll be merged into one teacher.</span>
+        </div>
+
+        <div style="margin-top:10px">
+          <button class="btn btn-ghost" onclick="downloadImportTemplate()">⬇ Download CSV Template</button>
+        </div>
+      </div>
+
+      <div id="import-step-preview" style="display:none">
+        <p style="font-size:.85rem;margin-bottom:10px"><span id="import-summary"></span></p>
+        <div style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:8px">
+          <table style="width:100%;font-size:.75rem;border-collapse:collapse">
+            <thead id="import-preview-head" style="background:var(--navy);color:#fff;position:sticky;top:0"></thead>
+            <tbody id="import-preview-body"></tbody>
+          </table>
+        </div>
+        <div id="import-warnings" style="margin-top:10px;font-size:.78rem;color:#b85c00"></div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-import-teachers')">Cancel</button>
+      <button class="btn btn-ghost" id="import-back-btn" style="display:none" onclick="importGoBack()">← Back</button>
+      <button class="btn btn-primary" id="import-confirm-btn" style="display:none" onclick="confirmImportTeachers()">Import Teachers</button>
     </div>
   </div>
 </div>
@@ -1929,6 +2249,7 @@
       <input type="hidden" id="tta-class" />
       <input type="hidden" id="tta-day" />
       <input type="hidden" id="tta-period" />
+      <input type="hidden" id="tta-term" />
       <div class="form-group">
         <label>Teacher</label>
         <select id="tta-teacher" onchange="filterTeacherSubjects()">
@@ -2112,6 +2433,21 @@
 </div>
 
 <!-- Toast -->
+<!-- Receipt Modal -->
+<div class="modal-overlay" id="modal-receipt">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header">
+      <span class="modal-title">Payment Receipt</span>
+      <button class="modal-close" onclick="closeModal('modal-receipt')">×</button>
+    </div>
+    <div class="modal-body" id="receipt-content"></div>
+    <div class="modal-footer no-print">
+      <button class="btn btn-ghost" onclick="closeModal('modal-receipt')">Close</button>
+      <button class="btn btn-primary" onclick="printReceipt()">🖨 Print Receipt</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- ═══════════════════════════════════════════════════════ SCRIPT -->
@@ -2146,52 +2482,117 @@ let grades = load('sm_grades', [
   { id: 'g6', studentId: 's3', subject: 'Physics',     score: 63, max: 100, term: 1, year: '2024/2025' },
 ]);
 
+// ── Sixth Form (L6/U6) Arts & Science test teachers (16 periods/wk ≈ 14 hrs) ──
+const SIXTH_FORM_TEST_TEACHERS = [
+  { id:'sf1', code:'ENG 60', fname:'Mary', lname:'Bih', email:'mary.bih@jatec.cm', phone:'677003001',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6A',subject:'ENG',periodsPerWeek:8},{cls:'L6A',subject:'LIT',periodsPerWeek:8}] },
+  { id:'sf2', code:'FRE 61', fname:'Peter', lname:'Nkwenti', email:'peter.nkwenti@jatec.cm', phone:'677003002',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6A',subject:'FRE',periodsPerWeek:8},{cls:'L6A',subject:'GEO',periodsPerWeek:8}] },
+  { id:'sf3', code:'ECO 62', fname:'Grace', lname:'Ngum', email:'grace.ngum@jatec.cm', phone:'677003003',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6A',subject:'ECO',periodsPerWeek:8},{cls:'L6A',subject:'HIS',periodsPerWeek:8}] },
+  { id:'sf4', code:'PHIL 63', fname:'John', lname:'Fru', email:'john.fru@jatec.cm', phone:'677003004',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6A',subject:'PHIL',periodsPerWeek:8},{cls:'L6S',subject:'CSCI',periodsPerWeek:8}] },
+  { id:'sf5', code:'ENG 64', fname:'Comfort', lname:'Ndong', email:'comfort.ndong@jatec.cm', phone:'677003005',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6S',subject:'ENG',periodsPerWeek:8},{cls:'L6S',subject:'FRE',periodsPerWeek:8}] },
+  { id:'sf6', code:'GEO 65', fname:'Emmanuel', lname:'Tita', email:'emmanuel.tita@jatec.cm', phone:'677003006',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6S',subject:'GEO',periodsPerWeek:8},{cls:'L6S',subject:'ECO',periodsPerWeek:8}] },
+  { id:'sf7', code:'BIO 66', fname:'Joyce', lname:'Manka\'a', email:'joyce.mankaa@jatec.cm', phone:'677003007',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6S',subject:'BIO',periodsPerWeek:8},{cls:'L6S',subject:'CHE',periodsPerWeek:8}] },
+  { id:'sf8', code:'PHY 67', fname:'Paul', lname:'Acho', email:'paul.acho@jatec.cm', phone:'677003008',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6S',subject:'PHY',periodsPerWeek:8},{cls:'L6S',subject:'C.S',periodsPerWeek:8}] },
+  { id:'sf9', code:'GEOL 68', fname:'Divine', lname:'Che', email:'divine.che@jatec.cm', phone:'677003009',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'L6S',subject:'GEOL',periodsPerWeek:8},{cls:'L6S',subject:'A.MA',periodsPerWeek:8}] },
+  { id:'sf10', code:'ENG 69', fname:'Evelyn', lname:'Lum', email:'evelyn.lum@jatec.cm', phone:'677003010',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6A',subject:'ENG',periodsPerWeek:8},{cls:'U6A',subject:'LIT',periodsPerWeek:8}] },
+  { id:'sf11', code:'FRE 70', fname:'Simon', lname:'Fon', email:'simon.fon@jatec.cm', phone:'677003011',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6A',subject:'FRE',periodsPerWeek:8},{cls:'U6A',subject:'GEO',periodsPerWeek:8}] },
+  { id:'sf12', code:'ECO 71', fname:'Beatrice', lname:'Sirri', email:'beatrice.sirri@jatec.cm', phone:'677003012',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6A',subject:'ECO',periodsPerWeek:8},{cls:'U6A',subject:'HIS',periodsPerWeek:8}] },
+  { id:'sf13', code:'PHIL 72', fname:'Joseph', lname:'Adamu', email:'joseph.adamu@jatec.cm', phone:'677003013',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6A',subject:'PHIL',periodsPerWeek:8},{cls:'U6S',subject:'CSCI',periodsPerWeek:8}] },
+  { id:'sf14', code:'ENG 73', fname:'Martha', lname:'Ndi', email:'martha.ndi@jatec.cm', phone:'677003014',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6S',subject:'ENG',periodsPerWeek:8},{cls:'U6S',subject:'FRE',periodsPerWeek:8}] },
+  { id:'sf15', code:'GEO 74', fname:'Thomas', lname:'Wango', email:'thomas.wango@jatec.cm', phone:'677003015',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6S',subject:'GEO',periodsPerWeek:8},{cls:'U6S',subject:'ECO',periodsPerWeek:8}] },
+  { id:'sf16', code:'BIO 75', fname:'Blessing', lname:'Keng', email:'blessing.keng@jatec.cm', phone:'677003016',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6S',subject:'BIO',periodsPerWeek:8},{cls:'U6S',subject:'CHE',periodsPerWeek:8}] },
+  { id:'sf17', code:'PHY 76', fname:'Felix', lname:'Fobi', email:'felix.fobi@jatec.cm', phone:'677003017',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6S',subject:'PHY',periodsPerWeek:8},{cls:'U6S',subject:'C.S',periodsPerWeek:8}] },
+  { id:'sf18', code:'GEOL 77', fname:'Patience', lname:'Jua', email:'patience.jua@jatec.cm', phone:'677003018',
+    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
+    assignments:[{cls:'U6S',subject:'GEOL',periodsPerWeek:8},{cls:'U6S',subject:'A.MA',periodsPerWeek:8}] },
+];
+
 let teachers = load('sm_teachers', [
-  {
-    id: 't1', fname: 'Akor', lname: 'Nkwenti', email: 'akor@school.cm', phone: '677002001',
-    availability: { Monday:[1,2,3,5,6], Tuesday:[1,2,3,5,6], Wednesday:[1,2,3,5,6], Thursday:[1,2,3,5,6], Friday:[1,2,3,5,6] },
-    assignments: [
-      { cls: 'Form 1A', subject: 'Mathematics' },
-      { cls: 'Form 2A', subject: 'Mathematics' },
-      { cls: 'Form 3A', subject: 'Physics' },
-    ]
-  },
-  {
-    id: 't2', fname: 'Mary', lname: 'Bih', email: 'mary@school.cm', phone: '677002002',
-    availability: { Monday:[1,2,3,5,6,7], Tuesday:[1,2,5,6,7], Wednesday:[1,2,3,5,6], Thursday:[1,2,3,5,6,7], Friday:[1,2,3,5,6] },
-    assignments: [
-      { cls: 'Form 1A', subject: 'English' },
-      { cls: 'Form 1B', subject: 'English' },
-      { cls: 'Form 2A', subject: 'Literature' },
-    ]
-  },
-  {
-    id: 't3', fname: 'John', lname: 'Che', email: 'john@school.cm', phone: '677002003',
-    availability: { Monday:[2,3,5,6,7], Tuesday:[1,2,3,5,6,7], Wednesday:[2,3,5,6,7], Thursday:[1,2,3,5,6], Friday:[2,3,5,6,7] },
-    assignments: [
-      { cls: 'Form 1A', subject: 'Chemistry' },
-      { cls: 'Form 2A', subject: 'Biology' },
-      { cls: 'Form 3A', subject: 'Chemistry' },
-    ]
-  },
+  { id:'t1',  code:'ENG 10',   fname:'Mary',    lname:'Bih',       email:'mary@jatec.cm',   phone:'677002001',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F1',subject:'English'},{cls:'F2',subject:'English'},{cls:'F4A',subject:'English'}] },
+  { id:'t2',  code:'MATHS 5',  fname:'Akor',    lname:'Nkwenti',   email:'akor@jatec.cm',   phone:'677002002',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F1',subject:'Mathematics'},{cls:'F2',subject:'Mathematics'},{cls:'F3',subject:'Mathematics'}] },
+  { id:'t3',  code:'HIST 23',  fname:'Joseph',  lname:'Mbah',      email:'jmbah@jatec.cm',  phone:'677002003',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F2',subject:'History'},{cls:'F3',subject:'History'},{cls:'F4A',subject:'History'}] },
+  { id:'t4',  code:'GEO 29',   fname:'Grace',   lname:'Tabi',      email:'gtabi@jatec.cm',  phone:'677002004',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F2',subject:'Geography'},{cls:'F3',subject:'Geography'},{cls:'F5A',subject:'Geography'}] },
+  { id:'t5',  code:'FREN 14',  fname:'Paul',    lname:'Ngachu',    email:'pngachu@jatec.cm',phone:'677002005',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F2',subject:'French'},{cls:'F3',subject:'French'},{cls:'F4A',subject:'French'},{cls:'F4B',subject:'French'}] },
+  { id:'t6',  code:'PHY 36',   fname:'Leonard', lname:'Vernyuy',   email:'lvernyuy@jatec.cm',phone:'677002006',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F3',subject:'Physics'},{cls:'F4A',subject:'Physics'},{cls:'F5A',subject:'Physics'},{cls:'F5B',subject:'Physics'}] },
+  { id:'t7',  code:'CHEM 32',  fname:'Peter',   lname:'Fon',       email:'pfon@jatec.cm',   phone:'677002007',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F3',subject:'Chemistry'},{cls:'F4A',subject:'Chemistry'},{cls:'F4B',subject:'Chemistry'},{cls:'F5A',subject:'Chemistry'}] },
+  { id:'t8',  code:'BIO 17',   fname:'Anne',    lname:'Keng',      email:'akeng@jatec.cm',  phone:'677002008',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F4A',subject:'Biology'},{cls:'F4B',subject:'Biology'},{cls:'F5A',subject:'Biology'},{cls:'F5B',subject:'Biology'}] },
+  { id:'t9',  code:'ICT 40',   fname:'Denis',   lname:'Nfor',      email:'dnfor@jatec.cm',  phone:'677002009',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F4B',subject:'ICT'},{cls:'F5A',subject:'ICT'},{cls:'F5B',subject:'ICT'},{cls:'LSS',subject:'ICT'}] },
+  { id:'t10', code:'ECON 38',  fname:'Susan',   lname:'Mbu',       email:'smbu@jatec.cm',   phone:'677002010',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F4A',subject:'Economics'},{cls:'F5A',subject:'Economics'},{cls:'LSS',subject:'Economics'},{cls:'USS',subject:'Economics'}] },
+  { id:'t11', code:'R/S 30',   fname:'James',   lname:'Che',       email:'jche@jatec.cm',   phone:'677002011',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F4B',subject:'R/S'},{cls:'F5B',subject:'R/S'},{cls:'LSS',subject:'R/S'}] },
+  { id:'t12', code:'LIT 7',    fname:'Clara',   lname:'Nkam',      email:'cnkam@jatec.cm',  phone:'677002012',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F5A',subject:'Literature'},{cls:'F5B',subject:'Literature'},{cls:'LSS',subject:'Literature'},{cls:'USS',subject:'Literature'}] },
+  { id:'t13', code:'GEOL 19',  fname:'Martin',  lname:'Tabi',      email:'mtabi@jatec.cm',  phone:'677002013',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F5B',subject:'Geology'},{cls:'LSS',subject:'Geology'},{cls:'USS',subject:'Geology'}] },
+  { id:'t14', code:'LOG 30',   fname:'Rachel',  lname:'Awa',       email:'rawa@jatec.cm',   phone:'677002014',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F4A',subject:'Logic'},{cls:'LSS',subject:'Logic'},{cls:'USS',subject:'Logic'}] },
+  { id:'t15', code:'CITZ 23',  fname:'Francis', lname:'Njong',     email:'fnjong@jatec.cm', phone:'677002015',
+    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
+    assignments:[{cls:'F1',subject:'Citizenship'},{cls:'F2',subject:'Citizenship'},{cls:'F3',subject:'Citizenship'}] },
+
+  // ── Sixth Form (L6/U6) test teachers — see SIXTH_FORM_TEST_TEACHERS below ──
+  ...SIXTH_FORM_TEST_TEACHERS,
 ]);
 
-// timetable slots: { id, cls, day, period, teacherId, subject, term }
-let ttSlots = load('sm_ttslots', [
-  { id: 'tt1', cls:'Form 1A', day:'Monday',    period:1, teacherId:'t1', subject:'Mathematics', term:1 },
-  { id: 'tt2', cls:'Form 1A', day:'Monday',    period:2, teacherId:'t2', subject:'English',     term:1 },
-  { id: 'tt3', cls:'Form 1A', day:'Tuesday',   period:1, teacherId:'t3', subject:'Chemistry',   term:1 },
-  { id: 'tt4', cls:'Form 1A', day:'Tuesday',   period:2, teacherId:'t1', subject:'Mathematics', term:1 },
-  { id: 'tt5', cls:'Form 1A', day:'Wednesday', period:1, teacherId:'t2', subject:'English',     term:1 },
-  { id: 'tt6', cls:'Form 1A', day:'Wednesday', period:2, teacherId:'t3', subject:'Chemistry',   term:1 },
-  { id: 'tt7', cls:'Form 1A', day:'Thursday',  period:1, teacherId:'t1', subject:'Mathematics', term:1 },
-  { id: 'tt8', cls:'Form 1A', day:'Friday',    period:1, teacherId:'t2', subject:'English',     term:1 },
-  { id: 'tt9', cls:'Form 2A', day:'Monday',    period:3, teacherId:'t1', subject:'Mathematics', term:1 },
-  { id:'tt10', cls:'Form 2A', day:'Tuesday',   period:3, teacherId:'t2', subject:'Literature',  term:1 },
-  { id:'tt11', cls:'Form 2A', day:'Wednesday', period:3, teacherId:'t3', subject:'Biology',     term:1 },
-  { id:'tt12', cls:'Form 3A', day:'Monday',    period:5, teacherId:'t1', subject:'Physics',     term:1 },
-  { id:'tt13', cls:'Form 3A', day:'Tuesday',   period:5, teacherId:'t3', subject:'Chemistry',   term:1 },
-]);
+// timetable slots: { id, cls, day, slotId, teacherId, subject, term }
+let ttSlots = load('sm_ttslots', []);
 
 // ── Navigation ───────────────────────────────────────────
 const pageTitles = {
@@ -2218,8 +2619,8 @@ const actionHandlers = {
 };
 
 function showPage(name, linkEl) {
-  // Permission check: admin always has full access
-  if (currentUser && currentUser.role !== 'admin' && currentUser.perms[name] === false) {
+  // Permission check: admin always has full access; others need explicit true
+  if (currentUser && currentUser.role !== 'admin' && currentUser.perms[name] !== true) {
     showToast('\u26d4 You do not have access to this section');
     return;
   }
@@ -2251,9 +2652,31 @@ function showPage(name, linkEl) {
     btn.style.display = 'none';
   }
 
-  // Show formula bar only for admin on grades page
+  // Show formula bar for admin (editable) and teachers (read-only info)
   var fb = document.getElementById('formula-bar');
-  if (fb) fb.style.display = (name === 'grades' && currentUser && currentUser.role === 'admin') ? 'flex' : 'none';
+  if (fb) {
+    if (name === 'grades' && currentUser) {
+      fb.style.display = 'flex';
+      fb.querySelectorAll('input').forEach(function(inp) {
+        inp.readOnly = currentUser.role !== 'admin';
+        inp.style.background = currentUser.role !== 'admin' ? '#f0f4f9' : '';
+        inp.title = currentUser.role !== 'admin' ? 'Set by admin' : '';
+      });
+    } else {
+      fb.style.display = 'none';
+    }
+  }
+
+  // Render settings panels when settings page opens
+  if (name === 'settings') {
+    setTimeout(function() {
+      renderTimeSlotsTable();
+      renderCustomClassList();
+      renderSubjectsPanel();
+      populateAllSubjectDropdowns();
+    }, 50);
+  }
+
   renderAll();
 }
 
@@ -2265,6 +2688,7 @@ function renderAll() {
   renderTimetable();
   renderTeachers();
   populateSelects();
+  populateAllClassDropdowns();
   updateDashboardStats();
   if (typeof renderAccessControl === 'function') renderAccessControl();
 }
@@ -2387,6 +2811,7 @@ function renderPayments() {
       <td><strong>${p.amount.toLocaleString()}</strong></td>
       <td>Term ${p.term}</td>
       <td>${p.date}</td>
+      <td class="no-print"><button class="btn btn-ghost" style="font-size:.72rem;padding:3px 10px" onclick="openReceipt('${p.receipt}')">🧾 Receipt</button></td>
     </tr>
   `).join('');
 }
@@ -2447,7 +2872,9 @@ function renderClassList() {
   // Store for print
   document.documentElement.style.setProperty('--print-fs', fs);
 
-  var isAdmin = currentUser && currentUser.role === 'admin';
+  var isAdmin   = currentUser && currentUser.role === 'admin';
+  var isTeacher = currentUser && currentUser.role === 'teacher';
+  var canEdit   = isAdmin || isTeacher;   // both can enter marks
 
   document.getElementById('classlist-body').innerHTML = clsStudents.map(function(s, idx) {
     // Load saved marks for this student/subject/term
@@ -2462,9 +2889,10 @@ function renderClassList() {
     var total20  = total100 !== '' ? ((total100 / 100) * 20).toFixed(1) : '';
     var gtotal   = (total20 !== '' && coeff !== '') ? (parseFloat(total20) * parseFloat(coeff)).toFixed(1) : '';
 
-    var caIn   = isAdmin ? '<input type="number" min="0" max="' + caMax + '" step="0.1" value="' + ca + '" style="width:52px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'ca\',this.value,' + defCoeff + ');recalcRow(this)" />' : (ca !== '' ? ca : '—');
-    var exIn   = isAdmin ? '<input type="number" min="0" max="' + examMax + '" step="0.1" value="' + exam + '" style="width:58px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'exam\',this.value,' + defCoeff + ');recalcRow(this)" />' : (exam !== '' ? exam : '—');
-    var coeffIn= isAdmin ? '<input type="number" min="1" max="10" step="1" value="' + coeff + '" style="width:44px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'coeff\',this.value,' + defCoeff + ');recalcRow(this)" />' : coeff;
+    // Teachers can enter CA and Exam; only admin can change Coeff
+    var caIn   = canEdit  ? '<input type="number" min="0" max="' + caMax + '" step="0.1" value="' + ca + '" style="width:52px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'ca\',this.value,' + defCoeff + ');recalcRow(this)" />' : (ca !== '' ? ca : '—');
+    var exIn   = canEdit  ? '<input type="number" min="0" max="' + examMax + '" step="0.1" value="' + exam + '" style="width:58px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'exam\',this.value,' + defCoeff + ');recalcRow(this)" />' : (exam !== '' ? exam : '—');
+    var coeffIn= isAdmin  ? '<input type="number" min="1" max="10" step="1" value="' + coeff + '" style="width:44px" onchange="saveMark(\'' + s.id + '\',\'' + subject + '\',' + term + ',\'coeff\',this.value,' + defCoeff + ');recalcRow(this)" />' : coeff;
 
     return '<tr data-sid="' + s.id + '" data-subject="' + subject + '" data-term="' + term + '" data-camax="' + caMax + '" data-exammax="' + examMax + '">' +
       '<td style="text-align:center;color:var(--muted);font-size:.75rem">' + (idx+1) + '</td>' +
@@ -2497,17 +2925,29 @@ function recalcRow(inputEl) {
   var t20El  = tr.querySelector('[data-t20]');
   var gtEl   = tr.querySelector('[data-gt]');
 
+  // Apply colour to input cells
+  if (caEl && ca !== null) {
+    caEl.style.color  = ca  < caMax/2  ? '#cc0000' : '#0055cc';
+    caEl.style.fontWeight = '700';
+  }
+  if (exEl && exam !== null) {
+    exEl.style.color  = exam < exMax/2 ? '#cc0000' : '#0055cc';
+    exEl.style.fontWeight = '700';
+  }
+
   if (ca !== null && exam !== null) {
     var t100 = ca + exam;
     var t20  = ((t100 / 100) * 20).toFixed(1);
     var gt   = (parseFloat(t20) * coeff).toFixed(1);
-    if (t100El) t100El.textContent = t100.toFixed(1);
-    if (t20El)  t20El.textContent  = t20;
-    if (gtEl)   gtEl.textContent   = gt;
+    var avg  = parseFloat(t20);
+    var col  = avg < 10 ? '#cc0000' : '#0055cc';
+    if (t100El) { t100El.textContent = t100.toFixed(1); t100El.style.color = col; }
+    if (t20El)  { t20El.textContent  = t20;             t20El.style.color  = col; }
+    if (gtEl)   { gtEl.textContent   = gt;              gtEl.style.color   = col; }
   } else {
-    if (t100El) t100El.textContent = '—';
-    if (t20El)  t20El.textContent  = '—';
-    if (gtEl)   gtEl.textContent   = '—';
+    if (t100El) { t100El.textContent = '—'; t100El.style.color = ''; }
+    if (t20El)  { t20El.textContent  = '—'; t20El.style.color  = ''; }
+    if (gtEl)   { gtEl.textContent   = '—'; gtEl.style.color   = ''; }
   }
 }
 
@@ -2531,47 +2971,154 @@ function saveFormula() {
 }
 
 function renderTimetable() {
-  var DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  var PERIODS = [1,2,3,4,5,6,7,8];
-  var BREAK   = 4;
+  var term      = parseInt(document.getElementById('tt-term')?.value || '1');
+  var timeSlots = loadTimeSlots();
+  var teachSlots= timeSlots.filter(function(s){ return !s.isBreak; });
   var isTeacher = currentUser && currentUser.role === 'teacher';
+  var classes   = loadCustomClasses();
 
-  var selCls  = document.getElementById('tt-class')?.value  || '';
-  var selTerm = parseInt(document.getElementById('tt-term')?.value || '1');
-
-  var title = selCls ? 'Weekly Timetable — ' + selCls : 'Weekly Timetable — All Classes';
-  var el = document.getElementById('tt-panel-title');
-  if (el) el.textContent = title;
-
-  document.getElementById('timetable-body').innerHTML = PERIODS.map(function(period) {
-    if (period === BREAK) {
-      return '<tr><td style="font-weight:600;text-align:center;color:var(--muted);font-size:.8rem">Break</td>' +
-        DAYS.map(function() { return '<td style="background:#f7fafd;text-align:center;color:var(--muted);font-size:.8rem">—</td>'; }).join('') +
-      '</tr>';
-    }
-    return '<tr><td style="font-weight:700;text-align:center;color:var(--muted);font-size:.82rem">' + period + '</td>' +
-      DAYS.map(function(day) {
-        var slot = ttSlots.find(function(s) {
-          return s.day === day && s.period === period &&
-            s.term === selTerm &&
-            (selCls ? s.cls === selCls : true);
-        });
-        if (slot) {
-          var t = teachers.find(function(x) { return x.id === slot.teacherId; });
-          var tName = t ? (t.fname[0] + '. ' + t.lname) : '?';
-          var removeBtn = (!isTeacher) ? '<span class="tt-remove" onclick="removeTTSlot(\'' + slot.id + '\')">✕ Remove</span>' : '';
-          return '<td><div class="tt-cell"><strong>' + slot.subject + '</strong><span>' + tName + '</span>' +
-            (selCls ? '' : '<span style="font-size:.65rem;color:var(--sky)">' + slot.cls + '</span>') +
-            removeBtn + '</div></td>';
-        }
-        if (!selCls) return '<td><span style="color:var(--border)">—</span></td>';
-        if (isTeacher) return '<td><span style="color:var(--border)">—</span></td>';
-        var available = teachers.filter(function(t2) { return (t2.availability[day] || []).includes(period); });
-        return '<td><div class="tt-empty" onclick="openTTAssign(\'' + selCls + '\',\'' + day + '\',' + period + ',' + selTerm + ')">' +
-          (available.length ? '+ Assign' : '<span style="color:var(--border)">—</span>') + '</div></td>';
-      }).join('') +
-    '</tr>';
+  // Header row: DAY | CLASS | PREPS | time1 | time2 | ...
+  var timeHeaders = timeSlots.map(function(s){
+    if(s.isBreak) return '<th class="th-time jt-break-cell" style="background:#fffde7;color:#888">' + s.start + '<br>' + s.end + '</th>';
+    return '<th class="th-time">' + s.start + '<br>' + s.end + '</th>';
   }).join('');
+
+  var html = '<table class="jt-table">' +
+    '<thead><tr>' +
+    '<th style="width:48px">DAY</th>' +
+    '<th style="width:38px">CLASS</th>' +
+    '<th style="width:42px">PREPS</th>' +
+    timeHeaders +
+    '</tr></thead><tbody>';
+
+  DAYS.forEach(function(day){
+    var rowsForDay = classes.map(function(cls, ci){
+      var cells = timeSlots.map(function(slot){
+        if(slot.isBreak){
+          return '<td class="jt-break-cell">' + (ci === 0 ? slot.label : '') + '</td>';
+        }
+        // Get slot(s) for this class/day/slotId/term
+        var s = ttSlots.find(function(x){
+          return x.cls === cls && x.day === day && x.slotId === slot.id && x.term === term;
+        });
+        if(s){
+          var t = teachers.find(function(x){ return x.id === s.teacherId; });
+          // Display: subject code/name on top, teacher initial+lastname below (like image: "A. Nkwenti")
+          var tDisplay = t ? (t.fname.charAt(0) + '. ' + t.lname) : '?';
+          var subjDisplay = s.subject || '';
+          var removeBtn = !isTeacher ? '<span class="jt-remove" onclick="removeTTSlot(\''+s.id+'\')">✕</span>' : '';
+          return '<td class="jt-slot">' +
+            '<div class="jt-slot-inner">' +
+              '<span class="jt-subj">' + subjDisplay + '</span>' +
+              '<span class="jt-teacher">' + tDisplay + '</span>' +
+            '</div>' + removeBtn + '</td>';
+        }
+        // Empty — clickable if admin
+        if(!isTeacher){
+          return '<td class="jt-slot" onclick="openTTAssign(\''+cls+'\',\''+day+'\','+slot.id+','+term+')">' +
+            '<div class="jt-slot-inner free">X</div></td>';
+        }
+        return '<td class="jt-slot"><div class="jt-slot-inner free">X</div></td>';
+      }).join('');
+
+      // PREPS cell
+      var prepsSlot = ttSlots.find(function(x){ return x.cls===cls && x.day===day && x.term===term && x.subject==='PREPS'; });
+      var prepsCode = prepsSlot ? (function(){
+        var t=teachers.find(function(x){return x.id===prepsSlot.teacherId;});
+        return t ? (t.code||'') : '';
+      })() : 'PREPS';
+
+      return '<tr>' +
+        (ci === 0 ? '<td class="jt-day-cell" rowspan="' + classes.length + '">' + day.slice(0,3).toUpperCase() + '</td>' : '') +
+        '<td class="jt-class-cell">' + cls + '</td>' +
+        '<td class="jt-preps-cell">' + prepsCode + '</td>' +
+        cells +
+        '</tr>';
+    }).join('');
+    html += rowsForDay;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('timetable-wrap').innerHTML = html;
+}
+
+function clearTimetable() {
+  if(!confirm('Clear all timetable slots?')) return;
+  ttSlots = [];
+  save('sm_ttslots', ttSlots);
+  renderTimetable();
+  showToast('Timetable cleared');
+}
+
+// Compulsory subjects for F1–F5: Maths, English, French must appear
+const COMPULSORY_SUBJECTS = ['Mathematics', 'English', 'French'];
+const COMPULSORY_CLASSES  = ['F1','F2','F3','F4A','F4B','F5A','F5B'];
+
+function ensureCompulsorySlots(term) {
+  // For each compulsory class, ensure each compulsory subject has at least one slot
+  COMPULSORY_CLASSES.forEach(function(cls) {
+    COMPULSORY_SUBJECTS.forEach(function(subj) {
+      var already = ttSlots.some(function(s) { return s.cls===cls && s.subject===subj && s.term===term; });
+      if (already) return;
+      // Find a teacher who teaches this subject to this class
+      var teacher = teachers.find(function(t) {
+        return (t.assignments||[]).some(function(a) { return a.cls===cls && a.subject===subj; });
+      });
+      if (!teacher) {
+        // Fallback: find any teacher who teaches this subject to any class
+        teacher = teachers.find(function(t) {
+          return (t.assignments||[]).some(function(a) { return a.subject===subj; });
+        });
+      }
+      if (!teacher) return; // No teacher available for this subject
+      // Find a free slot
+      var teachSlots = getTeachingSlots();
+      outer: for (var di=0; di<DAYS.length; di++) {
+        var day = DAYS[di];
+        var avail = (teacher.availability[day]||[]);
+        for (var si=0; si<avail.length; si++) {
+          var slotId = avail[si];
+          var slot = teachSlots.find(function(x){return x.id===slotId;});
+          if (!slot) continue;
+          var teacherBusy = ttSlots.find(function(s){return s.teacherId===teacher.id&&s.day===day&&s.slotId===slotId&&s.term===term;});
+          var classBusy   = ttSlots.find(function(s){return s.cls===cls&&s.day===day&&s.slotId===slotId&&s.term===term;});
+          var slotFull    = ttSlots.filter(function(s){return s.day===day&&s.slotId===slotId&&s.term===term;}).length >= 3;
+          var noPairConf  = coreSubjectConflict(day, slotId, term, subj);
+          if (!teacherBusy && !classBusy && !slotFull && !noPairConf) {
+            ttSlots.push({id:'tt'+Date.now()+Math.random().toString(36).slice(2,5), cls:cls, day:day, slotId:slotId, teacherId:teacher.id, subject:subj, term:term});
+            break outer;
+          }
+        }
+      }
+    });
+  });
+}
+
+function autoGenerateAll() {
+  var term = parseInt(document.getElementById('tt-term')?.value || '1');
+  // Clear only this term's slots
+  ttSlots = ttSlots.filter(function(s){ return s.term !== term; });
+  teachers.forEach(function(t){
+    autoGenerateSlots(t.id, t.assignments || [], t.availability || {}, term);
+  });
+  ensureCompulsorySlots(term);
+  save('sm_ttslots', ttSlots);
+  renderTimetable();
+  showToast('Term ' + term + ' timetable generated ✓ (Maths/English/French enforced for F1–F5)');
+}
+
+function autoGenerateAllTerms() {
+  if (!confirm('Generate timetable for ALL 3 terms? This will replace existing slots for all terms.')) return;
+  ttSlots = [];
+  [1,2,3].forEach(function(term) {
+    teachers.forEach(function(t){
+      autoGenerateSlots(t.id, t.assignments || [], t.availability || {}, term);
+    });
+    ensureCompulsorySlots(term);
+  });
+  save('sm_ttslots', ttSlots);
+  renderTimetable();
+  showToast('All 3 terms generated ✓ — Maths, English, French enforced for F1–F5');
 }
 
 function renderTeachers() {
@@ -2588,16 +3135,35 @@ function renderTeachers() {
       .map(([day]) => `<span class="pill">${dayAbbr[day]}</span>`).join('');
 
     const assignments = (t.assignments || []).map(a =>
-      `<span class="pill pill-class">${a.cls}: <strong>${a.subject}</strong></span>`
+      `<span class="pill pill-class">${a.cls}: <strong>${a.subject}</strong> <span style="opacity:.7">(${a.periodsPerWeek||2}p/wk)</span></span>`
     ).join('');
 
-    // Count how many timetable slots this teacher has
-    const slotCount = ttSlots.filter(s => s.teacherId === t.id).length;
+    // Total periods/week planned from assignments (Classes & Subjects Taught)
+    const timeSlots     = loadTimeSlots();
+    const teachSlots    = timeSlots.filter(s => !s.isBreak);
+    const avgPeriodMins = teachSlots.length
+      ? teachSlots.reduce((sum, s) => sum + slotDurationMinutes(s), 0) / teachSlots.length
+      : 60;
+
+    const totalPeriodsPlanned = (t.assignments || []).reduce((sum, a) => sum + (a.periodsPerWeek || 2), 0);
+    const totalHrsPlanned = ((totalPeriodsPlanned * avgPeriodMins) / 60).toFixed(1);
+
+    // Actual placed slots on the timetable (may be less if not yet auto-generated)
+    const teacherSlots = ttSlots.filter(s => s.teacherId === t.id);
+    const slotCount = teacherSlots.length;
 
     return `<tr>
       <td>
         <strong>${t.fname} ${t.lname}</strong>
-        ${slotCount > 0 ? `<br><span style="font-size:.72rem;color:var(--muted)">${slotCount} slot${slotCount!==1?'s':''} on timetable</span>` : ''}
+        ${t.code ? `<br><span style="font-family:monospace;font-size:.75rem;background:var(--navy);color:#fff;padding:1px 6px;border-radius:4px">${t.code}</span>` : ''}
+        ${totalPeriodsPlanned > 0
+          ? `<br><span style="font-size:.72rem;color:var(--sky);font-weight:600">${totalPeriodsPlanned} periods/wk · ${totalHrsPlanned} hrs/week</span>`
+          : '<br><span style="font-size:.72rem;color:var(--muted)">No subjects assigned</span>'
+        }
+        ${slotCount > 0 && slotCount !== totalPeriodsPlanned
+          ? `<br><span style="font-size:.68rem;color:var(--muted)">${slotCount} of ${totalPeriodsPlanned} placed on timetable</span>`
+          : ''
+        }
       </td>
       <td><div class="pill-list">${assignments || '<span style="color:var(--muted);font-size:.8rem">None assigned</span>'}</div></td>
       <td><div class="pill-list">${activeDays || '<span style="color:var(--muted);font-size:.8rem">—</span>'}</div></td>
@@ -2778,7 +3344,20 @@ function recordPayment() {
   const amount    = parseFloat(document.getElementById('qp-amount').value);
   const type      = document.getElementById('qp-type').value;
   const term      = parseInt(document.getElementById('qp-term').value);
-  const receipt   = document.getElementById('qp-receipt').value.trim();
+  let   receipt   = document.getElementById('qp-receipt').value.trim();
+
+  // Auto-generate receipt number if empty, using school abbreviation + sequence
+  if (!receipt) {
+    const lh     = loadLH();
+    const school = lh.line1 || 'SCH';
+    // Build abbreviation from capitals in school name, max 4 chars
+    const abbr   = school.replace(/[^A-Z]/g,'').slice(0,4) || 'SCH';
+    const seq    = String(payments.length + 1).padStart(4, '0');
+    const yr     = new Date().getFullYear().toString().slice(-2);
+    receipt      = `${abbr}-${yr}-${seq}`;
+    document.getElementById('qp-receipt').value = receipt;
+  }
+
   if (!studentId || !amount || !receipt) return showToast('Please fill all payment fields');
   if (payments.find(p => p.receipt === receipt)) return showToast('Receipt number already exists');
   const today = new Date().toISOString().slice(0, 10);
@@ -2808,21 +3387,55 @@ function saveGrade() {
 
 // ── Teacher Modal Builder ─────────────────────────────────
 const DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-const PERIODS = [1,2,3,4,5,6,7,8];
-const ALL_CLASSES = ['Form 1A','Form 1B','Form 2A','Form 2B','Form 3A','Form 3B','Form 4A','Form 5A'];
-const ALL_SUBJECTS = ['Mathematics','English','Physics','Chemistry','Biology','Literature','History','Geography','Computer Science','Economics','French','Civic Education'];
+const ALL_CLASSES  = ['Form 1A','Form 1B','Form 2A','Form 2B','Form 3A','Form 3B','Form 4A','Form 5A'];
+const ALL_SUBJECTS = ['Mathematics','English','Physics','Chemistry','Biology','Literature','History','Geography','Computer Science','Economics','French','Civic Education','ICT','Technical Drawing','Mechanical Technology','Electrical Technology'];
+
+// ── Default time slots (admin-configurable) ───────────────
+const DEFAULT_TIMESLOTS = [
+  { id:1,  label:'1',  start:'07:00', end:'07:30', isBreak:false },
+  { id:2,  label:'2',  start:'07:30', end:'08:20', isBreak:false },
+  { id:3,  label:'3',  start:'08:20', end:'09:10', isBreak:false },
+  { id:4,  label:'4',  start:'09:10', end:'10:00', isBreak:false },
+  { id:5,  label:'5',  start:'10:00', end:'10:50', isBreak:false },
+  { id:6,  label:'B',  start:'10:50', end:'11:30', isBreak:true  },
+  { id:7,  label:'6',  start:'11:30', end:'12:20', isBreak:false },
+  { id:8,  label:'7',  start:'12:20', end:'13:10', isBreak:false },
+  { id:9,  label:'8',  start:'13:10', end:'14:00', isBreak:false },
+  { id:10, label:'L',  start:'14:00', end:'14:20', isBreak:true  },
+  { id:11, label:'9',  start:'14:20', end:'15:10', isBreak:false },
+  { id:12, label:'10', start:'15:10', end:'16:00', isBreak:false },
+  { id:13, label:'11', start:'16:00', end:'16:50', isBreak:false },
+];
+
+const MAX_TEACHING_PERIODS = 11;
+
+function loadTimeSlots() {
+  return load('sm_timeslots', DEFAULT_TIMESLOTS);
+}
+
+function getTeachingSlots() {
+  return loadTimeSlots().filter(s => !s.isBreak);
+}
+
+function slotDurationMinutes(slot) {
+  const [sh,sm] = slot.start.split(':').map(Number);
+  const [eh,em] = slot.end.split(':').map(Number);
+  return (eh * 60 + em) - (sh * 60 + sm);
+}
 
 function buildAvailGrid(availability) {
+  const slots = getTeachingSlots();
   const grid = document.getElementById('avail-grid');
+  if (!grid) return;
   grid.innerHTML = DAYS.map(day => {
     const active = (availability && availability[day]) || [];
     return `<div class="avail-day">
       <div class="avail-day-label">${day.slice(0,3)}</div>
-      ${PERIODS.map(p => {
-        const checked = active.includes(p) ? 'checked' : '';
-        return `<label class="period-check">
-          <input type="checkbox" data-day="${day}" data-period="${p}" ${checked} />
-          P${p}
+      ${slots.map(s => {
+        const checked = active.includes(s.id) ? 'checked' : '';
+        return `<label class="period-check" title="${s.start}–${s.end}">
+          <input type="checkbox" data-day="${day}" data-period="${s.id}" ${checked} />
+          ${s.start}
         </label>`;
       }).join('')}
     </div>`;
@@ -2832,28 +3445,34 @@ function buildAvailGrid(availability) {
 function buildAssignRows(assignments) {
   const container = document.getElementById('assign-rows');
   container.innerHTML = '';
-  const rows = (assignments && assignments.length) ? assignments : [{ cls: '', subject: '' }];
-  rows.forEach(a => addAssignRow(a.cls, a.subject));
+  const rows = (assignments && assignments.length) ? assignments : [{ cls: '', subject: '', periodsPerWeek: 2 }];
+  rows.forEach(a => addAssignRow(a.cls, a.subject, a.periodsPerWeek || 2));
 }
 
-function addAssignRow(cls = '', subject = '') {
+function addAssignRow(cls = '', subject = '', periods = 2) {
   const container = document.getElementById('assign-rows');
   const div = document.createElement('div');
   div.className = 'assign-row';
+  const classes  = loadCustomClasses();
+  const subjects = loadSubjects().filter(s => s !== 'PREPS');
   div.innerHTML = `
     <div class="form-group">
       <label>Class</label>
       <select class="ar-cls">
         <option value="">Select class…</option>
-        ${ALL_CLASSES.map(c => `<option value="${c}" ${c === cls ? 'selected' : ''}>${c}</option>`).join('')}
+        ${classes.map(c => `<option value="${c}" ${c === cls ? 'selected' : ''}>${c}</option>`).join('')}
       </select>
     </div>
     <div class="form-group">
       <label>Subject</label>
-      <select class="ar-subj">
+      <select class="ar-subj assign-subject-sel">
         <option value="">Select subject…</option>
-        ${ALL_SUBJECTS.map(s => `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`).join('')}
+        ${subjects.map(s => `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`).join('')}
       </select>
+    </div>
+    <div class="form-group" style="max-width:90px">
+      <label>Periods/Wk</label>
+      <input type="number" class="ar-periods" min="1" max="20" value="${periods}" style="width:100%" title="How many periods per week this teacher teaches this subject to this class" />
     </div>
     <button type="button" class="btn-icon btn-icon-remove" onclick="this.closest('.assign-row').remove()" title="Remove row">✕</button>
   `;
@@ -2877,7 +3496,9 @@ function getAssignmentsFromRows() {
   rows.forEach(row => {
     const cls  = row.querySelector('.ar-cls').value;
     const subj = row.querySelector('.ar-subj').value;
-    if (cls && subj) result.push({ cls, subject: subj });
+    const periodsInput = row.querySelector('.ar-periods');
+    const periodsPerWeek = periodsInput ? (parseInt(periodsInput.value) || 1) : 2;
+    if (cls && subj) result.push({ cls, subject: subj, periodsPerWeek });
   });
   return result;
 }
@@ -2886,12 +3507,14 @@ function openTeacherModal() {
   document.getElementById('t-id').value    = '';
   document.getElementById('t-fname').value = '';
   document.getElementById('t-lname').value = '';
+  document.getElementById('t-code').value  = '';
   document.getElementById('t-email').value = '';
   document.getElementById('t-phone').value = '';
   document.getElementById('teacher-modal-title').textContent = 'Add Teacher';
-  // Default all periods checked
+  // Default: all teaching periods available
   const defaultAvail = {};
-  DAYS.forEach(d => { defaultAvail[d] = [1,2,3,5,6,7,8]; });
+  const teachSlots = getTeachingSlots();
+  DAYS.forEach(d => { defaultAvail[d] = teachSlots.map(s => s.id); });
   buildAvailGrid(defaultAvail);
   buildAssignRows([]);
   document.getElementById('modal-teacher').classList.add('open');
@@ -2903,6 +3526,7 @@ function openEditTeacher(id) {
   document.getElementById('t-id').value    = t.id;
   document.getElementById('t-fname').value = t.fname;
   document.getElementById('t-lname').value = t.lname;
+  document.getElementById('t-code').value  = t.code || '';
   document.getElementById('t-email').value = t.email || '';
   document.getElementById('t-phone').value = t.phone || '';
   document.getElementById('teacher-modal-title').textContent = 'Edit Teacher';
@@ -2912,29 +3536,29 @@ function openEditTeacher(id) {
 }
 
 function saveTeacher() {
-  const id     = document.getElementById('t-id').value;
-  const fname  = document.getElementById('t-fname').value.trim();
-  const lname  = document.getElementById('t-lname').value.trim();
-  const email  = document.getElementById('t-email').value.trim();
-  const phone  = document.getElementById('t-phone').value.trim();
+  const id    = document.getElementById('t-id').value;
+  const fname = document.getElementById('t-fname').value.trim();
+  const lname = document.getElementById('t-lname').value.trim();
+  const code  = (document.getElementById('t-code').value || '').trim().toUpperCase();
+  const email = document.getElementById('t-email').value.trim();
+  const phone = document.getElementById('t-phone').value.trim();
 
   if (!fname || !lname) return showToast('Please enter first and last name');
 
-  const availability  = getAvailFromGrid();
-  const assignments   = getAssignmentsFromRows();
+  const availability = getAvailFromGrid();
+  const assignments  = getAssignmentsFromRows();
+  const term = parseInt(document.getElementById('tt-term')?.value || '1');
 
   if (id) {
-    // Edit existing
     const idx = teachers.findIndex(t => t.id === id);
     if (idx < 0) return;
-    teachers[idx] = { ...teachers[idx], fname, lname, email, phone, availability, assignments };
+    teachers[idx] = { ...teachers[idx], fname, lname, code, email, phone, availability, assignments };
     showToast('Teacher updated ✓');
   } else {
-    // Add new — auto-generate timetable slots from assignments + availability
     const newId = 'T' + Date.now();
-    teachers.push({ id: newId, fname, lname, email, phone, availability, assignments });
-    autoGenerateSlots(newId, assignments, availability);
-    showToast(`${fname} ${lname} added — timetable slots generated ✓`);
+    teachers.push({ id: newId, fname, lname, code, email, phone, availability, assignments });
+    autoGenerateSlots(newId, assignments, availability, term);
+    showToast(`${fname} ${lname} added ✓`);
   }
 
   save('sm_teachers', teachers);
@@ -2959,26 +3583,333 @@ function deleteTeacher(id) {
   showToast('Teacher removed');
 }
 
+// ══════════════════════════════════════════════════════════
+// EXPORT TEACHERS TO CSV / EXCEL
+// ══════════════════════════════════════════════════════════
+function exportTeachers(format) {
+  if (!teachers.length) return showToast('No teachers to export');
+
+  // Flatten: one row per class/subject assignment (same shape as import template)
+  const headers = ['First Name','Last Name','Code','Email','Phone','Class','Subject','Periods/Week'];
+  const rows = [];
+  teachers.forEach(t => {
+    const assigns = (t.assignments && t.assignments.length) ? t.assignments : [{ cls:'', subject:'', periodsPerWeek:'' }];
+    assigns.forEach(a => {
+      rows.push([
+        t.fname || '',
+        t.lname || '',
+        t.code  || '',
+        t.email || '',
+        t.phone || '',
+        a.cls     || '',
+        a.subject || '',
+        a.periodsPerWeek !== undefined ? a.periodsPerWeek : ''
+      ]);
+    });
+  });
+
+  const dateStr = new Date().toISOString().slice(0,10);
+
+  if (format === 'csv') {
+    const csv = [headers, ...rows]
+      .map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(','))
+      .join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `teachers_export_${dateStr}.csv`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } else {
+    // xlsx via SheetJS
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    ws['!cols'] = headers.map(h => ({ wch: Math.max(h.length, 12) }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Teachers');
+    XLSX.writeFile(wb, `teachers_export_${dateStr}.xlsx`);
+  }
+
+  showToast(`Exported ${teachers.length} teacher${teachers.length!==1?'s':''} (${rows.length} row${rows.length!==1?'s':''}) ✓`);
+}
+
+// ══════════════════════════════════════════════════════════
+// IMPORT TEACHERS FROM CSV / EXCEL
+// ══════════════════════════════════════════════════════════
+let _importParsedTeachers = []; // staged teachers ready to merge
+
+function openImportTeachersModal() {
+  // Reset state
+  document.getElementById('import-step-upload').style.display = 'block';
+  document.getElementById('import-step-preview').style.display = 'none';
+  document.getElementById('import-back-btn').style.display = 'none';
+  document.getElementById('import-confirm-btn').style.display = 'none';
+  document.getElementById('import-file-name').textContent = 'No file selected';
+  document.getElementById('import-file-input').value = '';
+  document.getElementById('import-warnings').innerHTML = '';
+  _importParsedTeachers = [];
+  document.getElementById('modal-import-teachers').classList.add('open');
+}
+
+function importGoBack() {
+  document.getElementById('import-step-upload').style.display = 'block';
+  document.getElementById('import-step-preview').style.display = 'none';
+  document.getElementById('import-back-btn').style.display = 'none';
+  document.getElementById('import-confirm-btn').style.display = 'none';
+}
+
+function downloadImportTemplate() {
+  const headers = ['First Name','Last Name','Code','Email','Phone','Class','Subject','Periods/Week'];
+  const sample = [
+    ['Mary','Bih','ENG 10','mary.bih@jatec.cm','677000001','F1','English','5'],
+    ['Mary','Bih','ENG 10','mary.bih@jatec.cm','677000001','F2','English','5'],
+    ['Peter','Nkwenti','MATHS 5','peter.nk@jatec.cm','677000002','F1','Mathematics','6'],
+  ];
+  const csv = [headers, ...sample].map(row => row.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'teachers_import_template.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function handleImportFileSelect(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  document.getElementById('import-file-name').textContent = file.name;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let rows;
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        // Parse CSV via SheetJS too (handles quotes/commas reliably)
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      } else {
+        const wb = XLSX.read(e.target.result, { type: 'binary' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      }
+      processImportRows(rows);
+    } catch (err) {
+      showToast('⛔ Could not read file: ' + err.message);
+    }
+  };
+  reader.readAsBinaryString(file);
+}
+
+// Find a value in a row regardless of header casing/spacing
+function _getCol(row, ...names) {
+  const keys = Object.keys(row);
+  for (const name of names) {
+    const norm = name.toLowerCase().replace(/[^a-z0-9]/g,'');
+    const found = keys.find(k => k.toLowerCase().replace(/[^a-z0-9]/g,'') === norm);
+    if (found !== undefined) return String(row[found]).trim();
+  }
+  return '';
+}
+
+function processImportRows(rows) {
+  if (!rows || !rows.length) { showToast('No rows found in file'); return; }
+
+  const teachSlots = getTeachingSlots().map(s => s.id);
+  const fullAvail = {};
+  DAYS.forEach(d => { fullAvail[d] = teachSlots.slice(); });
+
+  const merged = {}; // key: fname|lname -> teacher object
+  const warnings = [];
+
+  rows.forEach((row, idx) => {
+    const fname = _getCol(row,'First Name','Firstname','First','Fname');
+    const lname = _getCol(row,'Last Name','Lastname','Last','Lname','Surname');
+    if (!fname || !lname) { warnings.push(`Row ${idx+2}: missing first/last name — skipped`); return; }
+
+    const code  = _getCol(row,'Code','Teacher Code');
+    const email = _getCol(row,'Email');
+    const phone = _getCol(row,'Phone','Tel','Telephone');
+    const cls   = _getCol(row,'Class','Cls');
+    const subj  = _getCol(row,'Subject','Subj');
+    const periodsRaw = _getCol(row,'Periods/Week','Periods Per Week','Periods','PeriodsWeek');
+    const periodsPerWeek = parseInt(periodsRaw) || 2;
+
+    const key = (fname + '|' + lname).toLowerCase();
+    if (!merged[key]) {
+      merged[key] = {
+        id: 'imp' + Date.now() + Math.random().toString(36).slice(2,6),
+        code: code || '',
+        fname, lname,
+        email: email || '',
+        phone: phone || '',
+        availability: JSON.parse(JSON.stringify(fullAvail)),
+        assignments: []
+      };
+    } else {
+      // Fill in code/email/phone if not yet set
+      if (code  && !merged[key].code)  merged[key].code  = code;
+      if (email && !merged[key].email) merged[key].email = email;
+      if (phone && !merged[key].phone) merged[key].phone = phone;
+    }
+
+    if (cls && subj) {
+      merged[key].assignments.push({ cls, subject: subj, periodsPerWeek });
+    } else if (cls || subj) {
+      warnings.push(`Row ${idx+2} (${fname} ${lname}): both Class and Subject needed to create an assignment — skipped assignment`);
+    }
+  });
+
+  _importParsedTeachers = Object.values(merged);
+
+  // Validate against existing classes/subjects, warn but don't block
+  const knownClasses = loadCustomClasses();
+  const knownSubjects = loadSubjects();
+  _importParsedTeachers.forEach(t => {
+    t.assignments.forEach(a => {
+      if (!knownClasses.includes(a.cls)) warnings.push(`"${a.cls}" is not a known class (will still be imported — add it under Settings → Custom Classes if needed)`);
+      if (!knownSubjects.includes(a.subject)) warnings.push(`"${a.subject}" is not a known subject (will still be imported — add it under Settings → Subjects if needed)`);
+    });
+    // Check total periods/week
+    const total = t.assignments.reduce((s,a) => s + (a.periodsPerWeek||2), 0);
+    if (total > 15) warnings.push(`${t.fname} ${t.lname}: total ${total} periods/week exceeds the recommended 15/week max`);
+  });
+
+  renderImportPreview(warnings);
+}
+
+function renderImportPreview(warnings) {
+  document.getElementById('import-step-upload').style.display = 'none';
+  document.getElementById('import-step-preview').style.display = 'block';
+  document.getElementById('import-back-btn').style.display = 'inline-flex';
+  document.getElementById('import-confirm-btn').style.display = 'inline-flex';
+
+  const teachers_ = _importParsedTeachers;
+  document.getElementById('import-summary').innerHTML =
+    `Found <strong>${teachers_.length}</strong> teacher${teachers_.length!==1?'s':''} ` +
+    `with <strong>${teachers_.reduce((s,t)=>s+t.assignments.length,0)}</strong> class/subject assignment(s).`;
+
+  document.getElementById('import-preview-head').innerHTML =
+    '<tr><th style="padding:6px 8px;text-align:left">Name</th><th style="padding:6px 8px">Code</th>' +
+    '<th style="padding:6px 8px;text-align:left">Email</th><th style="padding:6px 8px">Phone</th>' +
+    '<th style="padding:6px 8px;text-align:left">Assignments</th><th style="padding:6px 8px">Total P/Wk</th></tr>';
+
+  document.getElementById('import-preview-body').innerHTML = teachers_.map(t => {
+    const total = t.assignments.reduce((s,a) => s + (a.periodsPerWeek||2), 0);
+    const assignStr = t.assignments.length
+      ? t.assignments.map(a => `${a.cls}: ${a.subject} (${a.periodsPerWeek}p)`).join('<br>')
+      : '<span style="color:var(--muted)">none</span>';
+    return `<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:6px 8px"><strong>${t.fname} ${t.lname}</strong></td>
+      <td style="padding:6px 8px;text-align:center;font-family:monospace">${t.code||'—'}</td>
+      <td style="padding:6px 8px">${t.email||'—'}</td>
+      <td style="padding:6px 8px;text-align:center">${t.phone||'—'}</td>
+      <td style="padding:6px 8px">${assignStr}</td>
+      <td style="padding:6px 8px;text-align:center;font-weight:700;color:${total>15?'#cc3300':'inherit'}">${total}</td>
+    </tr>`;
+  }).join('');
+
+  const wEl = document.getElementById('import-warnings');
+  if (warnings.length) {
+    const unique = [...new Set(warnings)];
+    wEl.innerHTML = '⚠ <strong>' + unique.length + ' notice(s):</strong><br>' + unique.slice(0,10).map(w => '• ' + w).join('<br>') +
+      (unique.length > 10 ? `<br>…and ${unique.length-10} more` : '');
+  } else {
+    wEl.innerHTML = '';
+  }
+}
+
+function confirmImportTeachers() {
+  if (!_importParsedTeachers.length) return;
+
+  let added = 0, mergedExisting = 0;
+  _importParsedTeachers.forEach(imp => {
+    // Check if a teacher with same first+last name already exists
+    const existing = teachers.find(t =>
+      t.fname.toLowerCase() === imp.fname.toLowerCase() &&
+      t.lname.toLowerCase() === imp.lname.toLowerCase()
+    );
+    if (existing) {
+      // Merge: append new assignments, fill blanks
+      if (imp.code  && !existing.code)  existing.code  = imp.code;
+      if (imp.email && !existing.email) existing.email = imp.email;
+      if (imp.phone && !existing.phone) existing.phone = imp.phone;
+      existing.assignments = existing.assignments || [];
+      imp.assignments.forEach(a => {
+        const dup = existing.assignments.find(x => x.cls===a.cls && x.subject===a.subject);
+        if (!dup) existing.assignments.push(a);
+      });
+      mergedExisting++;
+    } else {
+      teachers.push(imp);
+      added++;
+    }
+  });
+
+  save('sm_teachers', teachers);
+
+  // Auto-add any unknown classes/subjects encountered
+  const knownClasses = loadCustomClasses();
+  const knownSubjects = loadSubjects();
+  let clsChanged = false, subChanged = false;
+  _importParsedTeachers.forEach(t => t.assignments.forEach(a => {
+    if (!knownClasses.includes(a.cls)) { knownClasses.push(a.cls); clsChanged = true; }
+    if (!knownSubjects.includes(a.subject)) { knownSubjects.push(a.subject); subChanged = true; }
+  }));
+  if (clsChanged) save('sm_custom_classes', knownClasses);
+  if (subChanged) save('sm_subjects', knownSubjects);
+
+  closeModal('modal-import-teachers');
+  populateAllClassDropdowns();
+  populateAllSubjectDropdowns();
+  renderAll();
+  showToast(`Import complete ✓ — ${added} new teacher${added!==1?'s':''} added, ${mergedExisting} merged into existing`);
+}
+
 // ── Auto-generate timetable from assignments + availability ──
-function autoGenerateSlots(teacherId, assignments, availability) {
-  const term = 1; // default term
-  assignments.forEach(({ cls, subject }) => {
+function autoGenerateSlots(teacherId, assignments, availability, term) {
+  term = term || 1;
+  const teachSlots = getTeachingSlots();
+  assignments.forEach(function({ cls, subject, periodsPerWeek }) {
+    const target = periodsPerWeek || 2;
     let placed = 0;
+    // Pass 1: spread across distinct days (max 1 per day)
     for (const day of DAYS) {
-      if (placed >= 2) break; // max 2 sessions/week per class-subject
-      const availPeriods = availability[day] || [];
-      for (const period of availPeriods) {
-        if (period === 4) continue; // skip break
-        // Check no clash: teacher not already placed, class not already placed
-        const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.period === period && s.term === term);
-        const classBusy   = ttSlots.find(s => s.cls === cls && s.day === day && s.period === period && s.term === term);
-        if (!teacherBusy && !classBusy) {
-          ttSlots.push({
-            id: 'tt' + Date.now() + Math.random().toString(36).slice(2,6),
-            cls, day, period, teacherId, subject, term
-          });
+      if (placed >= target) break;
+      const availSlotIds = (availability[day] || []);
+      for (const slotId of availSlotIds) {
+        const slot = teachSlots.find(s => s.id === slotId);
+        if (!slot) continue;
+        const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
+        const classBusy   = ttSlots.find(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
+        const slotFull    = ttSlots.filter(s => s.day === day && s.slotId === slotId && s.term === term).length >= 3;
+        const coreConf    = isCoreSubject(subject) && coreSubjectConflict(day, slotId, term, subject);
+        if (!teacherBusy && !classBusy && !slotFull && !coreConf) {
+          ttSlots.push({ id:'tt'+Date.now()+Math.random().toString(36).slice(2,5), cls, day, slotId, teacherId, subject, term });
           placed++;
           break;
+        }
+      }
+    }
+    // Pass 2: if target not yet reached (periodsPerWeek > 5), allow a second slot on the same day
+    if (placed < target) {
+      for (const day of DAYS) {
+        if (placed >= target) break;
+        const availSlotIds = (availability[day] || []);
+        for (const slotId of availSlotIds) {
+          const slot = teachSlots.find(s => s.id === slotId);
+          if (!slot) continue;
+          // Skip if this exact day+slot already used for this cls+subject (avoid duplicate same slot)
+          const alreadyUsedThisCombo = ttSlots.some(s => s.teacherId===teacherId && s.cls===cls && s.subject===subject && s.day===day && s.slotId===slotId && s.term===term);
+          if (alreadyUsedThisCombo) continue;
+          const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
+          const classBusy   = ttSlots.find(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
+          const slotFull    = ttSlots.filter(s => s.day === day && s.slotId === slotId && s.term === term).length >= 3;
+          const coreConf    = isCoreSubject(subject) && coreSubjectConflict(day, slotId, term, subject);
+          if (!teacherBusy && !classBusy && !slotFull && !coreConf) {
+            ttSlots.push({ id:'tt'+Date.now()+Math.random().toString(36).slice(2,5), cls, day, slotId, teacherId, subject, term });
+            placed++;
+            break;
+          }
         }
       }
     }
@@ -2993,19 +3924,22 @@ function removeTTSlot(id) {
   showToast('Slot removed');
 }
 
-function openTTAssign(cls, day, period, term) {
+function openTTAssign(cls, day, slotId, term) {
+  slotId = parseInt(slotId);
+  const slot = loadTimeSlots().find(s => s.id === slotId);
   document.getElementById('tta-class').value  = cls;
   document.getElementById('tta-day').value    = day;
-  document.getElementById('tta-period').value = period;
-  document.getElementById('tt-assign-title').textContent = `Assign: ${cls} — ${day} Period ${period}`;
+  document.getElementById('tta-period').value = slotId;
+  document.getElementById('tta-term').value   = term;
+  const slotLabel = slot ? `${slot.label} (${slot.start}–${slot.end})` : `Slot ${slotId}`;
+  document.getElementById('tt-assign-title').textContent = `Assign: ${cls} — ${day} ${slotLabel}`;
 
-  // Populate teacher dropdown — only teachers available this day/period
   const tSel = document.getElementById('tta-teacher');
   tSel.innerHTML = '<option value="">Select teacher…</option>' +
     teachers
-      .filter(t => (t.availability[day] || []).includes(period))
+      .filter(t => (t.availability[day] || []).includes(slotId))
       .map(t => {
-        const busy = ttSlots.find(s => s.teacherId === t.id && s.day === day && s.period === period && s.term === term);
+        const busy = ttSlots.find(s => s.teacherId === t.id && s.day === day && s.slotId === slotId && s.term === term);
         return `<option value="${t.id}" ${busy ? 'disabled' : ''}>${t.fname} ${t.lname}${busy ? ' (busy)' : ''}</option>`;
       }).join('');
 
@@ -3015,62 +3949,97 @@ function openTTAssign(cls, day, period, term) {
 }
 
 function filterTeacherSubjects() {
-  const tid  = document.getElementById('tta-teacher').value;
-  const cls  = document.getElementById('tta-class').value;
-  const day  = document.getElementById('tta-day').value;
-  const period = parseInt(document.getElementById('tta-period').value);
-  const term = parseInt(document.getElementById('tt-term')?.value || '1');
+  const tid    = document.getElementById('tta-teacher').value;
+  const cls    = document.getElementById('tta-class').value;
+  const day    = document.getElementById('tta-day').value;
+  const slotId = parseInt(document.getElementById('tta-period').value);
+  const term   = parseInt(document.getElementById('tta-term')?.value || document.getElementById('tt-term')?.value || '1');
 
   const subSel = document.getElementById('tta-subject');
   subSel.innerHTML = '<option value="">Select subject…</option>';
-
   if (!tid) return;
   const t = teachers.find(x => x.id === tid);
   if (!t) return;
 
-  // Only subjects this teacher is assigned to teach in this class
   const relevantAssignments = (t.assignments || []).filter(a => a.cls === cls);
-  if (relevantAssignments.length === 0) {
-    // Fall back to all subjects this teacher teaches
-    const allSubjects = [...new Set((t.assignments || []).map(a => a.subject))];
-    allSubjects.forEach(s => {
-      subSel.innerHTML += `<option value="${s}">${s}</option>`;
-    });
-  } else {
-    relevantAssignments.forEach(a => {
-      subSel.innerHTML += `<option value="${a.subject}">${a.subject}</option>`;
-    });
-  }
+  const subjects = relevantAssignments.length
+    ? relevantAssignments.map(a => a.subject)
+    : loadSubjects().filter(s => s !== 'PREPS');
 
-  // Conflict check
+  subjects.forEach(subj => {
+    // Check if this compulsory subject is already taken at this slot by another class
+    const takenBy = compulsoryTaken(day, slotId, term, subj, cls);
+    // Check no-pair conflict with existing slots
+    const noPairConf = coreSubjectConflict(day, slotId, term, subj);
+    const label = takenBy
+      ? `${subj} — ⚠ TAKEN (${takenBy})`
+      : noPairConf
+        ? `${subj} — 🚫 conflicts with another subject`
+        : subj;
+    const opt = document.createElement('option');
+    opt.value = subj;
+    opt.textContent = label;
+    if (takenBy || noPairConf) {
+      opt.style.color = takenBy ? '#cc3300' : '#888';
+      opt.style.fontWeight = takenBy ? '700' : 'normal';
+      // Don't disable — admin may still want to override — just warn
+    }
+    subSel.appendChild(opt);
+  });
+
   const note = document.getElementById('tta-conflict-note');
-  const teacherBusy = ttSlots.find(s => s.teacherId === tid && s.day === day && s.period === period && s.term === term);
+  const teacherBusy = ttSlots.find(s => s.teacherId === tid && s.day === day && s.slotId === slotId && s.term === term);
   if (teacherBusy) {
     note.style.display = 'block';
+    note.style.color = '#cc3300';
     note.textContent = `⚠ This teacher is already assigned to ${teacherBusy.cls} (${teacherBusy.subject}) at this slot.`;
   } else {
-    note.style.display = 'none';
+    // Check if any compulsory subjects are taken at this slot for this class
+    const takenCompulsory = COMPULSORY_SUBJECTS.filter(s => compulsoryTaken(day, slotId, term, s, cls));
+    if (takenCompulsory.length && COMPULSORY_CLASSES.includes(cls)) {
+      note.style.display = 'block';
+      note.style.color = '#b85c00';
+      note.textContent = `ℹ️ Compulsory subjects already plotted at this slot for another class: ${takenCompulsory.join(', ')}. They show "TAKEN" in the subject list.`;
+    } else {
+      note.style.display = 'none';
+    }
   }
 }
 
 function confirmTTAssign() {
-  const cls      = document.getElementById('tta-class').value;
-  const day      = document.getElementById('tta-day').value;
-  const period   = parseInt(document.getElementById('tta-period').value);
-  const teacherId= document.getElementById('tta-teacher').value;
-  const subject  = document.getElementById('tta-subject').value;
-  const term     = parseInt(document.getElementById('tt-term')?.value || '1');
+  const cls       = document.getElementById('tta-class').value;
+  const day       = document.getElementById('tta-day').value;
+  const slotId    = parseInt(document.getElementById('tta-period').value);
+  const teacherId = document.getElementById('tta-teacher').value;
+  const subject   = document.getElementById('tta-subject').value;
+  const term      = parseInt(document.getElementById('tta-term')?.value || document.getElementById('tt-term')?.value || '1');
 
   if (!teacherId || !subject) return showToast('Please select a teacher and subject');
 
-  // Final conflict check
-  const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.period === period && s.term === term);
-  if (teacherBusy) return showToast('This teacher is already assigned at this slot');
+  // V1: teacher already busy at this slot
+  const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
+  if (teacherBusy) return showToast(`⛔ This teacher is already teaching ${teacherBusy.cls} at this slot`);
 
-  ttSlots.push({
-    id: 'tt' + Date.now(),
-    cls, day, period, teacherId, subject, term
-  });
+  // V2: class already has a subject in this slot
+  const classBusy = ttSlots.find(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
+  if (classBusy) return showToast(`⛔ ${cls} already has ${classBusy.subject} in this slot`);
+
+  // V3: max 3 subjects per slot
+  const slotCount = ttSlots.filter(s => s.day === day && s.slotId === slotId && s.term === term).length;
+  if (slotCount >= 3) return showToast('⛔ Maximum 3 subjects can run simultaneously in one period');
+
+  // V4: no-pair conflict
+  if (coreSubjectConflict(day, slotId, term, subject)) {
+    return showToast(`⛔ "${subject}" conflicts with a subject already in this slot (no-pair rule)`);
+  }
+
+  // V5: TAKEN warning for compulsory subject in F1-F5 — warn but allow proceed
+  const takenBy = compulsoryTaken(day, slotId, term, subject, cls);
+  if (takenBy) {
+    if (!confirm(`⚠️ "${subject}" is a compulsory subject and is already plotted for ${takenBy} at this slot.\n\nThis may cause a scheduling conflict. Proceed anyway?`)) return;
+  }
+
+  ttSlots.push({ id: 'tt' + Date.now(), cls, day, slotId, teacherId, subject, term });
   save('sm_ttslots', ttSlots);
   closeModal('modal-tt-assign');
   renderTimetable();
@@ -3081,233 +4050,27 @@ function confirmTTAssign() {
 
 // ── Report Card ───────────────────────────────────────────
 function generateReport() {
-  const sid         = document.getElementById('report-student').value;
+  const mode        = document.getElementById('report-mode')?.value || 'individual';
   const term        = parseInt(document.getElementById('report-term').value || '1');
   const classMaster = (document.getElementById('report-classteacher')?.value || '').trim();
   const enrolled    = parseInt(document.getElementById('report-enrolled')?.value || '40');
-  if (!sid) return showToast('Select a student first');
-  const s = students.find(x => x.id === sid);
-  if (!s) return;
 
-  const lh  = loadLH();
-  const termLabel = ['First','Second','Third'][term - 1] || 'First';
-
-  // Load mark-sheet data for this student
-  // We'll pull from all subjects across two sequences and the term average
-  // Marks keyed as sm_marks_{sid}_{subject}_{term}
-  // Subject groups as seen on the JATEC card:
-  const SUBJECT_GROUPS = [
-    {
-      label: 'PROFESSIONAL SUBJECTS',
-      subjects: ['Materials','Mechanical Technology','Mechanical Drawing','Praticals',
-                 'Electrical and Electronic Technology','Textile Technology','Building Technology',
-                 'Technical Drawing','CJ Technology']
-    },
-    {
-      label: 'GENERAL SUBJECTS',
-      subjects: ['English','French','Mathematics','Engineering Science','Chemistry',
-                 'Economic Geography','Industrial Computing','Law and Government',
-                 'Entrepreneurship','Physical Education','Manual Labour']
-    },
-    {
-      label: 'HUMAN CAPACITIES',
-      subjects: ['Civics','Life Skills']
-    }
-  ];
-
-  // Build subject rows from saved marks
-  let allRows = [];
-  let grandTotal = 0;
-  let totalCoeff = 0;
-
-  const groupSections = SUBJECT_GROUPS.map(grp => {
-    let grpRows = [];
-    let grpTotal = 0; let grpCoeff = 0;
-    grp.subjects.forEach(subj => {
-      const key = 'sm_marks_' + sid + '_' + subj.replace(/\s+/g,'_') + '_' + term;
-      const m = load(key, null);
-      if (!m || (m.ca === '' && m.exam === '')) return; // skip empty
-      const ca   = m.ca   !== '' ? parseFloat(m.ca)   : null;
-      const exam = m.exam !== '' ? parseFloat(m.exam) : null;
-      const coeff= parseFloat(m.coeff || 2);
-      const t100 = (ca !== null && exam !== null) ? ca + exam : null;
-      const t20  = t100 !== null ? (t100 / 100 * 20) : null;
-      const gt   = t20  !== null ? t20 * coeff : null;
-      if (gt !== null) { grpTotal += gt; grpCoeff += coeff; }
-      grpRows.push({ subj, ca, exam, coeff, t100, t20, gt });
-    });
-    grandTotal += grpTotal;
-    totalCoeff += grpCoeff;
-    return { label: grp.label, rows: grpRows, total: grpTotal, coeff: grpCoeff };
-  });
-
-  const overallAvg = totalCoeff > 0 ? (grandTotal / totalCoeff).toFixed(2) : '—';
-  const termNames = ['Term 1','Term 2','Term 3'];
-
-  // Photo
-  const photoHtml = s.photo
-    ? `<img src="${s.photo}" alt="Photo" />`
-    : `<div class="rc-photo-placeholder">📷<br>No Photo</div>`;
-
-  // DOB format
-  const dobStr = s.dob ? new Date(s.dob).toLocaleDateString('en-GB') : '—';
-
-  // Build subject table rows
-  const tableRows = groupSections.map(grp => {
-    if (grp.rows.length === 0) return '';
-    const headerRow = `<tr class="group-header"><td colspan="10">${grp.label}<span style="float:right;font-size:.65rem;font-weight:400">Coeff: ${grp.coeff}</span></td></tr>`;
-    const dataRows = grp.rows.map((r,idx) => {
-      const caClass  = r.ca   !== null && r.ca   < 10 ? 'rc-score-red' : '';
-      const exClass  = r.exam !== null && r.exam < 35 ? 'rc-score-red' : '';
-      return `<tr>
-        <td style="text-align:center;color:#666;font-size:.68rem">${idx+1}</td>
-        <td style="text-align:left">${r.subj}</td>
-        <td>${r.coeff.toFixed(2)}</td>
-        <td class="${caClass}">${r.ca !== null ? r.ca.toFixed(2) : '—'}</td>
-        <td class="${exClass}">${r.exam !== null ? r.exam.toFixed(2) : '—'}</td>
-        <td>${r.t100 !== null ? r.t100.toFixed(2) : '—'}</td>
-        <td>${r.t20 !== null ? r.t20.toFixed(2) : '—'}</td>
-        <td>${r.gt !== null ? r.gt.toFixed(2) : '—'}</td>
-        <td>—</td>
-        <td>—</td>
-      </tr>`;
-    }).join('');
-    const totalRow = grp.rows.length > 0 ? `<tr class="group-total">
-      <td colspan="2" style="text-align:right">Group Total</td>
-      <td>${grp.coeff}</td>
-      <td colspan="4"></td>
-      <td>${grp.total.toFixed(2)}</td>
-      <td colspan="2">Avg: ${grp.coeff > 0 ? (grp.total/grp.coeff).toFixed(2) : '—'}</td>
-    </tr>` : '';
-    return headerRow + dataRows + totalRow;
-  }).join('');
-
-  document.getElementById('report-output').innerHTML = `
-  <div class="rc">
-
-    <!-- Bilingual Header -->
-    <div class="rc-header">
-      <div class="rc-header-left">
-        REPUBLIQUE DU CAMEROUN<br>
-        Paix - Travail - Patrie<br>
-        Ministère des Enseignements Secondaires<br>
-        Délégation Régionale du Centre<br>
-        Délégation Départementale du Mfoundi<br>
-        <strong>ST JOSEPH'S FOUNDATION ANGLO-SAXON<br>TECHNICAL COLLEGE (ST. JATEC)</strong>
-        <div><span class="rc-year-badge">Année scolaire 2025-2026</span></div>
-      </div>
-      <div class="rc-header-center">
-        ${lh.logo ? `<img src="${lh.logo}" alt="Logo" />` : '<div style="width:70px;height:70px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#aaa;text-align:center">School<br>Logo</div>'}
-      </div>
-      <div class="rc-header-right">
-        REPUBLIC OF CAMEROON<br>
-        Peace - Work - Fatherland<br>
-        Ministry of Secondary Education<br><br>
-        ST JOSEPH'S FOUNDATION ANGLO-SAXON<br>TECHNICAL COLLEGE (ST. JATEC)
-        <div><span class="rc-year-badge">Academic Year 2025-2026</span></div>
-      </div>
-    </div>
-
-    <div class="rc-contact">
-      Tel: 673900245 / 677956018 / 650186262 / 677133702 &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE
-    </div>
-
-    <!-- Term Title -->
-    <div class="rc-title-bar">${termLabel} Term Report Card</div>
-
-    <!-- Student Info + Photo -->
-    <div class="rc-info">
-      <div class="rc-info-fields">
-        <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div>
-        <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div>
-      </div>
-      <div class="rc-photo-box">${photoHtml}</div>
-    </div>
-
-    <!-- Marks Table -->
-    <table class="rc-table">
-      <thead>
-        <tr>
-          <th style="width:24px">#</th>
-          <th style="text-align:left;min-width:140px">Subject</th>
-          <th>Coef</th>
-          <th>Seq 1</th>
-          <th>Seq 2</th>
-          <th>Term</th>
-          <th>Total</th>
-          <th>Rank</th>
-          <th>Range</th>
-          <th>Appreciation</th>
-        </tr>
-      </thead>
-      <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term. Enter marks in the Class List page first.</td></tr>'}</tbody>
-    </table>
-
-    <!-- Summary Bar -->
-    <div class="rc-summary-bar">
-      <span>STUDENT RESULT: <strong style="font-size:1rem">${totalCoeff.toFixed(2)}</strong></span>
-      <span>TOTAL: <strong style="font-size:1rem">${grandTotal.toFixed(2)}</strong></span>
-      <span>AVERAGE: <strong style="font-size:1.1rem">${overallAvg}</strong></span>
-      <span>RANK: <strong>—</strong></span>
-    </div>
-
-    <!-- Bottom: Class Profile | Discipline | Academic Appreciation -->
-    <div class="rc-bottom">
-      <div>
-        <span class="rc-bottom-title">CLASS PROFILE</span>
-        <table>
-          <tr><td>Avg of 1st Student</td><td>—</td></tr>
-          <tr><td>Avg of last Student</td><td>—</td></tr>
-          <tr><td>Class Average</td><td>—</td></tr>
-          <tr><td>N° with Average</td><td>—</td></tr>
-          <tr><td>% Passed</td><td>—</td></tr>
-          <tr><td>% Failed</td><td>—</td></tr>
-        </table>
-      </div>
-      <div>
-        <span class="rc-bottom-title">DISCIPLINE</span>
-        <table>
-          <tr><td>Unjustified Absences</td><td></td></tr>
-          <tr><td>Justified Absences</td><td></td></tr>
-          <tr><td>Late coming</td><td></td></tr>
-          <tr><td>Punishments</td><td></td></tr>
-          <tr><td>Warnings</td><td></td></tr>
-          <tr><td>Disciplinary Council</td><td></td></tr>
-        </table>
-      </div>
-      <div>
-        <span class="rc-bottom-title">ACADEMIC APPRECIATION</span>
-        <table>
-          <tr><td>Distinction</td><td></td></tr>
-          <tr><td>Honour Roll</td><td></td></tr>
-          <tr><td>Merit</td><td></td></tr>
-          <tr><td>Passed</td><td>${parseFloat(overallAvg) >= 10 ? 'Yes' : '—'}</td></tr>
-          <tr><td>Failed</td><td>${parseFloat(overallAvg) < 10 ? 'Yes' : 'No'}</td></tr>
-          <tr><td>Absent</td><td></td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- Signature row -->
-    <div class="rc-sigs">
-      <div>
-        <div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div>
-      </div>
-      <div>
-        <div class="rc-sig-label">Discipline Master's Observation/Signature</div>
-      </div>
-      <div>
-        <div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div>
-      </div>
-    </div>
-
-  </div>`;
+  if (mode === 'class') {
+    const cls = document.getElementById('report-class-sel')?.value;
+    if (!cls) return showToast('Select a class first');
+    const classStudents = students.filter(s => s.cls === cls)
+      .sort((a,b) => (a.lname+a.fname).localeCompare(b.lname+b.fname));
+    if (classStudents.length === 0) return showToast('No students found in this class');
+    document.getElementById('report-output').innerHTML =
+      classStudents.map(s => buildReportCardHTML(s, term, classMaster, enrolled)).join('');
+    showToast(`${classStudents.length} report cards generated ✓`);
+  } else {
+    const sid = document.getElementById('report-student').value;
+    if (!sid) return showToast('Select a student first');
+    const s = students.find(x => x.id === sid);
+    if (!s) return;
+    document.getElementById('report-output').innerHTML = buildReportCardHTML(s, term, classMaster, enrolled);
+  }
 }
 
 // ── Modal Helpers ─────────────────────────────────────────
@@ -3341,98 +4104,170 @@ function showToast(msg) {
 // ══════════════════════════════════════════════════════════
 
 function loadLH() {
-  return load('sm_letterhead', { line1:'', line2:'', line3:'', line4:'', fr1:'', fr2:'', fr3:'', fr4:'', logo:'' });
+  var raw = load('sm_letterhead', null);
+  if (!raw) {
+    // Brand new — return defaults
+    return { line1:'', line2:'', line3:'', fr1:'', fr2:'', fr3:'', logo:'' };
+  }
+  // Migrate from older key schemas (logoLeft/logoRight → logo; line4/fr4 → ignored)
+  var migrated = false;
+  if (raw.logoLeft !== undefined || raw.logoRight !== undefined) {
+    raw.logo = raw.logoLeft || raw.logoRight || raw.logo || '';
+    delete raw.logoLeft; delete raw.logoRight;
+    migrated = true;
+  }
+  // Ensure all expected keys exist
+  ['line1','line2','line3','fr1','fr2','fr3','logo'].forEach(function(k) {
+    if (raw[k] === undefined) { raw[k] = ''; migrated = true; }
+  });
+  if (migrated) save('sm_letterhead', raw);
+  return raw;
+}
+
+function _lhLeftHtml(lh) {
+  // Full government + school block (left side — English / French government text)
+  var lines = [lh.line1, lh.line2, lh.line3].filter(Boolean);
+  if (!lines.length) return '';
+  return lines.map(function(l, i) {
+    return '<div style="font-weight:'+(i===0?'800':'500')+';font-size:'+(i===0?'.82rem':'.72rem')+';line-height:1.5">'+l+'</div>';
+  }).join('');
+}
+
+function _lhRightHtml(lh) {
+  var lines = [lh.fr1, lh.fr2, lh.fr3].filter(Boolean);
+  if (!lines.length) return '';
+  return lines.map(function(l, i) {
+    return '<div style="font-weight:'+(i===0?'800':'500')+';font-size:'+(i===0?'.82rem':'.72rem')+';line-height:1.5">'+l+'</div>';
+  }).join('');
+}
+
+function buildLHHtml(lh) {
+  // Full bilingual header matching the report card layout
+  var leftBlock =
+    '<div style="font-size:.68rem;line-height:1.55;color:#1a3a5c">' +
+      '<div>REPUBLIQUE DU CAMEROUN</div>' +
+      '<div>Paix - Travail - Patrie</div>' +
+      '<div>Ministère des Enseignements Secondaires</div>' +
+      '<div>Délégation Régionale du Centre</div>' +
+      '<div>Délégation Départementale du Mfoundi</div>' +
+      (lh.line1 ? '<div style="font-weight:800;margin-top:3px">' + lh.line1 + '</div>' : '') +
+      (lh.line2 ? '<div style="font-weight:700;font-size:.65rem">' + lh.line2 + '</div>' : '') +
+      (lh.line3 ? '<div style="font-size:.63rem;color:#555">' + lh.line3 + '</div>' : '') +
+      '<div style="margin-top:4px"><span style="background:#1a3a5c;color:#fff;font-size:.62rem;padding:2px 8px;border-radius:10px">Année scolaire 2025-2026</span></div>' +
+    '</div>';
+
+  var rightBlock =
+    '<div style="font-size:.68rem;line-height:1.55;color:#1a3a5c;text-align:right">' +
+      '<div>REPUBLIC OF CAMEROON</div>' +
+      '<div>Peace - Work - Fatherland</div>' +
+      '<div>Ministry of Secondary Education</div>' +
+      '<div>&nbsp;</div>' +
+      '<div>&nbsp;</div>' +
+      (lh.fr1 ? '<div style="font-weight:800;margin-top:3px">' + lh.fr1 + '</div>' : '') +
+      (lh.fr2 ? '<div style="font-weight:700;font-size:.65rem">' + lh.fr2 + '</div>' : '') +
+      (lh.fr3 ? '<div style="font-size:.63rem;color:#555">' + lh.fr3 + '</div>' : '') +
+      '<div style="margin-top:4px"><span style="background:#1a3a5c;color:#fff;font-size:.62rem;padding:2px 8px;border-radius:10px">Academic Year 2025-2026</span></div>' +
+    '</div>';
+
+  var centerBlock =
+    '<div style="text-align:center">' +
+      (lh.logo
+        ? '<img src="'+lh.logo+'" style="max-height:76px;max-width:96px;object-fit:contain;display:block;margin:0 auto">'
+        : '<div style="width:72px;height:72px;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#aaa;margin:0 auto">Logo</div>'
+      ) +
+    '</div>';
+
+  return '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;' +
+    'padding:8px 0 10px;border-bottom:3px double #1a3a5c;margin-bottom:12px;-webkit-print-color-adjust:exact;print-color-adjust:exact">' +
+    leftBlock + centerBlock + rightBlock +
+    '</div>';
 }
 
 function applyLHToPage() {
   var lh = loadLH();
-  // Populate settings fields if on settings page
-  ['line1','line2','line3','line4','fr1','fr2','fr3','fr4'].forEach(function(k) {
-    var el = document.getElementById('lh-' + k);
-    if (el) el.value = lh[k] || '';
+
+  // Populate settings text fields
+  ['line1','line2','line3','fr1','fr2','fr3'].forEach(function(k) {
+    var el = document.getElementById('lh-'+k); if(el) el.value = lh[k]||'';
   });
-  // Update live letterhead elements
-  var leftLines  = [lh.line1, lh.line2, lh.line3, lh.line4].filter(Boolean);
-  var rightLines = [lh.fr1, lh.fr2, lh.fr3, lh.fr4].filter(Boolean);
-  var leftHtml   = leftLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
-  var rightHtml  = rightLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
-  ['lh-left-display','lh-prev-left'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.innerHTML = leftHtml;
-  });
-  ['lh-right-display','lh-prev-right'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.innerHTML = rightHtml;
-  });
-  // Logo
-  ['lh-logo-display','lh-prev-logo','logo-preview-img'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (lh.logo) { el.src = lh.logo; el.style.display = 'block'; }
-    else { el.src = ''; el.style.display = 'none'; }
-  });
+
+  // Update settings logo upload zone preview
+  var pi = document.getElementById('logo-preview-img');
+  if(pi) { if(lh.logo){pi.src=lh.logo;pi.style.display='block';}else{pi.src='';pi.style.display='none';} }
   var hint = document.getElementById('logo-upload-hint');
-  if (hint) hint.style.display = lh.logo ? 'none' : '';
+  if(hint) hint.style.display = lh.logo?'none':'';
+
+  // Update settings preview box with full bilingual layout
+  var pb = document.querySelector('.lh-preview-box');
+  if(pb) pb.innerHTML = buildLHHtml(lh);
+
+  // SINGLE injection mechanism: insert letterhead into top of EVERY .page div
+  var lhHtml = buildLHHtml(lh);
+  document.querySelectorAll('.page').forEach(function(page) {
+    if (page.id === 'page-settings') return;
+    var inj = page.querySelector(':scope > .page-lh-inject');
+    if (!inj) {
+      inj = document.createElement('div');
+      inj.className = 'page-lh-inject';
+      page.insertBefore(inj, page.firstChild);
+    }
+    inj.innerHTML = lhHtml;
+  });
 }
 
 function updateLHPreview() {
-  var leftLines = [
-    document.getElementById('lh-line1')?.value,
-    document.getElementById('lh-line2')?.value,
-    document.getElementById('lh-line3')?.value,
-    document.getElementById('lh-line4')?.value
-  ].filter(Boolean);
-  var rightLines = [
-    document.getElementById('lh-fr1')?.value,
-    document.getElementById('lh-fr2')?.value,
-    document.getElementById('lh-fr3')?.value,
-    document.getElementById('lh-fr4')?.value
-  ].filter(Boolean);
-  var pl = document.getElementById('lh-prev-left');
-  var pr = document.getElementById('lh-prev-right');
-  if (pl) pl.innerHTML = leftLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
-  if (pr) pr.innerHTML = rightLines.map(function(l) { return '<span>' + l + '</span>'; }).join('<br>');
+  var lh = {
+    line1: document.getElementById('lh-line1')?.value||'',
+    line2: document.getElementById('lh-line2')?.value||'',
+    line3: document.getElementById('lh-line3')?.value||'',
+    fr1:   document.getElementById('lh-fr1')?.value||'',
+    fr2:   document.getElementById('lh-fr2')?.value||'',
+    fr3:   document.getElementById('lh-fr3')?.value||'',
+    logo:  loadLH().logo || '',
+  };
+  // Show full preview in the preview box
+  var pb = document.querySelector('.lh-preview-box');
+  if (pb) pb.innerHTML = buildLHHtml(lh);
 }
 
 function handleLogoUpload(evt) {
   var file = evt.target.files[0];
-  if (!file) return;
-  if (file.size > 2 * 1024 * 1024) { showToast('Logo must be under 2MB'); return; }
+  if(!file) return;
+  if(file.size > 3*1024*1024) { showToast('Logo must be under 3MB'); return; }
   var reader = new FileReader();
   reader.onload = function(e) {
     var src = e.target.result;
-    ['lh-logo-display','lh-prev-logo','logo-preview-img'].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) { el.src = src; el.style.display = 'block'; }
-    });
-    var hint = document.getElementById('logo-upload-hint');
-    if (hint) hint.style.display = 'none';
+    var pi = document.getElementById('logo-preview-img');
+    if(pi){pi.src=src;pi.style.display='block';}
+    var hint=document.getElementById('logo-upload-hint'); if(hint) hint.style.display='none';
+    // Update preview box with new logo
+    var lh = loadLH(); lh.logo = src;
+    var pb = document.querySelector('.lh-preview-box');
+    if(pb) pb.innerHTML = buildLHHtml(lh);
   };
   reader.readAsDataURL(file);
 }
 
 function clearLogo() {
-  ['lh-logo-display','lh-prev-logo','logo-preview-img'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) { el.src = ''; el.style.display = 'none'; }
-  });
-  var hint = document.getElementById('logo-upload-hint');
-  if (hint) hint.style.display = '';
-  document.getElementById('logo-file-input').value = '';
-  var lh = loadLH(); lh.logo = ''; save('sm_letterhead', lh);
+  var el=document.getElementById('logo-preview-img'); if(el){el.src='';el.style.display='none';}
+  var hint=document.getElementById('logo-upload-hint'); if(hint) hint.style.display='';
+  var fi=document.getElementById('logo-file-input'); if(fi) fi.value='';
+  var lh=loadLH(); lh.logo=''; save('sm_letterhead',lh);
+  applyLHToPage();
   showToast('Logo removed');
 }
 
 function saveLH() {
-  var logoEl = document.getElementById('lh-prev-logo');
+  var pi  = document.getElementById('logo-preview-img');
+  var cur = loadLH();
   var lh = {
-    line1: document.getElementById('lh-line1')?.value || '',
-    line2: document.getElementById('lh-line2')?.value || '',
-    line3: document.getElementById('lh-line3')?.value || '',
-    line4: document.getElementById('lh-line4')?.value || '',
-    fr1:   document.getElementById('lh-fr1')?.value   || '',
-    fr2:   document.getElementById('lh-fr2')?.value   || '',
-    fr3:   document.getElementById('lh-fr3')?.value   || '',
-    fr4:   document.getElementById('lh-fr4')?.value   || '',
-    logo:  (logoEl && logoEl.src && logoEl.src !== window.location.href) ? logoEl.src : '',
+    line1: document.getElementById('lh-line1')?.value||'',
+    line2: document.getElementById('lh-line2')?.value||'',
+    line3: document.getElementById('lh-line3')?.value||'',
+    fr1:   document.getElementById('lh-fr1')?.value||'',
+    fr2:   document.getElementById('lh-fr2')?.value||'',
+    fr3:   document.getElementById('lh-fr3')?.value||'',
+    logo:  (pi&&pi.src&&pi.src!==window.location.href) ? pi.src : (cur.logo||''),
   };
   save('sm_letterhead', lh);
   applyLHToPage();
@@ -3491,27 +4326,41 @@ function doLogin() {
   errEl.classList.remove('show');
   currentUser = account;
 
-  // ── Migration: reset teacher accounts to timetable-only (fix stale localStorage) ──
+  // ── Migration: ensure settings perm key exists on all accounts ──
   let migrated = false;
   staffAccounts.forEach((acc, idx) => {
-    if (acc.role === 'teacher') {
-      const correct = { dashboard:false, students:false, grades:false, timetable:true, reports:false, payments:false, teachers:false, access:false, settings:false };
-      const needsFix = JSON.stringify(acc.perms) !== JSON.stringify(correct);
-      if (needsFix) { staffAccounts[idx].perms = correct; migrated = true; }
-    }
-    // Ensure settings perm exists
     if (acc.perms.settings === undefined) {
       staffAccounts[idx].perms.settings = acc.role === 'admin';
       migrated = true;
     }
   });
   if (migrated) save('sm_staff_accounts', staffAccounts);
-  // Update currentUser perms if this account was migrated
   currentUser = staffAccounts.find(function(a) { return a.id === account.id; });
+
+  // ── Migration: merge in Sixth Form (L6/U6) test teachers if not already present ──
+  let teachersMigrated = false;
+  SIXTH_FORM_TEST_TEACHERS.forEach(function(tt) {
+    if (!teachers.find(function(t) { return t.id === tt.id; })) {
+      teachers.push(tt);
+      teachersMigrated = true;
+    }
+  });
+  if (teachersMigrated) {
+    save('sm_teachers', teachers);
+    // Also ensure L6A/L6S/U6A/U6S classes and the new subject codes exist
+    const cls = loadCustomClasses();
+    ['L6A','L6S','U6A','U6S'].forEach(c => { if (!cls.includes(c)) cls.push(c); });
+    save('sm_custom_classes', cls);
+    const subs = loadSubjects();
+    ['ENG','LIT','FRE','GEO','ECO','HIS','PHIL','CSCI','BIO','CHE','PHY','C.S','GEOL','A.MA'].forEach(s => { if (!subs.includes(s)) subs.push(s); });
+    save('sm_subjects', subs);
+  }
 
   document.getElementById('login-screen').classList.add('hidden');
   applyUserSession();
   applyLHToPage();
+  populateAllClassDropdowns();
+  populateAllSubjectDropdowns();
   renderAll();
   showToast(`Welcome, ${account.name.split(' ')[0]} ✓`);
 }
@@ -3543,7 +4392,7 @@ function applyUserSession() {
   PAGES.forEach(page => {
     const link = document.querySelector(`.nav-link[onclick*="'${page}'"]`);
     if (!link) return;
-    const allowed = u.role === 'admin' || u.perms[page] !== false;
+    const allowed = u.role === 'admin' || u.perms[page] === true;
     link.classList.toggle('locked', !allowed);
   });
 
@@ -3561,21 +4410,14 @@ function applyUserSession() {
     if (settingsLink) settingsLink.style.display = '';
   }
 
-  // For teachers: only timetable allowed from non-admin nav
-  if (u.role === 'teacher') {
-    document.querySelectorAll('.nav-link').forEach(function(lnk) {
-      const onclick = lnk.getAttribute('onclick') || '';
-      const allowed = onclick.includes("'timetable'") || onclick.includes("'dashboard'");
-      lnk.classList.toggle('locked', !allowed);
-    });
-  }
-
-  // If current page not allowed, redirect to dashboard
+  // If current page not allowed, redirect to timetable (teachers) or dashboard (others)
   const activePage = document.querySelector('.page.active');
   if (activePage) {
     const pname = activePage.id.replace('page-','');
-    if (u.role === 'teacher' && pname !== 'timetable' && pname !== 'dashboard') {
-      showPage('timetable', document.querySelector('.nav-link[onclick*="\'timetable\'"]'));
+    const pageAllowed = u.role === 'admin' || u.perms[pname] !== false;
+    if (!pageAllowed) {
+      const fallback = u.role === 'teacher' ? 'timetable' : 'dashboard';
+      showPage(fallback, document.querySelector(`.nav-link[onclick*="'${fallback}'"]`));
     }
   }
 }
@@ -3852,6 +4694,604 @@ function togglePwVis(inputId, btn) {
   if (!inp) return;
   inp.type = inp.type === 'password' ? 'text' : 'password';
   btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+// ══════════════════════════════════════════════════════════
+// SUBJECTS MANAGEMENT
+// ══════════════════════════════════════════════════════════
+const DEFAULT_SUBJECTS = [
+  'Mathematics','English','French','Physics','Chemistry','Biology','History','Geography',
+  'Economics','Literature','Citizenship','ICT','Technical Drawing','Mechanical Technology',
+  'Electrical Technology','Geology','Logic','R/S','Engineering Science','Industrial Computing',
+  'Law and Government','Entrepreneurship','Physical Education','Manual Labour','Civics','Life Skills','PREPS',
+  // Sixth Form (L6/U6) subject codes
+  'ENG','LIT','FRE','GEO','ECO','HIS','PHIL','CSCI','BIO','CHE','PHY','C.S','GEOL','A.MA'
+];
+
+function loadSubjects()  { return load('sm_subjects', DEFAULT_SUBJECTS); }
+function loadNoPairs()   { return load('sm_nopairs',  [{a:'Mathematics',b:'French'},{a:'Mathematics',b:'English'},{a:'English',b:'French'}]); }
+function loadCanPairs()  { return load('sm_canpairs', [{a:'Physics',b:'Chemistry'},{a:'History',b:'Geography'},{a:'Biology',b:'Geology'}]); }
+
+function saveSubjects() {
+  const pills = document.querySelectorAll('#subjects-list [data-subject]');
+  const list  = [...pills].map(p => p.dataset.subject);
+  save('sm_subjects', list);
+  showToast('Subjects & rules saved ✓');
+  populateAllSubjectDropdowns();
+}
+
+function resetSubjects() {
+  if (!confirm('Reset subjects and rules to default?')) return;
+  save('sm_subjects', DEFAULT_SUBJECTS);
+  save('sm_nopairs',  [{a:'Mathematics',b:'French'},{a:'Mathematics',b:'English'},{a:'English',b:'French'}]);
+  save('sm_canpairs', [{a:'Physics',b:'Chemistry'},{a:'History',b:'Geography'},{a:'Biology',b:'Geology'}]);
+  renderSubjectsPanel();
+  populateAllSubjectDropdowns();
+  showToast('Reset to default ✓');
+}
+
+function addSubject() {
+  const val = (document.getElementById('new-subject-input')?.value||'').trim();
+  if (!val) return;
+  const list = loadSubjects();
+  if (list.includes(val)) return showToast('Subject already exists');
+  list.push(val);
+  save('sm_subjects', list);
+  document.getElementById('new-subject-input').value = '';
+  renderSubjectsPanel();
+  populateAllSubjectDropdowns();
+}
+
+function removeSubject(name) {
+  save('sm_subjects', loadSubjects().filter(s => s !== name));
+  renderSubjectsPanel();
+  populateAllSubjectDropdowns();
+}
+
+function addCanPairRule() {
+  const a = document.getElementById('canpair-a')?.value;
+  const b = document.getElementById('canpair-b')?.value;
+  if (!a || !b || a === b) return showToast('Select two different subjects');
+  const pairs = loadCanPairs();
+  if (pairs.some(p => (p.a===a&&p.b===b)||(p.a===b&&p.b===a))) return showToast('Rule already exists');
+  pairs.push({a, b});
+  save('sm_canpairs', pairs);
+  renderSubjectsPanel();
+  showToast('Can-pair rule added ✓');
+}
+
+function removeCanPair(a, b) {
+  save('sm_canpairs', loadCanPairs().filter(p => !((p.a===a&&p.b===b)||(p.a===b&&p.b===a))));
+  renderSubjectsPanel();
+}
+
+function addNoPairRule() {
+  const a = document.getElementById('nopair-a')?.value;
+  const b = document.getElementById('nopair-b')?.value;
+  if (!a || !b || a === b) return showToast('Select two different subjects');
+  const pairs = loadNoPairs();
+  if (pairs.some(p => (p.a===a&&p.b===b)||(p.a===b&&p.b===a))) return showToast('Rule already exists');
+  pairs.push({a, b});
+  save('sm_nopairs', pairs);
+  renderSubjectsPanel();
+  showToast('No-pair rule added ✓');
+}
+
+function removeNoPair(a, b) {
+  save('sm_nopairs', loadNoPairs().filter(p => !((p.a===a&&p.b===b)||(p.a===b&&p.b===a))));
+  renderSubjectsPanel();
+}
+
+function renderSubjectsPanel() {
+  const subjects = loadSubjects();
+  const nopairs  = loadNoPairs();
+  const canpairs = loadCanPairs();
+
+  // Subject pills
+  const sl = document.getElementById('subjects-list');
+  if (sl) sl.innerHTML = subjects.map(s =>
+    `<span data-subject="${s}" style="display:inline-flex;align-items:center;gap:4px;background:var(--navy);color:#fff;padding:3px 8px;border-radius:12px;font-size:.72rem">
+      ${s}<button onclick="removeSubject('${s.replace(/'/g,"\\'")}')\" style="background:none;border:none;color:#fff;cursor:pointer;font-size:.8rem;padding:0;line-height:1">✕</button>
+    </span>`
+  ).join('');
+
+  // Can-pair list
+  const cl = document.getElementById('canpair-list');
+  if (cl) cl.innerHTML = canpairs.length ? canpairs.map(p =>
+    `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #d0ead8;font-size:.78rem">
+      <span style="background:#0e7a4e;color:#fff;padding:2px 7px;border-radius:10px;font-size:.7rem">${p.a}</span>
+      <span style="color:#0e7a4e;font-weight:700">+</span>
+      <span style="background:#0e7a4e;color:#fff;padding:2px 7px;border-radius:10px;font-size:.7rem">${p.b}</span>
+      <button onclick="removeCanPair('${p.a}','${p.b}')" style="margin-left:auto;background:none;border:none;color:#888;cursor:pointer;font-size:.8rem">✕</button>
+    </div>`
+  ).join('') : '<span style="font-size:.75rem;color:var(--muted)">No rules yet — any subjects can run together by default</span>';
+
+  // No-pair list
+  const nl = document.getElementById('nopair-list');
+  if (nl) nl.innerHTML = nopairs.length ? nopairs.map(p =>
+    `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f5c6b8;font-size:.78rem">
+      <span style="background:#cc3300;color:#fff;padding:2px 7px;border-radius:10px;font-size:.7rem">${p.a}</span>
+      <span style="color:#cc3300;font-weight:700">≠</span>
+      <span style="background:#cc3300;color:#fff;padding:2px 7px;border-radius:10px;font-size:.7rem">${p.b}</span>
+      <button onclick="removeNoPair('${p.a}','${p.b}')" style="margin-left:auto;background:none;border:none;color:#888;cursor:pointer;font-size:.8rem">✕</button>
+    </div>`
+  ).join('') : '<span style="font-size:.75rem;color:var(--muted)">No restrictions</span>';
+
+  // Populate all four subject selects in this panel
+  const subjectsNoPreps = subjects.filter(s => s !== 'PREPS');
+  const opts = subjectsNoPreps.map(s => `<option>${s}</option>`).join('');
+  ['canpair-a','canpair-b','nopair-a','nopair-b'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<option value="">Subject…</option>' + opts;
+  });
+}
+
+function populateAllSubjectDropdowns() {
+  const subjects = loadSubjects().filter(s => s !== 'PREPS');
+  const opts = subjects.map(s => `<option>${s}</option>`).join('');
+  const gs = document.getElementById('grades-subject');
+  if (gs) gs.innerHTML = '<option value="">— Select Subject —</option>' + opts;
+  document.querySelectorAll('.assign-subject-sel').forEach(sel => {
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Subject…</option>' + opts;
+    if (cur) sel.value = cur;
+  });
+}
+
+// Dynamic pairing validation using both can/no-pair rules
+function isCoreSubject(subj) {
+  return loadNoPairs().some(p => p.a.toLowerCase()===subj.toLowerCase() || p.b.toLowerCase()===subj.toLowerCase());
+}
+
+function coreSubjectConflict(day, slotId, term, subject) {
+  const paired = loadNoPairs()
+    .filter(p => p.a===subject||p.b===subject)
+    .map(p => p.a===subject ? p.b : p.a);
+  if (!paired.length) return false;
+  return ttSlots.some(s =>
+    s.day===day && s.slotId===slotId && s.term===term &&
+    paired.some(q => q.toLowerCase()===s.subject.toLowerCase())
+  );
+}
+
+// Check if subject is compulsory for F1-F5
+function isCompulsorySubject(subj) {
+  return COMPULSORY_SUBJECTS.some(c => c.toLowerCase()===subj.toLowerCase());
+}
+
+// Check if a compulsory subject is already taken at this slot by another F1-F5 class
+function compulsoryTaken(day, slotId, term, subject, cls) {
+  if (!isCompulsorySubject(subject)) return null;
+  if (!COMPULSORY_CLASSES.includes(cls)) return null;
+  const taken = ttSlots.find(s =>
+    s.day===day && s.slotId===slotId && s.term===term &&
+    s.subject===subject && COMPULSORY_CLASSES.includes(s.cls) && s.cls !== cls
+  );
+  return taken ? taken.cls : null;
+}
+const DEFAULT_CLASSES = ['F1','F2','F3','F4A','F4B','F5A','F5B','LSS','USS','USA','L6A','L6S','U6A','U6S'];
+// Core subjects that must not share a period for the same class group (F1-F5)
+// (Subject pairing now handled dynamically via loadNoPairs())
+
+function loadCustomClasses() {
+  return load('sm_custom_classes', DEFAULT_CLASSES);
+}
+
+function saveCustomClasses(cls) {
+  save('sm_custom_classes', cls);
+  populateAllClassDropdowns();
+}
+
+function resetCustomClasses() {
+  if (!confirm('Reset to default classes?')) return;
+  save('sm_custom_classes', DEFAULT_CLASSES);
+  renderCustomClassList();
+  populateAllClassDropdowns();
+  showToast('Classes reset to default ✓');
+}
+
+function addCustomClass() {
+  const val = (document.getElementById('new-class-input')?.value || '').trim();
+  if (!val) return showToast('Enter a class name');
+  const cls = loadCustomClasses();
+  if (cls.includes(val)) return showToast('Class already exists');
+  cls.push(val);
+  saveCustomClasses(cls);
+  renderCustomClassList();
+  document.getElementById('new-class-input').value = '';
+  showToast('Class added ✓');
+}
+
+function removeCustomClass(name) {
+  const cls = loadCustomClasses().filter(c => c !== name);
+  saveCustomClasses(cls);
+  renderCustomClassList();
+}
+
+function renderCustomClassList() {
+  const cls = loadCustomClasses();
+  const el = document.getElementById('custom-classes-list');
+  if (!el) return;
+  el.innerHTML = cls.map(c =>
+    `<span style="display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;padding:4px 10px;border-radius:16px;font-size:.75rem">
+      ${c}
+      <button onclick="removeCustomClass('${c}')" style="background:none;border:none;color:#fff;cursor:pointer;font-size:.85rem;padding:0;line-height:1">✕</button>
+    </span>`
+  ).join('');
+}
+
+function populateAllClassDropdowns() {
+  const cls = loadCustomClasses();
+  const opts = cls.map(c => `<option>${c}</option>`).join('');
+  const ids = ['grades-class','tt-class','class-filter','s-class','es-class',
+                'report-class-sel'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isFilter = id === 'class-filter' || id === 'tt-class' || id === 'report-class-sel';
+    const prefix = isFilter ? '<option value="">All Classes</option>' : '';
+    const blank  = (!isFilter && id === 'grades-class') ? '<option value="">— Select Class —</option>' : '';
+    el.innerHTML = (prefix || blank) + opts;
+  });
+  renderCustomClassList();
+}
+
+// ══════════════════════════════════════════════════════════
+// RECEIPT
+// ══════════════════════════════════════════════════════════
+function openReceipt(paymentId) {
+  const p = payments.find(x => x.id === paymentId || x.receipt === paymentId);
+  if (!p) return;
+  const s   = students.find(x => x.id === p.studentId);
+  const lh  = loadLH();
+  const sName = s ? `${s.lname.toUpperCase()} ${s.fname}` : '—';
+  const cls   = s ? s.cls : '—';
+
+  document.getElementById('receipt-content').innerHTML = `
+    <div class="receipt">
+      <div class="receipt-header">
+        ${lh.logo ? `<img src="${lh.logo}" style="max-height:44px;margin-bottom:4px;display:block;margin:0 auto 4px">` : ''}
+        <h3>${lh.line1 || 'School Management'}</h3>
+        <p>${lh.line3 || ''}</p>
+      </div>
+      <div class="receipt-body">
+        <div class="receipt-row"><span>Receipt No.</span><span>${p.receipt}</span></div>
+        <div class="receipt-row"><span>Student</span><span>${sName}</span></div>
+        <div class="receipt-row"><span>Class</span><span>${cls}</span></div>
+        <div class="receipt-row"><span>Payment Type</span><span>${p.type}</span></div>
+        <div class="receipt-row"><span>Term</span><span>Term ${p.term}</span></div>
+        <div class="receipt-row"><span>Date</span><span>${p.date}</span></div>
+        <div class="receipt-total">
+          <span>AMOUNT PAID</span>
+          <span>${Number(p.amount).toLocaleString()} XAF</span>
+        </div>
+      </div>
+      <div class="receipt-stamp">
+        Thank you for your payment · ${lh.line1 || 'School'}<br>
+        This is an official receipt — keep for your records.
+      </div>
+    </div>`;
+  document.getElementById('modal-receipt').classList.add('open');
+}
+
+function printReceipt() {
+  const content = document.getElementById('receipt-content').innerHTML;
+  const win = window.open('','_blank','width=500,height=600');
+  const lhEl = document.getElementById('letterhead');
+  win.document.write(`<!DOCTYPE html><html><head><title>Receipt</title>
+    <style>
+      body { font-family:Arial,sans-serif; margin:0; padding:20px; }
+      .receipt { border:2px solid #1a3a5c; border-radius:10px; max-width:400px; margin:0 auto; overflow:hidden; }
+      .receipt-header { background:#1a3a5c; color:#fff; padding:12px 16px; text-align:center; }
+      .receipt-header h3 { margin:0; font-size:.95rem; }
+      .receipt-header p  { margin:2px 0 0; font-size:.7rem; opacity:.8; }
+      .receipt-body { padding:14px 18px; }
+      .receipt-row { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #ddd; font-size:.78rem; }
+      .receipt-row span:last-child { font-weight:700; }
+      .receipt-total { background:#f0f4f9; padding:10px 18px; display:flex; justify-content:space-between; font-weight:800; font-size:.92rem; color:#1a3a5c; }
+      .receipt-stamp { text-align:center; padding:10px; font-size:.68rem; color:#888; border-top:1px dashed #ccc; }
+    </style></head><body>${lhEl ? lhEl.outerHTML : ''}${content}</body></html>`);
+  win.document.close();
+  win.focus(); win.print(); win.close();
+}
+
+// ══════════════════════════════════════════════════════════
+// TIMETABLE VALIDATION HELPERS
+// ══════════════════════════════════════════════════════════
+function countSimultaneousSubjects(day, slotId, term, excludeId) {
+  return ttSlots.filter(s =>
+    s.day === day && s.slotId === slotId && s.term === term && s.id !== excludeId
+  ).length;
+}
+
+// ══════════════════════════════════════════════════════════
+// REPORT MODE TOGGLE
+// ══════════════════════════════════════════════════════════
+function toggleReportMode() {
+  const mode = document.getElementById('report-mode')?.value || 'individual';
+  const stuSel = document.getElementById('report-student');
+  const clsSel = document.getElementById('report-class-sel');
+  if (mode === 'individual') {
+    if (stuSel) stuSel.style.display = 'block';
+    if (clsSel) clsSel.style.display = 'none';
+  } else {
+    if (stuSel) stuSel.style.display = 'none';
+    if (clsSel) clsSel.style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// REPORT CARD HTML BUILDER (shared by individual + class)
+// ══════════════════════════════════════════════════════════
+function buildReportCardHTML(s, term, classMaster, enrolled) {
+  const lh  = loadLH();
+  const termLabel = ['First','Second','Third'][term - 1] || 'First';
+  const formula   = loadFormula();
+  const avg10     = formula.caMax / 2;   // below-average threshold for CA
+  const avg35     = formula.examMax / 2; // below-average threshold for Exam
+
+  const SUBJECT_GROUPS = [
+    {
+      label: 'PROFESSIONAL SUBJECTS',
+      subjects: ['Materials','Mechanical Technology','Mechanical Drawing','Praticals',
+                 'Electrical and Electronic Technology','Textile Technology','Building Technology',
+                 'Technical Drawing','CJ Technology']
+    },
+    {
+      label: 'GENERAL SUBJECTS',
+      subjects: ['English','French','Mathematics','Engineering Science','Chemistry',
+                 'Economic Geography','Industrial Computing','Law and Government',
+                 'Entrepreneurship','Physical Education','Manual Labour']
+    },
+    {
+      label: 'HUMAN CAPACITIES',
+      subjects: ['Civics','Life Skills']
+    }
+  ];
+
+  let grandTotal = 0; let totalCoeff = 0;
+  const groupSections = SUBJECT_GROUPS.map(grp => {
+    let grpRows = []; let grpTotal = 0; let grpCoeff = 0;
+    grp.subjects.forEach(subj => {
+      const key = 'sm_marks_' + s.id + '_' + subj.replace(/\s+/g,'_') + '_' + term;
+      const m = load(key, null);
+      if (!m || (m.ca === '' && m.exam === '')) return;
+      const ca   = m.ca   !== '' ? parseFloat(m.ca)   : null;
+      const exam = m.exam !== '' ? parseFloat(m.exam) : null;
+      const coeff= parseFloat(m.coeff || 2);
+      const t100 = (ca !== null && exam !== null) ? ca + exam : null;
+      const t20  = t100 !== null ? (t100 / 100 * 20) : null;
+      const gt   = t20  !== null ? t20 * coeff : null;
+      if (gt !== null) { grpTotal += gt; grpCoeff += coeff; }
+      grpRows.push({ subj, ca, exam, coeff, t100, t20, gt });
+    });
+    grandTotal += grpTotal; totalCoeff += grpCoeff;
+    return { label: grp.label, rows: grpRows, total: grpTotal, coeff: grpCoeff };
+  });
+
+  const overallAvg = totalCoeff > 0 ? (grandTotal / totalCoeff).toFixed(2) : '—';
+  const photoHtml  = s.photo
+    ? `<img src="${s.photo}" alt="Photo" />`
+    : `<div class="rc-photo-placeholder">📷<br>No Photo</div>`;
+  const dobStr = s.dob ? new Date(s.dob).toLocaleDateString('en-GB') : '—';
+
+  const tableRows = groupSections.map(grp => {
+    if (grp.rows.length === 0) return '';
+    const headerRow = `<tr class="group-header"><td colspan="10">${grp.label}<span style="float:right;font-size:.65rem;font-weight:400">Coeff: ${grp.coeff}</span></td></tr>`;
+    const dataRows = grp.rows.map((r, idx) => {
+      // Colour logic: below half = red, above half = blue
+      const caAvg  = formula.caMax / 2;
+      const exAvg  = formula.examMax / 2;
+      const caClass  = r.ca   !== null ? (r.ca   < caAvg ? 'rc-score-red' : 'rc-score-blue') : '';
+      const exClass  = r.exam !== null ? (r.exam < exAvg ? 'rc-score-red' : 'rc-score-blue') : '';
+      const t20Class = r.t20  !== null ? (r.t20  < 10    ? 'rc-score-red' : 'rc-score-blue') : '';
+      return `<tr>
+        <td style="text-align:center;color:#666;font-size:.68rem">${idx+1}</td>
+        <td style="text-align:left">${r.subj}</td>
+        <td>${r.coeff.toFixed(2)}</td>
+        <td class="${caClass}">${r.ca   !== null ? r.ca.toFixed(2)   : '—'}</td>
+        <td class="${exClass}">${r.exam !== null ? r.exam.toFixed(2) : '—'}</td>
+        <td class="${t20Class}">${r.t100 !== null ? r.t100.toFixed(2) : '—'}</td>
+        <td class="${t20Class}">${r.t20  !== null ? r.t20.toFixed(2)  : '—'}</td>
+        <td>${r.gt !== null ? r.gt.toFixed(2) : '—'}</td>
+        <td>—</td><td>—</td>
+      </tr>`;
+    }).join('');
+    const totalRow = `<tr class="group-total">
+      <td colspan="2" style="text-align:right">Group Total</td>
+      <td>${grp.coeff}</td><td colspan="4"></td>
+      <td>${grp.total.toFixed(2)}</td>
+      <td colspan="2">Avg: ${grp.coeff > 0 ? (grp.total/grp.coeff).toFixed(2) : '—'}</td>
+    </tr>`;
+    return headerRow + dataRows + totalRow;
+  }).join('');
+
+  return `<div class="rc">
+    <div class="rc-header">
+      <div class="rc-header-left">
+        REPUBLIQUE DU CAMEROUN<br>Paix - Travail - Patrie<br>
+        Ministère des Enseignements Secondaires<br>
+        Délégation Régionale du Centre<br>Délégation Départementale du Mfoundi<br>
+        <strong>${lh.line1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.line2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong>
+        <div><span class="rc-year-badge">Année scolaire 2025-2026</span></div>
+      </div>
+      <div class="rc-header-center">
+        ${lh.logo ? `<img src="${lh.logo}" alt="Logo" />` : '<div style="width:70px;height:70px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#aaa;text-align:center">Logo</div>'}
+      </div>
+      <div class="rc-header-right">
+        REPUBLIC OF CAMEROON<br>Peace - Work - Fatherland<br>
+        Ministry of Secondary Education<br><br>
+        <strong>${lh.fr1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.fr2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong>
+        <div><span class="rc-year-badge">Academic Year 2025-2026</span></div>
+      </div>
+    </div>
+    <div class="rc-contact">Tel: ${lh.line3 || '673900245 / 677956018'} &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE</div>
+    <div class="rc-title-bar">${termLabel} Term Report Card</div>
+    <div class="rc-info">
+      <div class="rc-info-fields">
+        <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div>
+        <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div>
+      </div>
+      <div class="rc-photo-box">${photoHtml}</div>
+    </div>
+    <table class="rc-table">
+      <thead><tr>
+        <th style="width:24px">#</th>
+        <th style="text-align:left;min-width:140px">Subject</th>
+        <th>Coef</th><th>Seq 1</th><th>Seq 2</th><th>Term</th>
+        <th>Total</th><th>Rank</th><th>Range</th><th>Appreciation</th>
+      </tr></thead>
+      <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term.</td></tr>'}</tbody>
+    </table>
+    <div class="rc-summary-bar">
+      <span>STUDENT RESULT: <strong>${totalCoeff.toFixed(2)}</strong></span>
+      <span>TOTAL: <strong>${grandTotal.toFixed(2)}</strong></span>
+      <span>AVERAGE: <strong style="font-size:1.1rem">${overallAvg}</strong></span>
+      <span>RANK: <strong>—</strong></span>
+    </div>
+    <div class="rc-bottom">
+      <div>
+        <span class="rc-bottom-title">CLASS PROFILE</span>
+        <table><tr><td>Avg of 1st Student</td><td>—</td></tr><tr><td>Avg of last Student</td><td>—</td></tr>
+        <tr><td>Class Average</td><td>—</td></tr><tr><td>N° with Average</td><td>—</td></tr>
+        <tr><td>% Passed</td><td>—</td></tr><tr><td>% Failed</td><td>—</td></tr></table>
+      </div>
+      <div>
+        <span class="rc-bottom-title">DISCIPLINE</span>
+        <table><tr><td>Unjustified Absences</td><td></td></tr><tr><td>Justified Absences</td><td></td></tr>
+        <tr><td>Late coming</td><td></td></tr><tr><td>Punishments</td><td></td></tr>
+        <tr><td>Warnings</td><td></td></tr><tr><td>Disciplinary Council</td><td></td></tr></table>
+      </div>
+      <div>
+        <span class="rc-bottom-title">ACADEMIC APPRECIATION</span>
+        <table><tr><td>Distinction</td><td></td></tr><tr><td>Honour Roll</td><td></td></tr>
+        <tr><td>Merit</td><td></td></tr>
+        <tr><td>Passed</td><td>${parseFloat(overallAvg) >= 10 ? 'Yes' : '—'}</td></tr>
+        <tr><td>Failed</td><td>${parseFloat(overallAvg) < 10 ? 'Yes' : 'No'}</td></tr>
+        <tr><td>Absent</td><td></td></tr></table>
+      </div>
+    </div>
+    <div class="rc-sigs">
+      <div><div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div></div>
+      <div><div class="rc-sig-label">Discipline Master's Observation/Signature</div></div>
+      <div><div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div></div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// TIME SLOT MANAGEMENT
+// ══════════════════════════════════════════════════════════
+function renderTimeSlotsTable() {
+  const slots    = loadTimeSlots();
+  const teaching = slots.filter(s => !s.isBreak).length;
+  const remaining = MAX_TEACHING_PERIODS - teaching;
+  const tbody = document.getElementById('timeslots-body');
+  if (!tbody) return;
+
+  // Update the panel title to show count
+  const panelTitle = document.querySelector('#timeslots-body')?.closest('.panel')?.querySelector('.panel-title');
+  if (panelTitle) {
+    panelTitle.textContent = `🕐 Time Slots / Periods  (${teaching}/${MAX_TEACHING_PERIODS} teaching periods)`;
+  }
+
+  tbody.innerHTML = slots.map((slot, idx) => `
+    <tr style="background:${slot.isBreak ? '#fff8e1' : (idx%2===0?'#f9fafb':'#fff')}">
+      <td style="padding:6px 10px;color:var(--muted);font-size:.75rem;text-align:center">${idx+1}</td>
+      <td style="padding:6px 10px">
+        <input type="text" value="${slot.label}" data-id="${slot.id}" data-field="label"
+          style="width:60px;padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:.8rem"
+          onchange="updateTimeSlotField(${slot.id},'label',this.value)" />
+        ${slot.isBreak ? '<span style="font-size:.68rem;color:#888;margin-left:6px">break</span>' : ''}
+      </td>
+      <td style="padding:6px 10px">
+        <input type="time" value="${slot.start}"
+          style="padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:.8rem"
+          onchange="updateTimeSlotField(${slot.id},'start',this.value)" />
+      </td>
+      <td style="padding:6px 10px">
+        <input type="time" value="${slot.end}"
+          style="padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:.8rem"
+          onchange="updateTimeSlotField(${slot.id},'end',this.value)" />
+      </td>
+      <td style="padding:6px 10px;text-align:center;font-size:.8rem;color:var(--muted)">
+        ${slotDurationMinutes(slot)} min
+      </td>
+      <td style="padding:6px 10px;text-align:center">
+        <input type="checkbox" ${slot.isBreak ? 'checked' : ''}
+          onchange="updateTimeSlotField(${slot.id},'isBreak',this.checked)" title="Mark as break" />
+      </td>
+      <td style="padding:6px 10px;text-align:center" class="no-print">
+        <button onclick="removeTimeSlot(${slot.id})" style="background:none;border:none;color:#cc0000;cursor:pointer;font-size:1rem" title="Remove">✕</button>
+      </td>
+    </tr>`).join('') +
+    `<tr style="background:#eef5fb">
+      <td colspan="7" style="padding:8px 10px;font-size:.78rem;color:var(--navy)">
+        <strong>${teaching}</strong> teaching period${teaching!==1?'s':''} · 
+        <strong>${slots.filter(s=>s.isBreak).length}</strong> break${slots.filter(s=>s.isBreak).length!==1?'s':''} · 
+        ${remaining > 0 ? `<span style="color:#0e7a4e">${remaining} period${remaining!==1?'s':''} remaining</span>` : '<span style="color:#cc3300">Maximum ${MAX_TEACHING_PERIODS} periods reached</span>'}
+      </td>
+    </tr>`;
+}
+
+function updateTimeSlotField(id, field, value) {
+  const slots = loadTimeSlots();
+  const idx = slots.findIndex(s => s.id === id);
+  if (idx < 0) return;
+  slots[idx][field] = value;
+  save('sm_timeslots', slots);
+  renderTimeSlotsTable();
+}
+
+function addTimeSlotRow(isBreak) {
+  const slots    = loadTimeSlots();
+  const teaching = slots.filter(s => !s.isBreak).length;
+  if (!isBreak && teaching >= MAX_TEACHING_PERIODS) {
+    return showToast(`⛔ Maximum ${MAX_TEACHING_PERIODS} teaching periods per day already reached`);
+  }
+  const last  = slots[slots.length - 1];
+  const newId = Math.max(...slots.map(s => s.id), 0) + 1;
+  const teachCount = slots.filter(s => !s.isBreak).length + (isBreak ? 0 : 1);
+  slots.push({
+    id:      newId,
+    label:   isBreak ? 'B' : String(teachCount),
+    start:   last ? last.end : '07:00',
+    end:     last ? addMinutes(last.end, isBreak ? 30 : 50) : '07:50',
+    isBreak: isBreak
+  });
+  save('sm_timeslots', slots);
+  renderTimeSlotsTable();
+}
+
+function addMinutes(timeStr, mins) {
+  const [h, m] = timeStr.split(':').map(Number);
+  const total  = h * 60 + m + mins;
+  return String(Math.floor(total/60)).padStart(2,'0') + ':' + String(total%60).padStart(2,'0');
+}
+
+function removeTimeSlot(id) {
+  const slots = loadTimeSlots().filter(s => s.id !== id);
+  save('sm_timeslots', slots);
+  renderTimeSlotsTable();
+}
+
+function saveTimeSlots() {
+  showToast('Schedule saved ✓');
+  renderTimetable();
+  buildAvailGrid({});
+}
+
+function resetTimeSlots() {
+  if (!confirm('Reset to default schedule?')) return;
+  save('sm_timeslots', DEFAULT_TIMESLOTS);
+  renderTimeSlotsTable();
+  showToast('Schedule reset to default ✓');
 }
 
 // ── Init: show login screen, don't render app yet ──────────
