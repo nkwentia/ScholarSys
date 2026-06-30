@@ -653,6 +653,38 @@
       vertical-align: middle;
     }
     .jt-slot:hover { background: #eef5fb; }
+
+    /* Combined/split period — stacked entries within one class+slot cell */
+    .jt-cell-entry {
+      padding: 2px 4px;
+      margin-bottom: 2px;
+      border-left: 3px solid var(--sky);
+      background: #eef5fb;
+      border-radius: 3px;
+      position: relative;
+      font-size: .63rem;
+      text-align: left;
+    }
+    .jt-cell-entry .jt-subj    { display:block; font-weight:700; color:#1a3a5c; font-size:.65rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .jt-cell-entry .jt-teacher { display:block; color:#555; font-size:.6rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .jt-cell-entry .jt-remove  {
+      position:absolute; top:1px; right:2px;
+      color:#cc0000; cursor:pointer; font-size:.58rem;
+      display:none; background:#fff; border-radius:2px; padding:0 2px;
+    }
+    .jt-cell-entry:hover .jt-remove { display:block; }
+    .jt-add-more {
+      text-align: center;
+      font-size: .6rem;
+      color: var(--sky);
+      cursor: pointer;
+      padding: 2px;
+      border: 1px dashed var(--border);
+      border-radius: 3px;
+      margin-top: 1px;
+    }
+    .jt-add-more:hover { background: #eef5fb; }
+
     .jt-slot-inner {
       font-size: .65rem;
       line-height: 1.3;
@@ -786,6 +818,12 @@
       .letterhead, .letterhead-print-top, #tt-print-header { display:none !important; }
 
       @page { margin:14mm 12mm; }
+      @page timetable-page { size: A4 landscape; margin: 10mm; }
+
+      /* Timetable: print in landscape, remove min-width constraint so it fits the page */
+      #page-timetable { page: timetable-page; }
+      #page-timetable .jt-table { min-width: 0 !important; width: 100% !important; }
+      #page-timetable #timetable-wrap { overflow: visible !important; }
 
       /* All tables: visible borders */
       table { border-collapse:collapse !important; width:100% !important; }
@@ -815,6 +853,30 @@
       .tt-remove, .jt-remove { display:none !important; }
       .jt-table th { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
       .jt-day-cell  { background:#1a3a5c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+      /* ── Pagination fixes ──────────────────────────────── */
+      /* Strip card decoration in print (box-shadow/overflow can confuse pagination) */
+      .panel {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
+        background: transparent !important;
+      }
+      .panel-header { border-bottom: none !important; padding: 0 0 6px 0 !important; }
+      .panel-body   { padding: 0 !important; }
+
+      /* Prevent the browser from pushing the whole block to a fresh page
+         when it doesn't fully fit — let large tables break naturally instead */
+      .page, .panel, #timetable-wrap { break-inside: auto; page-break-inside: auto; }
+      .page-lh-inject { break-after: avoid; page-break-after: avoid; break-inside: avoid; }
+
+      /* Keep table header repeating on each printed page if the table spans pages */
+      .jt-table thead { display: table-header-group; }
+      .jt-table tr    { break-inside: avoid; page-break-inside: avoid; }
+
+      /* Avoid any large top margin/padding causing the blank-first-page issue */
+      .content, .page.active { margin-top: 0 !important; padding-top: 0 !important; }
     }
 
     /* ── Toast ──────────────────────────────────────────── */
@@ -1623,13 +1685,16 @@
     <!-- ═══════════ TIMETABLE PAGE -->
     <div class="page" id="page-timetable">
       <div class="search-bar no-print">
+        <select id="tt-class-select" onchange="renderTimetable()">
+          <option value="">All Classes</option>
+        </select>
         <select id="tt-term" onchange="renderTimetable()">
           <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option>
         </select>
         <button class="btn btn-primary no-print" onclick="autoGenerateAll()">⚡ Auto-Generate (This Term)</button>
         <button class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()">⚡ Generate All Terms</button>
         <button class="btn btn-ghost no-print" onclick="clearTimetable()">🗑 Clear All</button>
-        <button class="btn btn-ghost no-print" onclick="window.print()">🖨 Print</button>
+        <button class="btn btn-ghost no-print" onclick="printTimetable()">🖨 Print</button>
       </div>
       <div class="panel" style="overflow-x:auto">
         <div class="panel-header no-print">
@@ -1698,6 +1763,7 @@
         <button class="btn btn-ghost" onclick="openImportTeachersModal()">📥 Import (CSV/Excel)</button>
         <button class="btn btn-ghost" onclick="exportTeachers('csv')">📤 Export CSV</button>
         <button class="btn btn-ghost" onclick="exportTeachers('xlsx')">📤 Export Excel</button>
+        <button class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()">🗑 Delete All Teachers</button>
         <button class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button>
       </div>
       <div class="panel">
@@ -2483,112 +2549,10 @@ let grades = load('sm_grades', [
 ]);
 
 // ── Sixth Form (L6/U6) Arts & Science test teachers (16 periods/wk ≈ 14 hrs) ──
-const SIXTH_FORM_TEST_TEACHERS = [
-  { id:'sf1', code:'ENG 60', fname:'Mary', lname:'Bih', email:'mary.bih@jatec.cm', phone:'677003001',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6A',subject:'ENG',periodsPerWeek:8},{cls:'L6A',subject:'LIT',periodsPerWeek:8}] },
-  { id:'sf2', code:'FRE 61', fname:'Peter', lname:'Nkwenti', email:'peter.nkwenti@jatec.cm', phone:'677003002',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6A',subject:'FRE',periodsPerWeek:8},{cls:'L6A',subject:'GEO',periodsPerWeek:8}] },
-  { id:'sf3', code:'ECO 62', fname:'Grace', lname:'Ngum', email:'grace.ngum@jatec.cm', phone:'677003003',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6A',subject:'ECO',periodsPerWeek:8},{cls:'L6A',subject:'HIS',periodsPerWeek:8}] },
-  { id:'sf4', code:'PHIL 63', fname:'John', lname:'Fru', email:'john.fru@jatec.cm', phone:'677003004',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6A',subject:'PHIL',periodsPerWeek:8},{cls:'L6S',subject:'CSCI',periodsPerWeek:8}] },
-  { id:'sf5', code:'ENG 64', fname:'Comfort', lname:'Ndong', email:'comfort.ndong@jatec.cm', phone:'677003005',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6S',subject:'ENG',periodsPerWeek:8},{cls:'L6S',subject:'FRE',periodsPerWeek:8}] },
-  { id:'sf6', code:'GEO 65', fname:'Emmanuel', lname:'Tita', email:'emmanuel.tita@jatec.cm', phone:'677003006',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6S',subject:'GEO',periodsPerWeek:8},{cls:'L6S',subject:'ECO',periodsPerWeek:8}] },
-  { id:'sf7', code:'BIO 66', fname:'Joyce', lname:'Manka\'a', email:'joyce.mankaa@jatec.cm', phone:'677003007',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6S',subject:'BIO',periodsPerWeek:8},{cls:'L6S',subject:'CHE',periodsPerWeek:8}] },
-  { id:'sf8', code:'PHY 67', fname:'Paul', lname:'Acho', email:'paul.acho@jatec.cm', phone:'677003008',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6S',subject:'PHY',periodsPerWeek:8},{cls:'L6S',subject:'C.S',periodsPerWeek:8}] },
-  { id:'sf9', code:'GEOL 68', fname:'Divine', lname:'Che', email:'divine.che@jatec.cm', phone:'677003009',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'L6S',subject:'GEOL',periodsPerWeek:8},{cls:'L6S',subject:'A.MA',periodsPerWeek:8}] },
-  { id:'sf10', code:'ENG 69', fname:'Evelyn', lname:'Lum', email:'evelyn.lum@jatec.cm', phone:'677003010',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6A',subject:'ENG',periodsPerWeek:8},{cls:'U6A',subject:'LIT',periodsPerWeek:8}] },
-  { id:'sf11', code:'FRE 70', fname:'Simon', lname:'Fon', email:'simon.fon@jatec.cm', phone:'677003011',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6A',subject:'FRE',periodsPerWeek:8},{cls:'U6A',subject:'GEO',periodsPerWeek:8}] },
-  { id:'sf12', code:'ECO 71', fname:'Beatrice', lname:'Sirri', email:'beatrice.sirri@jatec.cm', phone:'677003012',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6A',subject:'ECO',periodsPerWeek:8},{cls:'U6A',subject:'HIS',periodsPerWeek:8}] },
-  { id:'sf13', code:'PHIL 72', fname:'Joseph', lname:'Adamu', email:'joseph.adamu@jatec.cm', phone:'677003013',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6A',subject:'PHIL',periodsPerWeek:8},{cls:'U6S',subject:'CSCI',periodsPerWeek:8}] },
-  { id:'sf14', code:'ENG 73', fname:'Martha', lname:'Ndi', email:'martha.ndi@jatec.cm', phone:'677003014',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6S',subject:'ENG',periodsPerWeek:8},{cls:'U6S',subject:'FRE',periodsPerWeek:8}] },
-  { id:'sf15', code:'GEO 74', fname:'Thomas', lname:'Wango', email:'thomas.wango@jatec.cm', phone:'677003015',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6S',subject:'GEO',periodsPerWeek:8},{cls:'U6S',subject:'ECO',periodsPerWeek:8}] },
-  { id:'sf16', code:'BIO 75', fname:'Blessing', lname:'Keng', email:'blessing.keng@jatec.cm', phone:'677003016',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6S',subject:'BIO',periodsPerWeek:8},{cls:'U6S',subject:'CHE',periodsPerWeek:8}] },
-  { id:'sf17', code:'PHY 76', fname:'Felix', lname:'Fobi', email:'felix.fobi@jatec.cm', phone:'677003017',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6S',subject:'PHY',periodsPerWeek:8},{cls:'U6S',subject:'C.S',periodsPerWeek:8}] },
-  { id:'sf18', code:'GEOL 77', fname:'Patience', lname:'Jua', email:'patience.jua@jatec.cm', phone:'677003018',
-    availability:{ Monday:[1,2,3,4,5,7,8,9,11,12,13], Tuesday:[1,2,3,4,5,7,8,9,11,12,13], Wednesday:[1,2,3,4,5,7,8,9,11,12,13], Thursday:[1,2,3,4,5,7,8,9,11,12,13], Friday:[1,2,3,4,5,7,8,9,11,12,13] },
-    assignments:[{cls:'U6S',subject:'GEOL',periodsPerWeek:8},{cls:'U6S',subject:'A.MA',periodsPerWeek:8}] },
-];
+const SIXTH_FORM_TEST_TEACHERS = [];
+const LSA_TEST_TEACHERS = [];
 
 let teachers = load('sm_teachers', [
-  { id:'t1',  code:'ENG 10',   fname:'Mary',    lname:'Bih',       email:'mary@jatec.cm',   phone:'677002001',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F1',subject:'English'},{cls:'F2',subject:'English'},{cls:'F4A',subject:'English'}] },
-  { id:'t2',  code:'MATHS 5',  fname:'Akor',    lname:'Nkwenti',   email:'akor@jatec.cm',   phone:'677002002',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F1',subject:'Mathematics'},{cls:'F2',subject:'Mathematics'},{cls:'F3',subject:'Mathematics'}] },
-  { id:'t3',  code:'HIST 23',  fname:'Joseph',  lname:'Mbah',      email:'jmbah@jatec.cm',  phone:'677002003',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F2',subject:'History'},{cls:'F3',subject:'History'},{cls:'F4A',subject:'History'}] },
-  { id:'t4',  code:'GEO 29',   fname:'Grace',   lname:'Tabi',      email:'gtabi@jatec.cm',  phone:'677002004',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F2',subject:'Geography'},{cls:'F3',subject:'Geography'},{cls:'F5A',subject:'Geography'}] },
-  { id:'t5',  code:'FREN 14',  fname:'Paul',    lname:'Ngachu',    email:'pngachu@jatec.cm',phone:'677002005',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F2',subject:'French'},{cls:'F3',subject:'French'},{cls:'F4A',subject:'French'},{cls:'F4B',subject:'French'}] },
-  { id:'t6',  code:'PHY 36',   fname:'Leonard', lname:'Vernyuy',   email:'lvernyuy@jatec.cm',phone:'677002006',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F3',subject:'Physics'},{cls:'F4A',subject:'Physics'},{cls:'F5A',subject:'Physics'},{cls:'F5B',subject:'Physics'}] },
-  { id:'t7',  code:'CHEM 32',  fname:'Peter',   lname:'Fon',       email:'pfon@jatec.cm',   phone:'677002007',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F3',subject:'Chemistry'},{cls:'F4A',subject:'Chemistry'},{cls:'F4B',subject:'Chemistry'},{cls:'F5A',subject:'Chemistry'}] },
-  { id:'t8',  code:'BIO 17',   fname:'Anne',    lname:'Keng',      email:'akeng@jatec.cm',  phone:'677002008',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F4A',subject:'Biology'},{cls:'F4B',subject:'Biology'},{cls:'F5A',subject:'Biology'},{cls:'F5B',subject:'Biology'}] },
-  { id:'t9',  code:'ICT 40',   fname:'Denis',   lname:'Nfor',      email:'dnfor@jatec.cm',  phone:'677002009',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F4B',subject:'ICT'},{cls:'F5A',subject:'ICT'},{cls:'F5B',subject:'ICT'},{cls:'LSS',subject:'ICT'}] },
-  { id:'t10', code:'ECON 38',  fname:'Susan',   lname:'Mbu',       email:'smbu@jatec.cm',   phone:'677002010',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F4A',subject:'Economics'},{cls:'F5A',subject:'Economics'},{cls:'LSS',subject:'Economics'},{cls:'USS',subject:'Economics'}] },
-  { id:'t11', code:'R/S 30',   fname:'James',   lname:'Che',       email:'jche@jatec.cm',   phone:'677002011',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F4B',subject:'R/S'},{cls:'F5B',subject:'R/S'},{cls:'LSS',subject:'R/S'}] },
-  { id:'t12', code:'LIT 7',    fname:'Clara',   lname:'Nkam',      email:'cnkam@jatec.cm',  phone:'677002012',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F5A',subject:'Literature'},{cls:'F5B',subject:'Literature'},{cls:'LSS',subject:'Literature'},{cls:'USS',subject:'Literature'}] },
-  { id:'t13', code:'GEOL 19',  fname:'Martin',  lname:'Tabi',      email:'mtabi@jatec.cm',  phone:'677002013',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F5B',subject:'Geology'},{cls:'LSS',subject:'Geology'},{cls:'USS',subject:'Geology'}] },
-  { id:'t14', code:'LOG 30',   fname:'Rachel',  lname:'Awa',       email:'rawa@jatec.cm',   phone:'677002014',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F4A',subject:'Logic'},{cls:'LSS',subject:'Logic'},{cls:'USS',subject:'Logic'}] },
-  { id:'t15', code:'CITZ 23',  fname:'Francis', lname:'Njong',     email:'fnjong@jatec.cm', phone:'677002015',
-    availability:{ Monday:[1,2,3,5,6,7,8], Tuesday:[1,2,3,5,6,7,8], Wednesday:[1,2,3,5,6,7,8], Thursday:[1,2,3,5,6,7,8], Friday:[1,2,3,5,6,7,8] },
-    assignments:[{cls:'F1',subject:'Citizenship'},{cls:'F2',subject:'Citizenship'},{cls:'F3',subject:'Citizenship'}] },
-
-  // ── Sixth Form (L6/U6) test teachers — see SIXTH_FORM_TEST_TEACHERS below ──
-  ...SIXTH_FORM_TEST_TEACHERS,
 ]);
 
 // timetable slots: { id, cls, day, slotId, teacherId, subject, term }
@@ -2976,6 +2940,72 @@ function renderTimetable() {
   var teachSlots= timeSlots.filter(function(s){ return !s.isBreak; });
   var isTeacher = currentUser && currentUser.role === 'teacher';
   var classes   = loadCustomClasses();
+  var selCls    = document.getElementById('tt-class-select')?.value || '';
+
+  var titleEl = document.getElementById('tt-panel-title');
+
+  if (selCls) {
+    // ── SINGLE-CLASS VIEW: rows = days, columns = time slots ──
+    if (titleEl) titleEl.textContent = 'Timetable — ' + selCls;
+
+    var timeHeaders2 = timeSlots.map(function(s){
+      if(s.isBreak) return '<th class="th-time jt-break-cell" style="background:#fffde7;color:#888">' + s.start + '<br>' + s.end + '</th>';
+      return '<th class="th-time">' + s.start + '<br>' + s.end + '</th>';
+    }).join('');
+
+    var html2 = '<table class="jt-table">' +
+      '<thead><tr>' +
+      '<th style="width:64px">DAY</th>' +
+      '<th style="width:50px">PREPS</th>' +
+      timeHeaders2 +
+      '</tr></thead><tbody>';
+
+    DAYS.forEach(function(day){
+      var cells2 = timeSlots.map(function(slot){
+        if(slot.isBreak){
+          return '<td class="jt-break-cell">' + slot.label + '</td>';
+        }
+        var s = ttSlots.find(function(x){
+          return x.cls === selCls && x.day === day && x.slotId === slot.id && x.term === term;
+        });
+        if(s){
+          var t = teachers.find(function(x){ return x.id === s.teacherId; });
+          var tDisplay = t ? (t.fname.charAt(0) + '. ' + t.lname) : '?';
+          var subjDisplay = s.subject || '';
+          var removeBtn = !isTeacher ? '<span class="jt-remove" onclick="removeTTSlot(\''+s.id+'\')">✕</span>' : '';
+          return '<td class="jt-slot">' +
+            '<div class="jt-slot-inner">' +
+              '<span class="jt-subj">' + subjDisplay + '</span>' +
+              '<span class="jt-teacher">' + tDisplay + '</span>' +
+            '</div>' + removeBtn + '</td>';
+        }
+        if(!isTeacher){
+          return '<td class="jt-slot" onclick="openTTAssign(\''+selCls+'\',\''+day+'\','+slot.id+','+term+')">' +
+            '<div class="jt-slot-inner free">X</div></td>';
+        }
+        return '<td class="jt-slot"><div class="jt-slot-inner free">X</div></td>';
+      }).join('');
+
+      var prepsSlot2 = ttSlots.find(function(x){ return x.cls===selCls && x.day===day && x.term===term && x.subject==='PREPS'; });
+      var prepsCode2 = prepsSlot2 ? (function(){
+        var t=teachers.find(function(x){return x.id===prepsSlot2.teacherId;});
+        return t ? (t.code||'') : '';
+      })() : 'PREPS';
+
+      html2 += '<tr>' +
+        '<td class="jt-day-cell" style="writing-mode:horizontal-tb;transform:none;min-width:64px">' + day + '</td>' +
+        '<td class="jt-preps-cell">' + prepsCode2 + '</td>' +
+        cells2 +
+        '</tr>';
+    });
+
+    html2 += '</tbody></table>';
+    document.getElementById('timetable-wrap').innerHTML = html2;
+    return;
+  }
+
+  // ── ALL CLASSES VIEW (full school grid) ──
+  if (titleEl) titleEl.textContent = 'Weekly Timetable — All Classes';
 
   // Header row: DAY | CLASS | PREPS | time1 | time2 | ...
   var timeHeaders = timeSlots.map(function(s){
@@ -2997,28 +3027,34 @@ function renderTimetable() {
         if(slot.isBreak){
           return '<td class="jt-break-cell">' + (ci === 0 ? slot.label : '') + '</td>';
         }
-        // Get slot(s) for this class/day/slotId/term
-        var s = ttSlots.find(function(x){
+        // Get ALL slot entries for this class/day/slotId/term (supports combined/split periods)
+        var entries = ttSlots.filter(function(x){
           return x.cls === cls && x.day === day && x.slotId === slot.id && x.term === term;
         });
-        if(s){
+
+        var entriesHtml = entries.map(function(s){
           var t = teachers.find(function(x){ return x.id === s.teacherId; });
-          // Display: subject code/name on top, teacher initial+lastname below (like image: "A. Nkwenti")
           var tDisplay = t ? (t.fname.charAt(0) + '. ' + t.lname) : '?';
-          var subjDisplay = s.subject || '';
           var removeBtn = !isTeacher ? '<span class="jt-remove" onclick="removeTTSlot(\''+s.id+'\')">✕</span>' : '';
-          return '<td class="jt-slot">' +
-            '<div class="jt-slot-inner">' +
-              '<span class="jt-subj">' + subjDisplay + '</span>' +
-              '<span class="jt-teacher">' + tDisplay + '</span>' +
-            '</div>' + removeBtn + '</td>';
+          return '<div class="jt-cell-entry">' +
+            '<strong class="jt-subj">' + (s.subject||'') + '</strong>' +
+            '<span class="jt-teacher">' + tDisplay + '</span>' +
+            removeBtn +
+            '</div>';
+        }).join('');
+
+        var canAddMore = !isTeacher && entries.length < MAX_PARALLEL_PER_CLASS;
+        var addBtn = canAddMore
+          ? '<div class="jt-add-more" onclick="openTTAssign(\''+cls+'\',\''+day+'\','+slot.id+','+term+')" title="Add another subject to this slot (combined period)">' +
+              (entries.length ? '+ Add' : 'X') +
+            '</div>'
+          : '';
+
+        if (entries.length === 0 && isTeacher) {
+          return '<td class="jt-slot"><div class="jt-slot-inner free">X</div></td>';
         }
-        // Empty — clickable if admin
-        if(!isTeacher){
-          return '<td class="jt-slot" onclick="openTTAssign(\''+cls+'\',\''+day+'\','+slot.id+','+term+')">' +
-            '<div class="jt-slot-inner free">X</div></td>';
-        }
-        return '<td class="jt-slot"><div class="jt-slot-inner free">X</div></td>';
+
+        return '<td class="jt-slot" style="vertical-align:top">' + entriesHtml + addBtn + '</td>';
       }).join('');
 
       // PREPS cell
@@ -3040,6 +3076,26 @@ function renderTimetable() {
 
   html += '</tbody></table>';
   document.getElementById('timetable-wrap').innerHTML = html;
+}
+
+function printTimetable() {
+  // Inject a temporary @page rule forcing landscape (works across Chrome, Firefox, Edge)
+  var styleId = 'tt-print-landscape-style';
+  var existing = document.getElementById(styleId);
+  if (existing) existing.remove();
+  var style = document.createElement('style');
+  style.id = styleId;
+  style.media = 'print';
+  style.textContent = '@page { size: A4 landscape; margin: 10mm; }';
+  document.head.appendChild(style);
+
+  window.print();
+
+  // Clean up after the print dialog closes so other pages keep portrait
+  setTimeout(function() {
+    var s = document.getElementById(styleId);
+    if (s) s.remove();
+  }, 1000);
 }
 
 function clearTimetable() {
@@ -3071,21 +3127,14 @@ function ensureCompulsorySlots(term) {
         });
       }
       if (!teacher) return; // No teacher available for this subject
-      // Find a free slot
+      // Find a free slot — use the same combined-period-aware placement logic
       var teachSlots = getTeachingSlots();
       outer: for (var di=0; di<DAYS.length; di++) {
         var day = DAYS[di];
         var avail = (teacher.availability[day]||[]);
         for (var si=0; si<avail.length; si++) {
           var slotId = avail[si];
-          var slot = teachSlots.find(function(x){return x.id===slotId;});
-          if (!slot) continue;
-          var teacherBusy = ttSlots.find(function(s){return s.teacherId===teacher.id&&s.day===day&&s.slotId===slotId&&s.term===term;});
-          var classBusy   = ttSlots.find(function(s){return s.cls===cls&&s.day===day&&s.slotId===slotId&&s.term===term;});
-          var slotFull    = ttSlots.filter(function(s){return s.day===day&&s.slotId===slotId&&s.term===term;}).length >= 3;
-          var noPairConf  = coreSubjectConflict(day, slotId, term, subj);
-          if (!teacherBusy && !classBusy && !slotFull && !noPairConf) {
-            ttSlots.push({id:'tt'+Date.now()+Math.random().toString(36).slice(2,5), cls:cls, day:day, slotId:slotId, teacherId:teacher.id, subject:subj, term:term});
+          if (_tryPlace(cls, subj, day, slotId, teacher.id, term, teachSlots)) {
             break outer;
           }
         }
@@ -3146,26 +3195,56 @@ function renderTeachers() {
       : 60;
 
     const totalPeriodsPlanned = (t.assignments || []).reduce((sum, a) => sum + (a.periodsPerWeek || 2), 0);
-    const totalHrsPlanned = ((totalPeriodsPlanned * avgPeriodMins) / 60).toFixed(1);
+    const totalHrsPlanned     = ((totalPeriodsPlanned * avgPeriodMins) / 60).toFixed(1);
 
-    // Actual placed slots on the timetable (may be less if not yet auto-generated)
-    const teacherSlots = ttSlots.filter(s => s.teacherId === t.id);
-    const slotCount = teacherSlots.length;
+    // Actual placed slots on the timetable (count per term 1 only for display)
+    const placedTerm1  = ttSlots.filter(s => s.teacherId === t.id && s.term === 1);
+    const slotCount    = placedTerm1.length;
+    const placedHrs    = ((slotCount * avgPeriodMins) / 60).toFixed(1);
+    const unplacedPeriods = Math.max(0, totalPeriodsPlanned - slotCount);
+    const unplacedHrs     = ((unplacedPeriods * avgPeriodMins) / 60).toFixed(1);
+
+    // Per-assignment placement status
+    const assignStatus = (t.assignments || []).map(a => {
+      const placed = placedTerm1.filter(s => s.cls === a.cls && s.subject === a.subject).length;
+      const target = a.periodsPerWeek || 2;
+      const short  = target - placed;
+      if (short <= 0) {
+        return `<span class="pill pill-class" style="background:#e6f4ea;color:#1a7a3a;border:1px solid #b6dfc2">
+          ${a.cls}: ${a.subject} ✓ ${placed}/${target}p
+        </span>`;
+      } else if (placed === 0) {
+        return `<span class="pill pill-class" style="background:#fff0f0;color:#cc0000;border:1px solid #ffb3b3">
+          ${a.cls}: ${a.subject} ✗ 0/${target}p — not plotted
+        </span>`;
+      } else {
+        return `<span class="pill pill-class" style="background:#fff8e1;color:#b85c00;border:1px solid #ffd54f">
+          ${a.cls}: ${a.subject} ⚠ ${placed}/${target}p — ${short}p missing
+        </span>`;
+      }
+    }).join('');
+
+    // Summary line
+    let summaryHtml = '';
+    if (totalPeriodsPlanned === 0) {
+      summaryHtml = '<span style="font-size:.72rem;color:var(--muted)">No subjects assigned</span>';
+    } else if (slotCount === 0) {
+      summaryHtml = `<span style="font-size:.72rem;color:var(--sky);font-weight:600">${totalPeriodsPlanned}p/wk planned · ${totalHrsPlanned} hrs</span>
+        <br><span style="font-size:.72rem;color:#cc0000;font-weight:600">⚠ 0 periods plotted — not yet on timetable</span>`;
+    } else if (unplacedPeriods === 0) {
+      summaryHtml = `<span style="font-size:.72rem;color:#1a7a3a;font-weight:600">✓ ${slotCount}/${totalPeriodsPlanned}p plotted · ${placedHrs} hrs/wk</span>`;
+    } else {
+      summaryHtml = `<span style="font-size:.72rem;color:var(--sky);font-weight:600">${slotCount}/${totalPeriodsPlanned}p plotted · ${placedHrs} hrs/wk</span>
+        <br><span style="font-size:.72rem;color:#cc3300;font-weight:600">⚠ ${unplacedPeriods}p (${unplacedHrs} hrs) could not be plotted</span>`;
+    }
 
     return `<tr>
       <td>
         <strong>${t.fname} ${t.lname}</strong>
         ${t.code ? `<br><span style="font-family:monospace;font-size:.75rem;background:var(--navy);color:#fff;padding:1px 6px;border-radius:4px">${t.code}</span>` : ''}
-        ${totalPeriodsPlanned > 0
-          ? `<br><span style="font-size:.72rem;color:var(--sky);font-weight:600">${totalPeriodsPlanned} periods/wk · ${totalHrsPlanned} hrs/week</span>`
-          : '<br><span style="font-size:.72rem;color:var(--muted)">No subjects assigned</span>'
-        }
-        ${slotCount > 0 && slotCount !== totalPeriodsPlanned
-          ? `<br><span style="font-size:.68rem;color:var(--muted)">${slotCount} of ${totalPeriodsPlanned} placed on timetable</span>`
-          : ''
-        }
+        <br>${summaryHtml}
       </td>
-      <td><div class="pill-list">${assignments || '<span style="color:var(--muted);font-size:.8rem">None assigned</span>'}</div></td>
+      <td><div class="pill-list">${assignStatus || '<span style="color:var(--muted);font-size:.8rem">None assigned</span>'}</div></td>
       <td><div class="pill-list">${activeDays || '<span style="color:var(--muted);font-size:.8rem">—</span>'}</div></td>
       <td>${t.phone || '—'}</td>
       <td>
@@ -3567,6 +3646,16 @@ function saveTeacher() {
   renderAll();
 }
 
+function clearAllTeachers() {
+  if (!confirm('Delete ALL teachers and their timetable slots? This cannot be undone.')) return;
+  teachers = [];
+  ttSlots  = [];
+  save('sm_teachers', []);
+  save('sm_ttslots',  []);
+  renderAll();
+  showToast('All teachers and timetable slots deleted ✓');
+}
+
 function deleteTeacher(id) {
   const t = teachers.find(x => x.id === id);
   if (!t) return;
@@ -3678,26 +3767,81 @@ function handleImportFileSelect(evt) {
   if (!file) return;
   document.getElementById('import-file-name').textContent = file.name;
 
+  if (typeof XLSX === 'undefined') {
+    showToast('⛔ Excel/CSV library failed to load — check your internet connection and try again');
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
-      let rows;
-      if (file.name.toLowerCase().endsWith('.csv')) {
-        // Parse CSV via SheetJS too (handles quotes/commas reliably)
-        const wb = XLSX.read(e.target.result, { type: 'binary' });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-      } else {
-        const wb = XLSX.read(e.target.result, { type: 'binary' });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-      }
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, { type: 'array', cellDates: true });
+      if (!wb.SheetNames.length) throw new Error('No sheets found in file');
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      // Read as raw arrays first so we can validate/repair the header row
+      const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false });
+      const rows = buildRowObjects(aoa);
       processImportRows(rows);
     } catch (err) {
+      console.error('Import error:', err);
       showToast('⛔ Could not read file: ' + err.message);
     }
   };
-  reader.readAsBinaryString(file);
+  reader.onerror = function() {
+    showToast('⛔ Failed to read the file — please try again');
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// Expected column order for the standard import/export template
+const IMPORT_EXPECTED_HEADERS = ['First Name','Last Name','Code','Email','Phone','Class','Subject','Periods/Week'];
+
+function _normHeader(s) {
+  return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+
+// Convert array-of-arrays (with raw header row) into array of row objects,
+// falling back to positional column mapping if the header row is malformed
+// (e.g. one cell contains the entire dataset dumped as a single string).
+function buildRowObjects(aoa) {
+  if (!aoa || !aoa.length) return [];
+  const headerRow = aoa[0] || [];
+  const dataRows  = aoa.slice(1);
+
+  const expectedNorm = IMPORT_EXPECTED_HEADERS.map(_normHeader);
+
+  // Count how many columns match the expected header at the SAME position
+  let positionalMatches = 0;
+  for (let i = 0; i < Math.min(headerRow.length, expectedNorm.length); i++) {
+    if (_normHeader(headerRow[i]) === expectedNorm[i]) positionalMatches++;
+  }
+
+  let columnMap; // array: columnMap[i] = field name for column i (or null)
+
+  if (positionalMatches >= 4) {
+    // Majority of columns align with the expected template positionally —
+    // trust positional mapping for ALL columns (repairs a corrupted/garbage cell).
+    columnMap = headerRow.map((_, i) => IMPORT_EXPECTED_HEADERS[i] || null);
+  } else {
+    // Fall back to matching header names wherever they appear
+    columnMap = headerRow.map(h => {
+      const norm = _normHeader(h);
+      const idx = expectedNorm.indexOf(norm);
+      return idx >= 0 ? IMPORT_EXPECTED_HEADERS[idx] : h; // keep original header text if unmatched
+    });
+  }
+
+  return dataRows
+    .filter(r => r.some(c => String(c).trim() !== '')) // skip fully blank rows
+    .map(r => {
+      const obj = {};
+      columnMap.forEach((field, i) => {
+        if (!field) return;
+        obj[field] = r[i] !== undefined ? r[i] : '';
+      });
+      return obj;
+    });
 }
 
 // Find a value in a row regardless of header casing/spacing
@@ -3869,51 +4013,84 @@ function confirmImportTeachers() {
 function autoGenerateSlots(teacherId, assignments, availability, term) {
   term = term || 1;
   const teachSlots = getTeachingSlots();
+
+  // Build a flat list of all available (day, slotId) combos for this teacher
+  // sorted to spread across the week naturally (interleave days)
+  function getAvailCombos() {
+    // Build columns: combos[slotIndex] = [Mon, Tue, Wed, Thu, Fri] for that slot
+    // Interleave so we cycle Mon->Tue->Wed->Thu->Fri across periods
+    const byDay = {};
+    DAYS.forEach(day => {
+      byDay[day] = (availability[day] || []).filter(id => teachSlots.find(s => s.id === id));
+    });
+    const maxSlots = Math.max(...DAYS.map(d => byDay[d].length), 0);
+    const combos = [];
+    for (let i = 0; i < maxSlots; i++) {
+      for (const day of DAYS) {
+        if (i < byDay[day].length) combos.push({ day, slotId: byDay[day][i] });
+      }
+    }
+    return combos;
+  }
+
   assignments.forEach(function({ cls, subject, periodsPerWeek }) {
     const target = periodsPerWeek || 2;
     let placed = 0;
-    // Pass 1: spread across distinct days (max 1 per day)
-    for (const day of DAYS) {
+    const usedDays = new Set(); // for first pass: 1 per day preference
+
+    const combos = getAvailCombos();
+
+    // Pass 1: prefer one placement per day, spread across the week
+    for (const { day, slotId } of combos) {
       if (placed >= target) break;
-      const availSlotIds = (availability[day] || []);
-      for (const slotId of availSlotIds) {
-        const slot = teachSlots.find(s => s.id === slotId);
-        if (!slot) continue;
-        const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
-        const classBusy   = ttSlots.find(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
-        const slotFull    = ttSlots.filter(s => s.day === day && s.slotId === slotId && s.term === term).length >= 3;
-        const coreConf    = isCoreSubject(subject) && coreSubjectConflict(day, slotId, term, subject);
-        if (!teacherBusy && !classBusy && !slotFull && !coreConf) {
-          ttSlots.push({ id:'tt'+Date.now()+Math.random().toString(36).slice(2,5), cls, day, slotId, teacherId, subject, term });
-          placed++;
-          break;
-        }
+      if (usedDays.has(day)) continue; // max 1 per day in pass 1
+      if (_tryPlace(cls, subject, day, slotId, teacherId, term, teachSlots)) {
+        placed++;
+        usedDays.add(day);
       }
     }
-    // Pass 2: if target not yet reached (periodsPerWeek > 5), allow a second slot on the same day
+
+    // Pass 2: fill remaining (allow >1 per day, but not same day+slot twice)
     if (placed < target) {
-      for (const day of DAYS) {
+      for (const { day, slotId } of combos) {
         if (placed >= target) break;
-        const availSlotIds = (availability[day] || []);
-        for (const slotId of availSlotIds) {
-          const slot = teachSlots.find(s => s.id === slotId);
-          if (!slot) continue;
-          // Skip if this exact day+slot already used for this cls+subject (avoid duplicate same slot)
-          const alreadyUsedThisCombo = ttSlots.some(s => s.teacherId===teacherId && s.cls===cls && s.subject===subject && s.day===day && s.slotId===slotId && s.term===term);
-          if (alreadyUsedThisCombo) continue;
-          const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
-          const classBusy   = ttSlots.find(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
-          const slotFull    = ttSlots.filter(s => s.day === day && s.slotId === slotId && s.term === term).length >= 3;
-          const coreConf    = isCoreSubject(subject) && coreSubjectConflict(day, slotId, term, subject);
-          if (!teacherBusy && !classBusy && !slotFull && !coreConf) {
-            ttSlots.push({ id:'tt'+Date.now()+Math.random().toString(36).slice(2,5), cls, day, slotId, teacherId, subject, term });
-            placed++;
-            break;
-          }
+        if (_tryPlace(cls, subject, day, slotId, teacherId, term, teachSlots)) {
+          placed++;
         }
       }
     }
   });
+}
+
+// Helper: run all checks and place if valid. Returns true if placed.
+// Supports COMBINED PERIODS: a class can have more than one subject/teacher
+// running in the same day+slot (e.g. a split stream, or "Lit/Mme Ayuk + Geo/DJEUTCHIN"
+// running side by side) — up to MAX_PARALLEL_PER_CLASS distinct subjects.
+const MAX_PARALLEL_PER_CLASS = 3; // how many subjects can run simultaneously for ONE class (combined/split period)
+
+function _tryPlace(cls, subject, day, slotId, teacherId, term, teachSlots) {
+  const slot = teachSlots.find(s => s.id === slotId);
+  if (!slot) return false;
+
+  const teacherBusy = ttSlots.some(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
+
+  // Existing entries for THIS class at this exact day+slot+term
+  const classEntriesHere = ttSlots.filter(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
+
+  // Block if this class already has this exact subject at this slot (no duplicate subject)
+  const sameSubjectAlready = classEntriesHere.some(s => s.subject === subject);
+
+  // Block if this class+slot already has the max number of parallel subjects
+  const classSlotFull = classEntriesHere.length >= MAX_PARALLEL_PER_CLASS;
+
+  const coreConf  = isCoreSubject(subject) && coreSubjectConflict(day, slotId, term, subject);
+  const duplicate = ttSlots.some(s => s.teacherId === teacherId && s.cls === cls && s.subject === subject && s.day === day && s.slotId === slotId && s.term === term);
+
+  if (!teacherBusy && !sameSubjectAlready && !classSlotFull && !coreConf && !duplicate) {
+    ttSlots.push({ id:'tt'+Date.now()+Math.random().toString(36).slice(2,6), cls, day, slotId, teacherId, subject, term });
+    return true;
+  }
+  return false;
 }
 
 // ── Timetable slot management ─────────────────────────────
@@ -4020,13 +4197,15 @@ function confirmTTAssign() {
   const teacherBusy = ttSlots.find(s => s.teacherId === teacherId && s.day === day && s.slotId === slotId && s.term === term);
   if (teacherBusy) return showToast(`⛔ This teacher is already teaching ${teacherBusy.cls} at this slot`);
 
-  // V2: class already has a subject in this slot
-  const classBusy = ttSlots.find(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
-  if (classBusy) return showToast(`⛔ ${cls} already has ${classBusy.subject} in this slot`);
+  // V2: this class already has THIS SAME subject in this slot (no exact duplicate)
+  const classEntriesHere = ttSlots.filter(s => s.cls === cls && s.day === day && s.slotId === slotId && s.term === term);
+  const sameSubjectAlready = classEntriesHere.find(s => s.subject === subject);
+  if (sameSubjectAlready) return showToast(`⛔ ${cls} already has ${subject} in this slot`);
 
-  // V3: max 3 subjects per slot
-  const slotCount = ttSlots.filter(s => s.day === day && s.slotId === slotId && s.term === term).length;
-  if (slotCount >= 3) return showToast('⛔ Maximum 3 subjects can run simultaneously in one period');
+  // V3: max parallel subjects for THIS class in this slot (combined/split period cap)
+  if (classEntriesHere.length >= MAX_PARALLEL_PER_CLASS) {
+    return showToast(`⛔ ${cls} already has ${MAX_PARALLEL_PER_CLASS} subjects running in parallel at this slot (maximum for a combined period)`);
+  }
 
   // V4: no-pair conflict
   if (coreSubjectConflict(day, slotId, term, subject)) {
@@ -4337,23 +4516,36 @@ function doLogin() {
   if (migrated) save('sm_staff_accounts', staffAccounts);
   currentUser = staffAccounts.find(function(a) { return a.id === account.id; });
 
-  // ── Migration: merge in Sixth Form (L6/U6) test teachers if not already present ──
+  // ── Migration: merge in Sixth Form + LSA test teachers if not already present ──
+  // (Arrays are empty by default — populate via Teachers → Import CSV/Excel)
   let teachersMigrated = false;
-  SIXTH_FORM_TEST_TEACHERS.forEach(function(tt) {
+  let newlyAddedTeachers = [];
+  SIXTH_FORM_TEST_TEACHERS.concat(LSA_TEST_TEACHERS).forEach(function(tt) {
     if (!teachers.find(function(t) { return t.id === tt.id; })) {
       teachers.push(tt);
+      newlyAddedTeachers.push(tt);
       teachersMigrated = true;
     }
   });
-  if (teachersMigrated) {
+  if (teachersMigrated && newlyAddedTeachers.length) {
     save('sm_teachers', teachers);
-    // Also ensure L6A/L6S/U6A/U6S classes and the new subject codes exist
+    // Ensure all relevant classes exist (Sixth Form + LSA)
     const cls = loadCustomClasses();
-    ['L6A','L6S','U6A','U6S'].forEach(c => { if (!cls.includes(c)) cls.push(c); });
+    ['L6A','L6S','U6A','U6S','LSA'].forEach(c => { if (!cls.includes(c)) cls.push(c); });
     save('sm_custom_classes', cls);
+    // Ensure all subject codes exist
     const subs = loadSubjects();
     ['ENG','LIT','FRE','GEO','ECO','HIS','PHIL','CSCI','BIO','CHE','PHY','C.S','GEOL','A.MA'].forEach(s => { if (!subs.includes(s)) subs.push(s); });
     save('sm_subjects', subs);
+
+    // Immediately fill the timetable for these new teachers across all 3 terms
+    // so their classes (including LSA) have no empty periods left.
+    [1, 2, 3].forEach(function(term) {
+      newlyAddedTeachers.forEach(function(t) {
+        autoGenerateSlots(t.id, t.assignments || [], t.availability || {}, term);
+      });
+    });
+    save('sm_ttslots', ttSlots);
   }
 
   document.getElementById('login-screen').classList.add('hidden');
@@ -4923,15 +5115,17 @@ function renderCustomClassList() {
 function populateAllClassDropdowns() {
   const cls = loadCustomClasses();
   const opts = cls.map(c => `<option>${c}</option>`).join('');
-  const ids = ['grades-class','tt-class','class-filter','s-class','es-class',
+  const ids = ['grades-class','tt-class','tt-class-select','class-filter','s-class','es-class',
                 'report-class-sel'];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    const isFilter = id === 'class-filter' || id === 'tt-class' || id === 'report-class-sel';
+    const isFilter = id === 'class-filter' || id === 'tt-class' || id === 'tt-class-select' || id === 'report-class-sel';
     const prefix = isFilter ? '<option value="">All Classes</option>' : '';
     const blank  = (!isFilter && id === 'grades-class') ? '<option value="">— Select Class —</option>' : '';
+    const cur = el.value;
     el.innerHTML = (prefix || blank) + opts;
+    if (cur && [...el.options].some(o => o.value === cur)) el.value = cur;
   });
   renderCustomClassList();
 }
