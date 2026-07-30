@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>ScholarSys — Admin Overview</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> <link rel="preconnect" href="https://fonts.googleapis.com" /> <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" /> <style>
+<head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>ScholarSys — Admin Overview</title> <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script> <link rel="preconnect" href="https://fonts.googleapis.com" /> <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" /> <style>
  /* ── Reset & Variables ──────────────────────────────── */
  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -866,6 +866,11 @@
  border-top:1px dashed #ccc; margin-top:8px;
  }
 
+ /* Always hidden on screen — a base rule, not just the inline style, so a
+ JS toggle that only manages a class (see .has-watermark below) can never
+ accidentally leave this visible outside of print. */
+ .print-watermark { display: none; }
+
  /* ── Print: clean layout, visible borders ── */
  @media print {
  /* Hide app chrome */
@@ -882,8 +887,10 @@
  /* Letterhead: ONLY via .page-lh-inject — suppress all other letterhead elements */
  .letterhead, .letterhead-print-top, #tt-print-header { display:none !important; }
 
- /* ── WATERMARK ─────────────────────────────────────────── */
- .print-watermark {
+ /* ── WATERMARK ───────────────────────────────────────────
+ Only shows when a logo is actually set (.has-watermark, toggled in JS) —
+ otherwise this would print an empty box for schools with no logo yet. */
+ .print-watermark.has-watermark {
  display: block !important;
  position: fixed;
  top: 50%;
@@ -1665,7 +1672,7 @@
 </head>
 <body>
 <!-- Watermark: hidden on screen, visible as faint logo when printing -->
-<div class="print-watermark" id="print-watermark" style="display:none"> <img id="watermark-img" src="" alt="" />
+<div class="print-watermark" id="print-watermark"> <img id="watermark-img" src="" alt="" />
 </div> <!-- ═══════════════════════════════════════════════════════ LOGIN -->
 <div class="login-screen" id="login-screen"> <div class="login-card">
     <!-- School logo — loaded from Settings > Letterhead -->
@@ -1794,8 +1801,8 @@
   </div>
 </div>
 
-<!-- ═══════════ STUDENTS PAGE --> <div class="page" id="page-students"> <div class="search-bar"> <input type="text" id="student-search" placeholder="Search by name or ID…" oninput="filterStudents()" /> <select id="class-filter" onchange="filterStudents()"> <option value="">All Classes</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">All Students</span> <span class="panel-title" style="color:var(--muted);font-weight:400" id="student-count"></span> </div> <div class="panel-body"> <table> <thead> <tr><th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Actions</th></tr> </thead> <tbody id="students-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ CLASS LIST / MARK SHEET PAGE --> <div class="page" id="page-grades"> <!-- Print letterhead placeholder (pulls from global letterhead) --> <div id="classlist-print-header" style="display:none"></div> <div class="classlist-toolbar no-print"> <select id="grades-class" onchange="renderClassList()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="grades-term" onchange="renderClassList()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="grades-subject" onchange="renderClassList()"> <option value="">— Select Subject —</option> <option>Mathematics</option><option>English Language</option> <option>Physics</option><option>Chemistry</option> <option>Biology</option><option>Computer Science</option> <option>History</option><option>Geography</option> <option>French</option><option>Economics</option> <option>ICT</option> </select> <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" /> <select id="grades-seq" onchange="renderClassList()" title="Each term has 2 sequences" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="window.print()"> Print</button> </div> <!-- Formula bar — admin only --> <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end"> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>CA Max Score</label> <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Exam Max Score</label> <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Default Coeff</label> <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" /> </div> <div style="font-size:.78rem;color:var(--muted);align-self:center">
- Total/100 = CA + Exam &nbsp;|&nbsp; Total/20 = (Total/100 ÷ 100) × 20 &nbsp;|&nbsp; G.Total = Total/20 × Coeff </div> </div> <div class="mark-sheet" id="mark-sheet-container"> <div class="mark-sheet-header"> <div> <div style="font-family:var(--serif);font-size:1.1rem;color:var(--navy)" id="cl-title">Class List</div> <div style="font-size:.78rem;color:var(--muted)" id="cl-subtitle">Select a class and subject above</div> </div> <div style="font-size:.78rem;color:var(--muted);text-align:right" id="cl-meta"></div> </div> <div style="overflow-x:auto"> <table class="mark-table" id="mark-table"> <thead> <tr> <th style="width:36px">No</th> <th style="text-align:left;min-width:180px">Names and First Name</th> <th style="width:36px">Sex</th> <th id="th-ca" style="width:60px">CA/<span id="th-ca-max">30</span></th> <th id="th-exam" style="width:70px">Exam/<span id="th-exam-max">70</span></th> <th style="width:70px">Total/100</th> <th style="width:60px">Total/20</th> <th style="width:50px">Coeff</th> <th style="width:60px">G.Total</th> </tr> </thead> <tbody id="classlist-body"> <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr> </tbody> </table> <div id="classlist-avg" style="padding:8px 14px;border-top:1px solid var(--border);background:#f9fafb"></div> </div> </div> </div> <!-- ═══════════ TIMETABLE PAGE --> <div class="page" id="page-timetable"> <div class="search-bar no-print"> <select id="tt-class-select" onchange="renderTimetable()"> <option value="">All Classes</option> </select> <button id="btn-tt-generate" class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()"> Auto-Generate</button> <button id="btn-tt-clear" class="btn btn-ghost no-print" onclick="clearTimetable()"> Clear All</button> <button class="btn btn-ghost no-print" onclick="fixConsecutiveViolations()" title="Find and move any Form 1-5 subject running more than 2 straight periods">Fix 3-in-a-row</button> <button class="btn btn-ghost no-print" onclick="printTimetable()"> Print View</button> <button class="btn btn-ghost no-print" onclick="printAllClassTimetables()"> Print All Classes</button> </div> <div class="panel" style="overflow-x:auto"> <div class="panel-header no-print"> <span class="panel-title" id="tt-panel-title">Weekly Timetable</span> <span id="tt-panel-hint" style="font-size:.78rem;color:var(--muted)">Click any cell to assign ·  to remove</span> </div> <div id="timetable-wrap" style="overflow-x:auto;font-size:.72rem"></div> </div> <!-- Subject Coverage Summary --> <div class="panel no-print" id="coverage-panel-section" style="margin-top:18px"> <div class="panel-header"> <span class="panel-title"> Subject Coverage — Periods Plotted Per Class</span> <div style="display:flex;gap:8px;align-items:center"> <select id="coverage-class-filter" onchange="renderCoverage()" style="font-size:.78rem"> <option value="">All Classes</option> </select> <button class="btn btn-ghost" style="font-size:.72rem;padding:3px 8px" onclick="renderCoverage()"> Refresh</button> </div> </div> <div style="padding:14px;overflow-x:auto"> <div id="coverage-wrap"></div> </div> </div> </div> <!-- ═══════════ REPORTS PAGE --> <div class="page" id="page-reports"> <div class="search-bar no-print"> <select id="report-mode" onchange="toggleReportMode()"> <option value="individual">Individual Student</option> <option value="class">Entire Class</option> </select> <select id="report-student" style="display:block" onchange="updateEnrolledCount()"> <option value="">Select student…</option> </select> <select id="report-class-sel" style="display:none" onchange="updateEnrolledCount()"> <option value="">— Select Class —</option> </select> <select id="report-term"> <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option> </select> <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" /> <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px;background:#f0f4f9;border-color:#b3d1f0" min="1" value="0" readonly title="Auto-calculated from students in this class" /> <button class="btn btn-primary" onclick="generateReport()">Generate</button> <button class="btn btn-ghost" onclick="window.print()"> Print</button> </div> <div id="report-output"></div> </div> <!-- ═══════════ PAYMENTS PAGE --> <div class="page" id="page-payments">
+<!-- ═══════════ STUDENTS PAGE --> <div class="page" id="page-students"> <div class="search-bar"> <input type="text" id="student-search" placeholder="Search by name or ID…" oninput="filterStudents()" /> <select id="class-filter" onchange="filterStudents()"> <option value="">All Classes</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">All Students</span> <span class="panel-title" style="color:var(--muted);font-weight:400" id="student-count"></span> </div> <div class="panel-body"> <table> <thead> <tr><th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Actions</th></tr> </thead> <tbody id="students-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ CLASS LIST / MARK SHEET PAGE --> <div class="page" id="page-grades"> <div class="classlist-toolbar no-print"> <select id="grades-class" onchange="renderClassList()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="grades-term" onchange="renderClassList()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="grades-subject" onchange="renderClassList()"> <option value="">— Select Subject —</option> <option>Mathematics</option><option>English Language</option> <option>Physics</option><option>Chemistry</option> <option>Biology</option><option>Computer Science</option> <option>History</option><option>Geography</option> <option>French</option><option>Economics</option> <option>ICT</option> </select> <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" /> <select id="grades-seq" onchange="renderClassList()" title="Each term has 2 sequences" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> </div> <!-- Formula bar — admin only --> <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end"> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>CA Max Score</label> <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Exam Max Score</label> <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Default Coeff</label> <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" /> </div> <div style="font-size:.78rem;color:var(--muted);align-self:center">
+ Total/100 = CA + Exam &nbsp;|&nbsp; Total/20 = (Total/100 ÷ 100) × 20 &nbsp;|&nbsp; G.Total = Total/20 × Coeff </div> </div> <div class="mark-sheet" id="mark-sheet-container"> <div class="mark-sheet-header"> <div> <div style="font-family:var(--serif);font-size:1.1rem;color:var(--navy)" id="cl-title">Class List</div> <div style="font-size:.78rem;color:var(--muted)" id="cl-subtitle">Select a class and subject above</div> </div> <div style="font-size:.78rem;color:var(--muted);text-align:right" id="cl-meta"></div> </div> <div style="overflow-x:auto"> <table class="mark-table" id="mark-table"> <thead> <tr> <th style="width:36px">No</th> <th style="text-align:left;min-width:180px">Names and First Name</th> <th style="width:36px">Sex</th> <th id="th-ca" style="width:60px">CA/<span id="th-ca-max">30</span></th> <th id="th-exam" style="width:70px">Exam/<span id="th-exam-max">70</span></th> <th style="width:70px">Total/100</th> <th style="width:60px">Total/20</th> <th style="width:50px">Coeff</th> <th style="width:60px">G.Total</th> </tr> </thead> <tbody id="classlist-body"> <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr> </tbody> </table> <div id="classlist-avg" style="padding:8px 14px;border-top:1px solid var(--border);background:#f9fafb"></div> </div> </div> </div> <!-- ═══════════ TIMETABLE PAGE --> <div class="page" id="page-timetable"> <div class="search-bar no-print"> <select id="tt-class-select" onchange="renderTimetable()"> <option value="">All Classes</option> </select> <button id="btn-tt-generate" class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()"> Auto-Generate</button> <button id="btn-tt-clear" class="btn btn-ghost no-print" onclick="clearTimetable()"> Clear All</button> <button class="btn btn-ghost no-print" onclick="fixConsecutiveViolations()" title="Find and move any Form 1-5 subject running more than 2 straight periods">Fix 3-in-a-row</button> <button class="btn btn-ghost no-print" onclick="printTimetable()"> Print View</button> <button class="btn btn-ghost no-print" onclick="printAllClassTimetables()"> Print All Classes</button> </div> <div class="panel" style="overflow-x:auto"> <div class="panel-header no-print"> <span class="panel-title" id="tt-panel-title">Weekly Timetable</span> <span id="tt-panel-hint" style="font-size:.78rem;color:var(--muted)">Click any cell to assign ·  to remove</span> </div> <div id="timetable-wrap" style="overflow-x:auto;font-size:.72rem"></div> </div> <!-- Subject Coverage Summary --> <div class="panel no-print" id="coverage-panel-section" style="margin-top:18px"> <div class="panel-header"> <span class="panel-title"> Subject Coverage — Periods Plotted Per Class</span> <div style="display:flex;gap:8px;align-items:center"> <select id="coverage-class-filter" onchange="renderCoverage()" style="font-size:.78rem"> <option value="">All Classes</option> </select> <button class="btn btn-ghost" style="font-size:.72rem;padding:3px 8px" onclick="renderCoverage()"> Refresh</button> </div> </div> <div style="padding:14px;overflow-x:auto"> <div id="coverage-wrap"></div> </div> </div> </div> <!-- ═══════════ REPORTS PAGE --> <div class="page" id="page-reports"> <div class="search-bar no-print"> <select id="report-mode" onchange="toggleReportMode()"> <option value="individual">Individual Student</option> <option value="class">Entire Class</option> </select> <select id="report-student" style="display:block" onchange="updateEnrolledCount()"> <option value="">Select student…</option> </select> <select id="report-class-sel" style="display:none" onchange="updateEnrolledCount()"> <option value="">— Select Class —</option> </select> <select id="report-term"> <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option> </select> <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" /> <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px;background:#f0f4f9;border-color:#b3d1f0" min="1" value="0" readonly title="Auto-calculated from students in this class" /> <button class="btn btn-primary" onclick="generateReport()">Generate</button> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> </div> <div id="report-output"></div> </div> <!-- ═══════════ PAYMENTS PAGE --> <div class="page" id="page-payments">
  <div class="search-bar">
    <input type="text" id="payment-search-top" placeholder="Search student by name or receipt number…"
      oninput="syncPaymentSearch(this.value)"
@@ -1905,7 +1912,7 @@
      </div>
    </div>
  </div>
-</div> <!-- ═══════════ TEACHERS PAGE --> <div class="page" id="page-teachers"> <div class="search-bar"> <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="renderTeachers()" /> <button id="btn-import-teachers" class="btn btn-ghost" onclick="openImportTeachersModal()"> Import (CSV/Excel)</button> <button id="btn-export-csv" class="btn btn-ghost" onclick="exportTeachers('csv')"> Export CSV</button> <button id="btn-export-xlsx" class="btn btn-ghost" onclick="exportTeachers('xlsx')"> Export Excel</button> <button class="btn btn-ghost" onclick="printAllTeacherTimetables()"> Print All Timetables</button> <button id="btn-delete-all-teachers" class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()"> Delete All Teachers</button> <button id="btn-add-teacher" class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">Teaching Staff</span> <span id="teacher-count" style="color:var(--muted);font-size:.85rem"></span> </div> <div class="panel-body" style="overflow-x:auto"> <table style="table-layout:fixed;width:100%"> <thead> <tr><th style="width:16%">Name</th><th style="width:30%">Classes &amp; Subjects</th><th style="width:14%">Available Days</th><th style="width:12%">Phone</th><th style="width:110px">Actions</th></tr> </thead> <tbody id="teachers-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ ACCESS CONTROL PAGE --> <div class="page" id="page-access"> <div class="panels-row" style="grid-template-columns:1fr"> <!-- Staff Accounts Table --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Staff Accounts & Permissions</span> <div style="display:flex;gap:8px"> <button class="btn btn-ghost" style="font-size:.78rem" onclick="syncAccountsFromTeachers()" title="Creates accounts for new teachers and removes accounts for teachers deleted from the system"> Sync from Teachers</button> <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" onclick="openAddStaffModal()">+ Add Staff Account</button> </div> </div> <!-- Default password notice --> <div id="default-pw-notice" style="margin:0 16px 12px;padding:10px 14px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;font-size:.8rem;display:none"> <strong style="color:#b06000"> Default Teacher Password:</strong> <span style="font-family:monospace;font-size:.9rem;background:#fffde7;padding:2px 8px;border-radius:4px;border:1px solid #ffe082;margin:0 6px">teacher@123</span>
+</div> <!-- ═══════════ TEACHERS PAGE --> <div class="page" id="page-teachers"> <div class="search-bar"> <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="filterTeachers()" /> <button id="btn-import-teachers" class="btn btn-ghost" onclick="openImportTeachersModal()"> Import (CSV/Excel)</button> <button id="btn-export-csv" class="btn btn-ghost" onclick="exportTeachers('csv')"> Export CSV</button> <button id="btn-export-xlsx" class="btn btn-ghost" onclick="exportTeachers('xlsx')"> Export Excel</button> <button class="btn btn-ghost" onclick="printAllTeacherTimetables()"> Print All Timetables</button> <button id="btn-delete-all-teachers" class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()"> Delete All Teachers</button> <button id="btn-add-teacher" class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">Teaching Staff</span> <span id="teacher-count" style="color:var(--muted);font-size:.85rem"></span> </div> <div class="panel-body" style="overflow-x:auto"> <table style="table-layout:fixed;width:100%"> <thead> <tr><th style="width:16%">Name</th><th style="width:30%">Classes &amp; Subjects</th><th style="width:14%">Available Days</th><th style="width:12%">Phone</th><th style="width:110px">Actions</th></tr> </thead> <tbody id="teachers-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ ACCESS CONTROL PAGE --> <div class="page" id="page-access"> <div class="panels-row" style="grid-template-columns:1fr"> <!-- Staff Accounts Table --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Staff Accounts & Permissions</span> <div style="display:flex;gap:8px"> <button class="btn btn-ghost" style="font-size:.78rem" onclick="syncAccountsFromTeachers()" title="Creates accounts for new teachers and removes accounts for teachers deleted from the system"> Sync from Teachers</button> <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" onclick="openAddStaffModal()">+ Add Staff Account</button> </div> </div> <!-- Default password notice --> <div id="default-pw-notice" style="margin:0 16px 12px;padding:10px 14px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;font-size:.8rem;display:none"> <strong style="color:#b06000"> Default Teacher Password:</strong> <span style="font-family:monospace;font-size:.9rem;background:#fffde7;padding:2px 8px;border-radius:4px;border:1px solid #ffe082;margin:0 6px">teacher@123</span>
  All imported teachers use this password until they change it. <button onclick="document.getElementById('default-pw-notice').style.display='none'" style="float:right;background:none;border:none;cursor:pointer;color:#888;font-size:.85rem" title="Dismiss">×</button> </div> <div class="panel-body" style="overflow-x:auto"> <table class="perm-table"> <thead> <tr> <th>Name</th><th>Username</th><th>Password</th><th>Role</th> <th>Admin Overview</th><th>Students</th><th>Class List</th> <th>Timetable</th><th>Reports</th><th>Finance</th><th>Teachers</th> <th>Actions</th> </tr> </thead> <tbody id="access-body"></tbody> </table> </div> </div> </div> <!-- Quick Apply Presets — full-width, below the table --> <div style="margin-top:20px"> <div class="panel"> <div class="panel-header"><span class="panel-title">Quick Apply Presets</span></div> <div style="padding:16px 20px;display:flex;gap:10px;flex-wrap:wrap"> <button class="btn btn-ghost" onclick="applyPreset('teacher')">
  Apply Teacher preset to all Teachers </button> <button class="btn btn-ghost" onclick="applyPreset('readonly')">
  Set all non-admin to Read Only </button> <button class="btn btn-ghost" onclick="applyPreset('nofinance')">
@@ -1955,7 +1962,23 @@
  Import it back on any browser or device to restore everything instantly. </p> <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"> <div style="padding:16px;background:#f0f4f9;border-radius:10px;border:1px solid var(--border)"> <div style="font-weight:700;font-size:.85rem;color:var(--navy);margin-bottom:8px"> Export Data</div> <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">
  Downloads a <code>.json</code> backup of all teachers, timetable slots, subjects, classes, time slots, pairing rules, letterhead, and streams. </p> <button class="btn btn-primary" onclick="exportAllData()"> Download Backup</button> </div> <div style="padding:16px;background:#f0fbf5;border-radius:10px;border:1px solid #c3e8d0"> <div style="font-weight:700;font-size:.85rem;color:#0e7a4e;margin-bottom:8px"> Import Data</div> <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">
  Restores from a previously exported <code>.json</code> backup. <strong style="color:#cc3300">This will replace all current data.</strong> </p> <label class="btn btn-ghost" style="cursor:pointer;color:#0e7a4e;border-color:#0e7a4e">
- Choose Backup File <input type="file" accept=".json" style="display:none" onchange="importAllData(this)" /> </label> </div> </div> <div id="backup-status" style="margin-top:12px;font-size:.78rem;color:var(--muted)"></div> </div> </div> </div> </div>
+ Choose Backup File <input type="file" accept=".json" style="display:none" onchange="importAllData(this)" /> </label> </div> </div> <div id="backup-status" style="margin-top:12px;font-size:.78rem;color:var(--muted)"></div>
+ <!-- Storage Usage -->
+ <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+ <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+ <div style="font-weight:700;font-size:.85rem;color:var(--navy)">Device Storage Used</div>
+ <span id="storage-usage-text" style="font-size:.75rem;color:var(--muted)">Checking…</span>
+ </div>
+ <div style="height:8px;border-radius:5px;background:#e8edf3;overflow:hidden">
+ <div id="storage-usage-bar" style="height:100%;width:0%;border-radius:5px;background:#0e7a4e;transition:width .4s ease, background-color .4s ease"></div>
+ </div>
+ <p id="storage-usage-note" style="font-size:.72rem;color:var(--muted);margin-top:6px;line-height:1.5"></p>
+ <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+ <span id="storage-persist-badge" style="font-size:.72rem;padding:3px 9px;border-radius:12px;font-weight:600"></span>
+ <button id="storage-persist-btn" class="btn btn-ghost" style="font-size:.72rem;padding:4px 10px;display:none" onclick="_requestPersistentStorageManual()">Request Persistent Storage</button>
+ </div>
+ </div>
+ </div> </div> </div> </div>
 </div> <!-- ═══════════════════════════════════════════════════════ MODALS --> <!-- Add Student Modal -->
 <div class="modal-overlay" id="modal-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Add New Student</span> <button class="modal-close" onclick="closeModal('modal-student')">×</button> </div> <div class="modal-body"> <!-- Photo upload --> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="s-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('s-photo-input').click()"> <img id="s-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="s-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('s-photo-input','s-photo-img','s-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="s-fname" placeholder="John" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="s-lname" placeholder="Doe" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="s-num" placeholder="JATEC24001" /></div> <div class="form-group"> <label>Class</label> <select id="s-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="s-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="s-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="s-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Parent / Guardian Name</label><input type="text" id="s-parent" placeholder="Mr. John Doe Sr." /></div> <div class="form-row"> <div class="form-group"><label>Parent Phone</label><input type="tel" id="s-phone" placeholder="677000001" /></div> <div class="form-group"><label>Parent Email</label><input type="email" id="s-email" placeholder="parent@email.com" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-student')">Cancel</button> <button class="btn btn-primary" onclick="addStudent()">Save Student</button> </div> </div>
 </div> <!-- Grade Entry Modal -->
@@ -1978,8 +2001,6 @@
 <div class="modal-overlay" id="modal-tt-assign"> <div class="modal" style="max-width:420px"> <div class="modal-header"> <span class="modal-title" id="tt-assign-title">Assign Slot</span> <button class="modal-close" onclick="closeModal('modal-tt-assign')">×</button> </div> <div class="modal-body"> <input type="hidden" id="tta-class" /> <input type="hidden" id="tta-day" /> <input type="hidden" id="tta-period" /> <input type="hidden" id="tta-term" /> <div class="form-group"> <label>Teacher</label> <select id="tta-teacher" onchange="filterTeacherSubjects()"> <option value="">Select teacher…</option> </select> </div> <div class="form-group"> <label>Subject</label> <select id="tta-subject"> <option value="">Select subject…</option> </select> </div> <div id="tta-conflict-note" style="display:none;background:#fff8f0;border:1px solid #f5c97a;border-radius:8px;padding:10px 12px;font-size:.8rem;color:#a06b0a;margin-top:8px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-tt-assign')">Cancel</button> <button class="btn btn-primary" onclick="confirmTTAssign()">Assign</button> </div> </div>
 </div> <!-- Gap Suggestions modal -->
 <div class="modal-overlay" id="modal-gap-suggestions"> <div class="modal" style="max-width:460px"> <div class="modal-header"> <span class="modal-title" id="gap-suggest-title">Suggested Periods</span> <button class="modal-close" onclick="closeModal('modal-gap-suggestions')">×</button> </div> <div class="modal-body"> <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px" id="gap-suggest-desc">Suggestions respect every placement rule already in force. Click an option to place it directly on the timetable — nothing is added automatically.</p> <div id="gap-suggest-list" style="display:flex;flex-direction:column;gap:6px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-gap-suggestions')">Close</button> </div> </div> </div>
-</div> <!-- Change Password Modal -->
-<div class="modal-overlay" id="modal-change-pw"> <div class="modal" style="max-width:400px"> <div class="modal-header"> <span class="modal-title"> Change Password</span> <button class="modal-close" onclick="closeModal('modal-change-pw')">×</button> </div> <div class="modal-body"> <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px" id="cpw-desc">Update your login password.</p> <input type="hidden" id="cpw-uid" /> <div class="form-group"> <label>Current Password</label> <div class="pw-toggle"> <input type="password" id="cpw-current" placeholder="Current password" /> <button type="button" class="pw-eye" onclick="togglePwVis('cpw-current',this)"><svg class="eye-show" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-hide" viewBox="0 0 24 24" style="display:none;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button> </div> </div> <div class="form-group"> <label>New Password</label> <div class="pw-toggle"> <input type="password" id="cpw-new" placeholder="At least 6 characters" /> <button type="button" class="pw-eye" onclick="togglePwVis('cpw-new',this)"><svg class="eye-show" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-hide" viewBox="0 0 24 24" style="display:none;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button> </div> </div> <div class="form-group"> <label>Confirm New Password</label> <div class="pw-toggle"> <input type="password" id="cpw-confirm" placeholder="Repeat new password" /> <button type="button" class="pw-eye" onclick="togglePwVis('cpw-confirm',this)"><svg class="eye-show" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-hide" viewBox="0 0 24 24" style="display:none;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button> </div> </div> <div id="cpw-error" style="color:var(--red);font-size:.8rem;margin-top:6px;display:none"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-change-pw')">Cancel</button> <button class="btn btn-primary" onclick="savePassword()">Update Password</button> </div> </div>
 </div> <!-- Add Staff Account Modal -->
 <div class="modal-overlay" id="modal-add-staff"> <div class="modal" style="max-width:480px"> <div class="modal-header"> <span class="modal-title" id="staff-modal-title">Add Staff Account</span> <button class="modal-close" onclick="closeModal('modal-add-staff')">×</button> </div> <div class="modal-body"> <input type="hidden" id="sa-uid" /> <div class="form-row"> <div class="form-group"><label>Full Name *</label><input type="text" id="sa-name" placeholder="Mary Akor" /></div> <div class="form-group"><label>Username *</label><input type="text" id="sa-username" placeholder="mary.akor" /></div> </div> <div class="form-group"> <label>Role</label> <select id="sa-role" onchange="applyRoleDefaults()"> <option value="teacher">Teacher</option> <option value="staff">Staff</option> <option value="readonly">Read Only</option> <option value="admin">Admin</option> </select> </div> <div class="form-group" id="sa-pw-group"> <label>Initial Password *</label> <div class="pw-toggle"> <input type="password" id="sa-pw" placeholder="Set their password" /> <button type="button" class="pw-eye" onclick="togglePwVis('sa-pw',this)"><svg class="eye-show" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-hide" viewBox="0 0 24 24" style="display:none;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button> </div> <p style="font-size:.72rem;color:var(--muted);margin-top:4px">Staff can change this after first login.</p> </div> <div class="assign-section-label" style="margin-top:16px">Page Permissions</div> <div id="sa-perms" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px"> <!-- Rendered by applyRoleDefaults() --> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-add-staff')">Cancel</button> <button class="btn btn-primary" onclick="saveStaffAccount()">Save Account</button> </div> </div>
 </div> <!-- Orphaned Accounts Cleanup Modal -->
@@ -1995,17 +2016,176 @@
 <div class="modal-overlay" id="modal-receipt"> <div class="modal" style="max-width:460px"> <div class="modal-header"> <span class="modal-title">Payment Receipt</span> <button class="modal-close" onclick="closeModal('modal-receipt')">×</button> </div> <div class="modal-body" id="receipt-content"></div> <div class="modal-footer no-print"> <button class="btn btn-ghost" onclick="closeModal('modal-receipt')">Close</button> <button class="btn btn-primary" onclick="printReceipt()"> Print Receipt</button> </div> </div>
 </div> <div class="toast" id="toast"></div> <!-- ═══════════════════════════════════════════════════════ SCRIPT -->
 <script>
-// ── Data Store (localStorage) ────────────────────────────
+// ── Data Store — IndexedDB primary, localStorage instant-boot mirror ────
+// Why both: localStorage tops out around 5-10MB per origin, which MarkStore
+// was already bumping into (see the old "localStorage full" cleanup path
+// this replaces). IndexedDB has no practical size cap, so it's now the
+// durable primary store. But IndexedDB's API is async and this file makes
+// hundreds of *synchronous* load()/save() calls, including the very first
+// ones at page-load before an async DB open could ever finish — so
+// localStorage stays as a mirror that makes load()/save() safe to call
+// synchronously anywhere, while every write is also pushed to IndexedDB in
+// the background as the long-term copy of record. On boot, if IndexedDB
+// already holds a newer copy (returning user, e.g. after a localStorage
+// clear), it wins and gets synced back down into localStorage + live state.
+const IDB_NAME = 'ScholarSysDB';
+const IDB_STORE = 'kv';
+let __idbDB = null;
+let __idbReady = false;
+
 function load(key, def) {
  try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
 }
 function save(key, val) {
  localStorage.setItem(key, JSON.stringify(val));
+ _idbSet(key, val);
  // Central invalidation: any write to slots/teachers drops the render index so
  // the grid can never show stale data. Done here rather than at each call site
  // so a future save() can't forget to do it.
  if (key === 'sm_ttslots') { _invalidateTTIndex(); }
  if (key === 'sm_teachers') { _teacherIndex = null; _teacherIndexStamp = -1; }
+}
+// Deletes a key from both layers. Needed anywhere data is actually removed
+// (not just overwritten) — e.g. legacy MarkStore key cleanup, pairing-rule
+// resets, or the backup-reminder snooze flag being cleared.
+function removeData(key) {
+ localStorage.removeItem(key);
+ _idbDelete(key);
+}
+
+function _idbOpen() {
+ return new Promise((resolve) => {
+ if (!('indexedDB' in window)) { resolve(null); return; }
+ // Under file:// (this app's normal "double-click to open" launch mode),
+ // some browsers — Edge among them — have been known to never fire either
+ // onsuccess or onerror for an IndexedDB open in certain security/profile
+ // configurations. Without a timeout, that leaves the whole boot sequence
+ // waiting on a promise that never resolves, and __idbReady stuck false
+ // forever. localStorage already has everything (it's the synchronous
+ // mirror every save() writes to), so timing out just means this session
+ // runs on localStorage alone instead of hanging indefinitely.
+ let settled = false;
+ const settle = (val) => { if (!settled) { settled = true; resolve(val); } };
+ const timeoutId = setTimeout(() => {
+ console.warn('IndexedDB open timed out — continuing on localStorage only');
+ settle(null);
+ }, 2000);
+ try {
+ const req = indexedDB.open(IDB_NAME, 1);
+ req.onupgradeneeded = e => {
+ const db = e.target.result;
+ if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+ };
+ req.onsuccess = e => { clearTimeout(timeoutId); settle(e.target.result); };
+ req.onerror = () => { clearTimeout(timeoutId); settle(null); };
+ } catch (e) { clearTimeout(timeoutId); settle(null); }
+ });
+}
+function _idbSet(key, val) {
+ if (!__idbDB) return;
+ try {
+ const tx = __idbDB.transaction(IDB_STORE, 'readwrite');
+ tx.objectStore(IDB_STORE).put(val, key);
+ } catch (e) { console.error('IndexedDB write failed for', key, e); }
+}
+function _idbDelete(key) {
+ if (!__idbDB) return;
+ try {
+ const tx = __idbDB.transaction(IDB_STORE, 'readwrite');
+ tx.objectStore(IDB_STORE).delete(key);
+ } catch (e) { console.error('IndexedDB delete failed for', key, e); }
+}
+function _idbGetAll() {
+ return new Promise((resolve) => {
+ if (!__idbDB) { resolve({}); return; }
+ try {
+ const tx = __idbDB.transaction(IDB_STORE, 'readonly');
+ const store = tx.objectStore(IDB_STORE);
+ const keysReq = store.getAllKeys();
+ const valsReq = store.getAll();
+ let keys, vals;
+ const done = () => { if (keys && vals) { const out = {}; keys.forEach((k,i)=>out[k]=vals[i]); resolve(out); } };
+ keysReq.onsuccess = () => { keys = keysReq.result; done(); };
+ valsReq.onsuccess = () => { vals = valsReq.result; done(); };
+ tx.onerror = () => resolve({});
+ } catch (e) { resolve({}); }
+ });
+}
+
+// Re-read every top-level app-state variable from (now-synced) localStorage.
+// Called once after IndexedDB reconciliation finishes on boot, and safe to
+// call again any time a full resync is needed (e.g. after a restore).
+function _reloadLiveStateFromStorage() {
+ students   = load('sm_students', students || []);
+ payments   = load('sm_payments', payments || []);
+ grades   = load('sm_grades', grades || []);
+ teachers   = load('sm_teachers', teachers || []);
+ ttSlots   = load('sm_ttslots', ttSlots || []);
+ if (typeof DEFAULT_FEE_RUBRICS !== 'undefined') feeRubrics = load('sm_fee_rubrics', feeRubrics || DEFAULT_FEE_RUBRICS);
+ staffAccounts = load('sm_staff_accounts', staffAccounts || []);
+ if (staffAccounts && !staffAccounts.some(a => a.role === 'admin')) {
+ staffAccounts.unshift({
+ id:'acc_admin', name:'Admin User', username:'admin', password:'admin123', role:'admin',
+ perms:{dashboard:true,students:true,grades:true,timetable:true,
+ reports:true,payments:true,teachers:true,access:true,settings:true}
+ });
+ save('sm_staff_accounts', staffAccounts);
+ }
+ if (typeof initLoginLogo === 'function') initLoginLogo();
+ _invalidateTTIndex();
+ _teacherIndex = null; _teacherIndexStamp = -1;
+ // If the user already got past the login screen before IndexedDB caught up
+ // (e.g. a slow first-open on an old device), refresh whatever's on screen.
+ if (typeof currentUser !== 'undefined' && currentUser && typeof renderAll === 'function') {
+ try { renderAll(); } catch(e) { console.warn('renderAll after IndexedDB sync failed', e); }
+ }
+}
+
+// One-time boot reconciliation between the two layers.
+async function _idbBootSync() {
+ __idbDB = await _idbOpen();
+ if (!__idbDB) {
+ console.warn('IndexedDB unavailable in this browser — running on localStorage only');
+ __idbReady = true;
+ return;
+ }
+ const idbData = await _idbGetAll();
+ const idbKeys = Object.keys(idbData);
+ if (idbKeys.length === 0) {
+ // First run against this IndexedDB (fresh browser profile, or first
+ // launch after this upgrade) — seed it from whatever localStorage
+ // already has so future writes have somewhere durable to land.
+ for (let i = 0; i < localStorage.length; i++) {
+ const k = localStorage.key(i);
+ if (!k || !k.startsWith('sm_')) continue;
+ let val;
+ try { val = JSON.parse(localStorage.getItem(k)); } catch { val = localStorage.getItem(k); }
+ _idbSet(k, val);
+ }
+ } else {
+ // IndexedDB already holds data — it's the durable copy of record, so
+ // sync it down into localStorage and the live in-memory app state.
+ idbKeys.forEach(k => localStorage.setItem(k, JSON.stringify(idbData[k])));
+ _reloadLiveStateFromStorage();
+ }
+ __idbReady = true;
+ _requestPersistentStorage();
+}
+_idbBootSync();
+
+// Ask the browser to upgrade this origin from "best-effort" to "persistent"
+// storage. Best-effort mode is what gives Firefox its 2GB per-site cap
+// (regardless of free disk space) and makes any browser eligible to evict
+// the data under storage pressure. Persistent mode removes the eviction risk
+// and, on Firefox, raises the quota to 50% of the disk. Safe to call
+// repeatedly — a no-op once already granted. Some browsers grant it silently
+// based on engagement heuristics; others may prompt the user once.
+async function _requestPersistentStorage() {
+ if (!navigator.storage || !navigator.storage.persist) return;
+ try {
+ const already = navigator.storage.persisted ? await navigator.storage.persisted() : false;
+ if (!already) await navigator.storage.persist();
+ } catch (e) { console.warn('storage.persist() request failed', e); }
 }
 
 let students = load('sm_students', [
@@ -2146,6 +2326,7 @@ function showPage(name, linkEl) {
  renderSubjectsPanel();
  populateAllSubjectDropdowns();
  renderSubjectPeriodTargets();
+ renderStorageUsagePanel();
  }, 50);
  }
 
@@ -2284,13 +2465,19 @@ function renderStudents() {
  thead.innerHTML = '<th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Actions</th>';
  }
 
+ // Pre-count payments/grades per student ONCE (O(n)) instead of re-scanning
+ // both full arrays inside the per-row map below (which was O(n) per row —
+ // O(n²) total, and the single biggest cost on this page as data grows).
+ const paymentCountByStudent = {};
+ payments.forEach(p => { paymentCountByStudent[p.studentId] = (paymentCountByStudent[p.studentId] || 0) + 1; });
+ const gradeCountByStudent = {};
+ grades.forEach(g => { gradeCountByStudent[g.studentId] = (gradeCountByStudent[g.studentId] || 0) + 1; });
+
  document.getElementById('students-body').innerHTML = filtered.map((s, idx) => {
  if (isTeacher) {
  return ` <tr> <td><span style="font-family:monospace;font-size:.78rem;color:var(--muted)">S${idx + 1}</span></td> <td><strong>${s.fname} ${s.lname}</strong></td> <td><span class="badge badge-blue">${s.cls}</span></td> </tr>`;
  }
- const pCount = payments.filter(p => p.studentId === s.id).length;
- const gCount = grades.filter(g => g.studentId === s.id).length;
- const hasData = pCount > 0 || gCount > 0;
+ const hasData = (paymentCountByStudent[s.id] || 0) > 0 || (gradeCountByStudent[s.id] || 0) > 0;
  return ` <tr> <td><span style="font-family:monospace;font-size:.78rem;color:var(--muted)">${s.num}</span></td> <td><strong>${s.fname} ${s.lname}</strong></td> <td><span class="badge badge-blue">${s.cls}</span></td> <td>${s.parent}</td> <td>${s.phone}</td> <td> <div class="action-btns"> <button class="btn btn-ghost" style="font-size:.75rem;padding:4px 10px" onclick="openEditStudent('${s.id}')"> Edit</button> <button class="btn ${hasData ? 'btn-warning' : 'btn-danger'}" style="font-size:.75rem;padding:4px 10px" onclick="openDeleteStudent('${s.id}')">
  ${hasData ? ' Delete' : ' Delete'} </button> </div> </td> </tr>`;
  }).join('');
@@ -2385,7 +2572,17 @@ function clearRegistrationForm(keepClass) {
   const e = document.getElementById('reg-error'); if(e) e.style.display = 'none';
 }
 
-function filterStudents() { renderStudents(); }
+let _studentFilterDebounce = null;
+function filterStudents() {
+ clearTimeout(_studentFilterDebounce);
+ _studentFilterDebounce = setTimeout(renderStudents, 150);
+}
+
+let _teacherFilterDebounce = null;
+function filterTeachers() {
+ clearTimeout(_teacherFilterDebounce);
+ _teacherFilterDebounce = setTimeout(renderTeachers, 150);
+}
 
 // Current search/term filter applied to payments. Shared by the on-screen
 // table and the Excel export so what you export is exactly what you see.
@@ -2433,10 +2630,16 @@ function renderPayments() {
     (groups[p.studentId] = groups[p.studentId] || []).push(p);
   });
 
+  // Build once: students.find() inside a sort comparator and a per-row map
+  // both re-scan the full students array repeatedly — with hundreds of
+  // students that adds up fast. A lookup map makes both O(1) per access.
+  const studentById = {};
+  students.forEach(s => { studentById[s.id] = s; });
+
   // Students ordered by name
   const groupIds = Object.keys(groups).sort((a, b) => {
-    const sa = students.find(x => x.id === a);
-    const sb = students.find(x => x.id === b);
+    const sa = studentById[a];
+    const sb = studentById[b];
     const na = sa ? (sa.lname + sa.fname).toLowerCase() : '';
     const nb = sb ? (sb.lname + sb.fname).toLowerCase() : '';
     return na.localeCompare(nb);
@@ -2445,7 +2648,7 @@ function renderPayments() {
   const money = v => Number(v || 0).toLocaleString();
 
   document.getElementById('payments-body').innerHTML = groupIds.map(sid => {
-    const s     = students.find(x => x.id === sid);
+    const s     = studentById[sid];
     const sName = s ? `${s.lname.toUpperCase()} ${s.fname}` : '—';
     const cls   = s ? s.cls : '';
     const expected = s ? getTotalExpectedForStudent(s.cls) : 0;
@@ -2606,6 +2809,12 @@ function prefillPaymentForm(studentId, name, cls, num) {
   }, 400);
 }
 
+let _paymentFilterDebounce = null;
+function _debouncedRenderPayments() {
+  clearTimeout(_paymentFilterDebounce);
+  _paymentFilterDebounce = setTimeout(renderPayments, 150);
+}
+
 function filterPayments() {
   // Keep the top search bar mirrored with the in-panel one
   const inVal   = document.getElementById('payment-search')?.value || '';
@@ -2614,7 +2823,7 @@ function filterPayments() {
   const topTerm   = document.getElementById('payment-term-filter-top');
   if (topSearch) topSearch.value = inVal;
   if (topTerm)   topTerm.value   = inTerm;
-  renderPayments();
+  _debouncedRenderPayments();
 }
 
 function syncPaymentSearch(val) {
@@ -2624,7 +2833,7 @@ function syncPaymentSearch(val) {
   const topTerm  = document.getElementById('payment-term-filter-top');
   if (inSearch) inSearch.value = val;
   if (inTerm && topTerm) inTerm.value = topTerm.value;
-  renderPayments();
+  _debouncedRenderPayments();
 }
 
 function clearPaymentSearch() {
@@ -2883,19 +3092,20 @@ function _msKey(cls, term, seq) {
 }
 
 function _msGetSheet(cls, term, seq) {
- try {
- const raw = localStorage.getItem(_msKey(cls, term, seq || 1));
- return raw ? JSON.parse(raw) : {};
- } catch(e) { return {}; }
+ return load(_msKey(cls, term, seq || 1), {});
 }
 
 function _msSetSheet(cls, term, sheet, seq) {
+ // save() already writes through to IndexedDB (no practical size limit) in
+ // addition to the localStorage mirror, so the old "localStorage full"
+ // fallback path below is now just a safety net for the mirror write
+ // itself, not the only copy of the data.
  try {
- localStorage.setItem(_msKey(cls, term, seq || 1), JSON.stringify(sheet));
+ save(_msKey(cls, term, seq || 1), sheet);
  } catch(e) {
- console.warn('MarkStore: localStorage full, attempting cleanup', e);
+ console.warn('MarkStore: localStorage mirror full, cleaning legacy keys and retrying', e);
  _msCleanOldKeys();
- try { localStorage.setItem(_msKey(cls, term, seq || 1), JSON.stringify(sheet)); }
+ try { save(_msKey(cls, term, seq || 1), sheet); }
  catch(e2) { console.error('MarkStore: still full after cleanup', e2); }
  }
 }
@@ -2906,7 +3116,7 @@ function _msCleanOldKeys() {
  const k = localStorage.key(i);
  if (k && k.startsWith('sm_marks_')) toRemove.push(k);
  }
- toRemove.forEach(k => localStorage.removeItem(k));
+ toRemove.forEach(k => removeData(k));
  if (toRemove.length) console.log('MarkStore: removed', toRemove.length, 'legacy keys');
 }
 
@@ -2986,6 +3196,41 @@ function _msExportAll() {
  return out;
 }
 
+// Read-only count of how many term/sequence sheets hold marks for this
+// student — used by the delete-confirmation preview so opening the modal
+// never itself mutates anything (only _msDeleteStudent() actually writes).
+function _msCountStudentSheets(sid) {
+ let count = 0;
+ for (let i = 0; i < localStorage.length; i++) {
+ const k = localStorage.key(i);
+ if (!k || !k.startsWith('sm_mk_')) continue;
+ const sheet = load(k, {});
+ if (sheet && Object.prototype.hasOwnProperty.call(sheet, sid)) count++;
+ }
+ return count;
+}
+
+// Purge one student's marks from every class/term/seq sheet. MarkStore is
+// keyed by class (sm_mk_{cls}_{term}_{seq}), not by student, so deleting a
+// student from the roster has no natural way to reach their mark records —
+// without this, a deleted student's scores keep sitting inside whichever
+// class sheets they were ever entered under, in both storage layers.
+function _msDeleteStudent(sid) {
+ let touched = 0;
+ for (let i = 0; i < localStorage.length; i++) {
+ const k = localStorage.key(i);
+ if (!k || !k.startsWith('sm_mk_')) continue;
+ const sheet = load(k, {});
+ if (sheet && Object.prototype.hasOwnProperty.call(sheet, sid)) {
+ delete sheet[sid];
+ save(k, sheet);
+ touched++;
+ }
+ }
+ if (touched) console.log('MarkStore: purged student', sid, 'from', touched, 'sheet(s)');
+ return touched;
+}
+
 // Import mark sheets from backup
 function _msImportAll(data) {
  let count = 0;
@@ -3051,11 +3296,11 @@ function _msImportAll(data) {
  if (trailN === 1) {
  // OLD FORMAT: only term digit — append _1 for seq
  const newKey = k + '_1';
- try { localStorage.setItem(newKey, JSON.stringify(data[k])); count++; }
+ try { save(newKey, data[k]); count++; }
  catch(e) { console.warn('migrate old key failed', k, e); }
  } else {
  // NEW FORMAT: term + seq digits already present
- try { localStorage.setItem(k, JSON.stringify(data[k])); count++; }
+ try { save(k, data[k]); count++; }
  catch(e) { console.warn('import mark sheet failed', k, e); }
  }
  });
@@ -3288,6 +3533,10 @@ function topbarPrint() {
  var active = document.querySelector('.page.active');
  var id = active ? active.id : '';
  if (id === 'page-timetable') { printTimetable(); return; }
+ // Refresh the letterhead injection right before printing instead of
+ // trusting it's still there from login or the last Settings edit — cheap,
+ // and removes any possible staleness as a cause of a missing letterhead.
+ if (typeof applyLHToPage === 'function') applyLHToPage();
  window.print();
 }
 
@@ -4707,6 +4956,18 @@ function renderTeachers() {
 
  document.getElementById('teacher-count').textContent = `${filtered.length} teacher${filtered.length !== 1 ? 's' : ''}`;
 
+ // Hoisted out of the per-row loop below: none of these depend on the
+ // specific teacher being rendered, so recomputing them for every row was
+ // pure wasted work (each a localStorage read + JSON.parse).
+ const timeSlots  = loadTimeSlots();
+ const teachSlots  = timeSlots.filter(s => !s.isBreak);
+ const avgPeriodMins = teachSlots.length
+ ? teachSlots.reduce((sum, s) => sum + slotDurationMinutes(s), 0) / teachSlots.length
+ : 60;
+ const streamRulesCard  = loadStreams();
+ const customClassesCard = loadCustomClasses();
+ const teachingSlots  = timeSlots.filter(sl => !sl.isBreak);
+
  document.getElementById('teachers-body').innerHTML = filtered.map(t => {
  const dayAbbr = { Monday:'Mon', Tuesday:'Tue', Wednesday:'Wed', Thursday:'Thu', Friday:'Fri', Saturday:'Sat' };
  const activeDays = Object.entries(t.availability || {})
@@ -4717,15 +4978,6 @@ function renderTeachers() {
  `<span class="pill pill-class">${a.cls}: <strong>${a.subject}</strong> <span style="opacity:.7">(${a.periodsPerWeek||2}p/wk)</span></span>`
  ).join('');
 
- // Total periods/week planned — expand base classes to streams
- const timeSlots  = loadTimeSlots();
- const teachSlots  = timeSlots.filter(s => !s.isBreak);
- const avgPeriodMins = teachSlots.length
- ? teachSlots.reduce((sum, s) => sum + slotDurationMinutes(s), 0) / teachSlots.length
- : 60;
-
- const streamRulesCard = loadStreams();
- const customClassesCard = loadCustomClasses();
  function expandClsCard(cls) {
  const v = streamRulesCard.filter(r => r.cls === cls).map(r => r.cls + r.sep + r.stream).filter(v => customClassesCard.includes(v));
  return v.length ? v : [cls];
@@ -4774,7 +5026,6 @@ function renderTeachers() {
 
  // Build individual timetable mini-grid for this teacher
  const teacherSlotsByDay = {};
- const allTimeSlots = loadTimeSlots();
  DAYS.forEach(d => { teacherSlotsByDay[d] = {}; });
  placedTerm1.forEach(s => {
  if (!teacherSlotsByDay[s.day]) teacherSlotsByDay[s.day] = {};
@@ -4782,7 +5033,6 @@ function renderTeachers() {
  teacherSlotsByDay[s.day][s.slotId].push(s);
  });
 
- const teachingSlots = allTimeSlots.filter(sl => !sl.isBreak);
  const miniHeaders = teachingSlots.map(sl =>
  `<th style="padding:2px 4px;font-size:.6rem;white-space:nowrap">${sl.start}<br>${sl.end}</th>`
  ).join('');
@@ -4955,13 +5205,16 @@ function openDeleteStudent(id) {
 
  const pList = payments.filter(p => p.studentId === id);
  const gList = grades.filter(g => g.studentId === id);
+ // Marks live in MarkStore (sm_mk_*), scanned separately from the legacy
+ // sm_grades array above so the warning reflects both systems.
+ const markSheetCount = _msCountStudentSheets(id);
 
  document.getElementById('delete-student-id').value = id;
  document.getElementById('delete-summary').innerHTML =
  `You are about to delete <strong>${s.fname} ${s.lname}</strong> (${s.num}).`;
 
  const ul = document.getElementById('delete-data-list');
- if (pList.length === 0 && gList.length === 0) {
+ if (pList.length === 0 && gList.length === 0 && markSheetCount === 0) {
  ul.innerHTML = '<li>No linked data — safe to delete.</li>';
  } else {
  ul.innerHTML = '';
@@ -4971,6 +5224,9 @@ function openDeleteStudent(id) {
  }
  if (gList.length > 0) {
  ul.innerHTML += `<li>${gList.length} grade record${gList.length !== 1 ? 's' : ''} across ${[...new Set(gList.map(g => g.subject))].join(', ')} will be deleted</li>`;
+ }
+ if (markSheetCount > 0) {
+ ul.innerHTML += `<li>Marks in ${markSheetCount} term/sequence sheet${markSheetCount !== 1 ? 's' : ''} will be deleted</li>`;
  }
  }
 
@@ -4985,6 +5241,7 @@ function confirmDeleteStudent() {
  save('sm_students', students);
  save('sm_payments', payments);
  save('sm_grades', grades);
+ _msDeleteStudent(id);
  closeModal('modal-delete-student');
  renderAll();
  showToast('Student and all linked data deleted');
@@ -6626,6 +6883,25 @@ function _lhRightHtml(lh) {
  }).join('');
 }
 
+// Settings-page preview ONLY — shows the school's own imported letterhead
+// image, nothing else. Deliberately does NOT fall back to the typed-fields
+// bilingual MINESEC template the way buildLHHtml() does for actual printed
+// documents (report cards/timetables/receipts still need *some* header even
+// before an image is uploaded, so that fallback stays there). The Settings
+// preview's job is different: show the admin exactly what was imported, so
+// it should never render content the school didn't actually provide.
+function buildLHPreviewOnly(lh) {
+ if (lh && lh.image) {
+ return '<div style="padding:0 0 8px;margin-bottom:10px;border-bottom:3px double #1a3a5c">' +
+ '<img src="' + lh.image + '" alt="Letterhead" ' +
+ 'style="display:block;width:95%;max-width:95%;height:auto;margin:0 auto" />' +
+ '</div>';
+ }
+ return '<div style="color:var(--muted);font-size:.78rem;text-align:center;padding:20px">' +
+ 'No letterhead image uploaded yet — upload one above to see it here.' +
+ '</div>';
+}
+
 function buildLHHtml(lh) {
  // An uploaded letterhead image replaces the entire built-from-fields header.
  // Used by report cards, timetables, receipts — everything that calls this.
@@ -6701,9 +6977,9 @@ function applyLHToPage() {
  _refreshLetterheadImageUI(lh.image || '', lh.image ? Math.round(lh.image.length/1024) : 0);
  }
 
- // Update settings preview box with full bilingual layout
+ // Update settings preview box — imported letterhead image only
  var pb = document.querySelector('.lh-preview-box');
- if(pb) pb.innerHTML = buildLHHtml(lh);
+ if(pb) pb.innerHTML = buildLHPreviewOnly(lh);
 
  // Letterhead injection: ONLY on the Report Cards page
  // Inject letterhead on all printable pages EXCEPT report cards
@@ -6725,11 +7001,13 @@ function applyLHToPage() {
  }
  });
 
- // Update watermark with current logo
+ // Update watermark with current logo. The div stays hidden on screen via
+ // the base CSS rule no matter what — this only controls whether @media
+ // print shows it (and only when there's actually a logo to show).
  var wm = document.getElementById('watermark-img');
  if (wm) {
  wm.src = lh.logo || '';
- document.getElementById('print-watermark').style.display = lh.logo ? '' : 'none';
+ document.getElementById('print-watermark').classList.toggle('has-watermark', !!lh.logo);
  }
 }
 
@@ -6743,9 +7021,9 @@ function updateLHPreview() {
  fr3:  document.getElementById('lh-fr3')?.value||'',
  logo:  loadLH().logo || '',
  };
- // Show full preview in the preview box
+ // Show the imported letterhead only in the preview box
  var pb = document.querySelector('.lh-preview-box');
- if (pb) pb.innerHTML = buildLHHtml(lh);
+ if (pb) pb.innerHTML = buildLHPreviewOnly(lh);
 }
 
 function handleLogoUpload(evt) {
@@ -6761,7 +7039,7 @@ function handleLogoUpload(evt) {
  // Update preview box with new logo
  var lh = loadLH(); lh.logo = src;
  var pb = document.querySelector('.lh-preview-box');
- if(pb) pb.innerHTML = buildLHHtml(lh);
+ if(pb) pb.innerHTML = buildLHPreviewOnly(lh);
  };
  reader.readAsDataURL(file);
 }
@@ -6804,7 +7082,7 @@ function handleLetterheadUpload(ev) {
 
  _refreshLetterheadImageUI(out, kb);
  var pb = document.querySelector('.lh-preview-box');
- if (pb) pb.innerHTML = buildLHHtml(lh);
+ if (pb) pb.innerHTML = buildLHPreviewOnly(lh);
  applyLHToPage();
  showToast('Letterhead image saved (' + kb + 'KB)');
  };
@@ -6821,7 +7099,7 @@ function clearLetterheadImage() {
  var fi = document.getElementById('lh-image-input'); if (fi) fi.value = '';
  _refreshLetterheadImageUI('', 0);
  var pb = document.querySelector('.lh-preview-box');
- if (pb) pb.innerHTML = buildLHHtml(lh);
+ if (pb) pb.innerHTML = buildLHPreviewOnly(lh);
  applyLHToPage();
  showToast('Letterhead image removed — using typed fields again');
 }
@@ -6896,8 +7174,8 @@ function initLoginLogo() {
   var logoBadge = document.getElementById('login-logo-badge');
   if (!logoImg || !logoBadge) return;
   try {
-    var lhRaw = localStorage.getItem('sm_letterhead');
-    var logo  = lhRaw ? JSON.parse(lhRaw).logo : null;
+    var lh   = load('sm_letterhead', null);
+    var logo = lh ? lh.logo : null;
     if (logo) {
       logoImg.src = logo;
       logoImg.style.display = 'block';
@@ -8158,11 +8436,8 @@ function exportAllData() {
  };
  // Export all standard keys
  SM_KEYS.forEach(key => {
- const val = localStorage.getItem(key);
- if (val !== null) {
- try { backup[key] = JSON.parse(val); }
- catch { backup[key] = val; }
- }
+ const val = load(key, null);
+ if (val !== null) backup[key] = val;
  });
  // Export all mark sheets (new class-grouped format)
  Object.assign(backup, _msExportAll());
@@ -8182,11 +8457,12 @@ function exportAllData() {
  const status = document.getElementById('backup-status');
  if (status) status.innerHTML = `<span style="color:#0e7a4e"> Backup exported on ${new Date().toLocaleString()} — ${(json.length/1024).toFixed(1)} KB</span>`;
  showToast('Backup downloaded ');
+ renderStorageUsagePanel();
 
  // Track when the last backup happened, and clear any pending reminder —
  // they just did the thing the reminder was asking for.
  save('sm_last_backup', new Date().toISOString());
- localStorage.removeItem('sm_backup_reminder_snooze');
+ removeData('sm_backup_reminder_snooze');
  renderBackupReminderBanner();
 }
 
@@ -8220,7 +8496,7 @@ function renderBackupReminderBanner() {
  const daysSinceBackup = _daysSince(lastBackup);
  if (daysSinceBackup < BACKUP_REMINDER_DAYS) { el.innerHTML = ''; return; }
 
- const snoozeUntil = localStorage.getItem('sm_backup_reminder_snooze');
+ const snoozeUntil = load('sm_backup_reminder_snooze', null);
  if (snoozeUntil && new Date(snoozeUntil).getTime() > Date.now()) { el.innerHTML = ''; return; }
 
  const neverBackedUp = !lastBackup;
@@ -8243,7 +8519,7 @@ function renderBackupReminderBanner() {
 
 function snoozeBackupReminder() {
  const until = new Date(Date.now() + BACKUP_SNOOZE_DAYS * 24 * 60 * 60 * 1000).toISOString();
- localStorage.setItem('sm_backup_reminder_snooze', until);
+ save('sm_backup_reminder_snooze', until);
  renderBackupReminderBanner();
 }
 
@@ -8260,10 +8536,10 @@ function importAllData(input) {
  if (!data._app && !data.sm_teachers && !data.sm_ttslots) {
  showToast(' Not a valid Schoolman backup file'); return;
  }
- // Restore all standard keys to localStorage
+ // Restore all standard keys
  SM_KEYS.forEach(key => {
  if (data[key] !== undefined) {
- localStorage.setItem(key, JSON.stringify(data[key]));
+ save(key, data[key]);
  }
  });
  // Restore mark sheets (handles both new sm_mk_ and legacy sm_marks_ formats)
@@ -8271,12 +8547,12 @@ function importAllData(input) {
  if (marksRestored > 0) console.log(`Restored ${marksRestored} mark sheet entries`);
  // Ensure admin account survives the restore
  try {
-   const _a = JSON.parse(localStorage.getItem('sm_staff_accounts')||'[]');
+   const _a = load('sm_staff_accounts', []);
    if (!_a.some(a=>a.role==='admin')) {
      _a.unshift({id:'acc_admin',name:'Admin User',username:'admin',password:'admin123',role:'admin',
        perms:{dashboard:true,students:true,grades:true,timetable:true,
               reports:true,payments:true,teachers:true,access:true,settings:true}});
-     localStorage.setItem('sm_staff_accounts',JSON.stringify(_a));
+     save('sm_staff_accounts', _a);
    }
  } catch(_e){}
  // Reload the page to pick up all restored data
@@ -8309,11 +8585,104 @@ function downloadSubjectsTemplate() {
  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
+// ══════════════════════════════════════════════════════════
+// STORAGE USAGE — live readout of on-device storage consumption via the
+// Storage Manager API. Both localStorage (mirror) and IndexedDB (primary,
+// see MarkStore etc.) share the same browser storage quota, so this reports
+// the origin's total usage rather than either layer individually.
+// ══════════════════════════════════════════════════════════
+function _formatBytes(bytes) {
+ if (bytes == null) return '—';
+ if (bytes < 1024) return bytes + ' B';
+ if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+ if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+ return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+}
+
+// Same request as _requestPersistentStorage() at boot, but triggered by a
+// real button click from Settings. Some browsers weight an explicit user
+// gesture more heavily than an automatic on-load call when deciding whether
+// to grant persistence, so this gives it a second, stronger-signal attempt.
+async function _requestPersistentStorageManual() {
+ if (!navigator.storage || !navigator.storage.persist) {
+ showToast('This browser doesn\u2019t support persistent storage requests');
+ return;
+ }
+ try {
+ const granted = await navigator.storage.persist();
+ showToast(granted ? 'Persistent storage granted ' : 'Browser declined the request \u2014 it may grant this automatically after more regular use');
+ } catch (e) {
+ showToast('Request failed: ' + e.message);
+ }
+ renderStorageUsagePanel();
+}
+
+async function renderStorageUsagePanel() {
+ const bar   = document.getElementById('storage-usage-bar');
+ const text  = document.getElementById('storage-usage-text');
+ const note  = document.getElementById('storage-usage-note');
+ const badge = document.getElementById('storage-persist-badge');
+ const btn   = document.getElementById('storage-persist-btn');
+ if (!bar || !text || !note) return;
+
+ if (!navigator.storage || !navigator.storage.estimate) {
+ text.textContent = 'Not available';
+ bar.style.width = '0%';
+ note.textContent = 'This browser doesn\u2019t report storage usage — data is still being saved normally.';
+ if (badge) badge.style.display = 'none';
+ if (btn) btn.style.display = 'none';
+ return;
+ }
+
+ let persisted = false;
+ try { persisted = navigator.storage.persisted ? await navigator.storage.persisted() : false; } catch(e) {}
+
+ if (badge) {
+ badge.style.display = 'inline-block';
+ if (persisted) {
+ badge.textContent = '✓ Persistent storage granted';
+ badge.style.background = '#e3f6ea'; badge.style.color = '#0e7a4e';
+ } else {
+ badge.textContent = 'Persistent storage not yet granted';
+ badge.style.background = '#fff3e0'; badge.style.color = '#b06000';
+ }
+ }
+ if (btn) btn.style.display = persisted ? 'none' : '';
+
+ try {
+ const { usage, quota } = await navigator.storage.estimate();
+ const pct = quota ? Math.min(100, (usage / quota) * 100) : 0;
+
+ // Color-coded thresholds: plenty of room / getting full / act now.
+ let color = '#0e7a4e'; // green
+ if (pct >= 80) color = '#cc3300'; // red
+ else if (pct >= 50) color = '#c98a00'; // amber
+
+ bar.style.width = pct.toFixed(1) + '%';
+ bar.style.background = color;
+ text.textContent = `${_formatBytes(usage)} of ${_formatBytes(quota)} (${pct.toFixed(1)}%)`;
+
+ if (pct >= 80) {
+ note.innerHTML = '<strong style="color:#cc3300">Storage is nearly full.</strong> Download a backup and consider clearing old mark-sheet data or freeing space on this device.';
+ } else if (pct >= 50) {
+ note.textContent = 'Storage is filling up. Regular backups are recommended.';
+ } else if (!persisted) {
+ note.textContent = 'This quota is a browser-imposed cap, not an IndexedDB limit — click "Request Persistent Storage" below to ask the browser to raise it.';
+ } else {
+ note.textContent = 'Plenty of room \u2014 data is stored in this browser\u2019s IndexedDB with persistent storage granted.';
+ }
+ } catch (e) {
+ text.textContent = 'Unable to check';
+ note.textContent = 'Could not read storage usage in this browser.';
+ console.warn('storage.estimate() failed', e);
+ }
+}
+
 function resetPairingRules() {
  if (!confirm('Reset all pairing rules to GCE A-Level defaults?\n\n 63 Can-Pair rules (Arts+Arts, Science+Science, Arts×Science)\n 42 No-Pair rules (compulsory + cross-series subjects)\n\nYour custom rules will be replaced.')) return;
- // Remove from localStorage so loadCanPairs/loadNoPairs return the hardcoded defaults
- localStorage.removeItem('sm_canpairs');
- localStorage.removeItem('sm_nopairs');
+ // Remove from storage so loadCanPairs/loadNoPairs return the hardcoded defaults
+ removeData('sm_canpairs');
+ removeData('sm_nopairs');
  renderSubjectsPanel();
  showToast('Pairing rules reset to GCE defaults — 63 can-pair + 42 no-pair rules loaded ');
 }
@@ -8342,6 +8711,22 @@ function addSubject() {
 
 function removeSubject(name) {
  save('sm_subjects', loadSubjects().filter(s => s !== name));
+ // A subject can be referenced in several other places — clean those up
+ // the same way deleteAllSubjects() already does at bulk scale, so a
+ // single-subject delete doesn't leave dangling references behind.
+ save('sm_canpairs', loadCanPairs().filter(r => r.a !== name && r.b !== name));
+ save('sm_nopairs',  loadNoPairs().filter(r => r.a !== name && r.b !== name));
+ const seriesMap = loadSubjectSeries();
+ if (Object.prototype.hasOwnProperty.call(seriesMap, name)) {
+ delete seriesMap[name];
+ saveSubjectSeries(seriesMap);
+ }
+ const targets = loadSubjectPeriodTargets();
+ let targetsChanged = false;
+ Object.keys(targets).forEach(key => {
+ if (key.endsWith('||' + name)) { delete targets[key]; targetsChanged = true; }
+ });
+ if (targetsChanged) save('sm_subject_period_targets', targets);
  renderSubjectsPanel();
  populateAllSubjectDropdowns();
 }
@@ -8923,6 +9308,19 @@ function addCustomClass() {
 }
 
 function removeCustomClass(name) {
+ // The class definition itself doesn't own student/timetable records — those
+ // live in `students`/`ttSlots` keyed by class name string. Removing the
+ // definition doesn't touch them, so warn with real counts first rather than
+ // silently letting them become invisible orphans (no longer selectable
+ // anywhere, but still sitting in storage).
+ const affectedStudents = students.filter(s => s.cls === name || (s.cls || '').startsWith(name)).length;
+ const affectedSlots  = ttSlots.filter(s => s.cls === name || (s.cls || '').startsWith(name)).length;
+ if (affectedStudents > 0 || affectedSlots > 0) {
+ const parts = [];
+ if (affectedStudents > 0) parts.push(`${affectedStudents} student${affectedStudents !== 1 ? 's' : ''}`);
+ if (affectedSlots > 0) parts.push(`${affectedSlots} timetable slot${affectedSlots !== 1 ? 's' : ''}`);
+ if (!confirm(`"${name}" still has ${parts.join(' and ')} assigned to it. Removing the class definition won't delete that data — it'll just disappear from class pickers until reassigned. Continue?`)) return;
+ }
  save('sm_base_classes', _getBaseClasses().filter(c => c !== name));
  save('sm_streams', loadStreams().filter(r => r.cls !== name));
  _rebuildAndPreview();
@@ -9463,9 +9861,12 @@ function buildReportCardHTML(s, term, classMaster, enrolled) {
  : '';
 
  // A letterhead image replaces the report card's own bilingual header too.
- const rcHeader = lh.image
- ? `<div class="rc-header-img" style="padding:6px 10px 0"><img src="${lh.image}" alt="Letterhead" style="display:block;width:100%;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact" /></div>`
- : null;
+ // Uses buildLHHtml() — the same renderer every other page uses — so an
+ // uploaded letterhead looks visually identical everywhere, not just present
+ // everywhere. (Previously this had its own separate markup at 100% width
+ // with no border separator, while every other page rendered it at 95% width
+ // with a double-border underline — same image, visibly different framing.)
+ const rcHeader = lh.image ? buildLHHtml(lh) : null;
 
  return `<div class="rc ${rcDensity}">${rcHeader || `<div class="rc-header"> <div class="rc-header-left">
  REPUBLIQUE DU CAMEROUN<br>Paix - Travail - Patrie<br>
