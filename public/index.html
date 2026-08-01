@@ -3688,10 +3688,19 @@ function _getClassProblemReasons(cls) {
  if (needed > rawCapacity) {
  const supportsPairing = _classSupportsPairing(cls);
  const hasRules = loadCanPairs().some(p => _ruleAppliesToClass ? _ruleAppliesToClass(p, cls) : true);
- reasons.push(`Over physical capacity: needs ${needed}p but the week only has ${rawCapacity} single-subject slots` +
+ const pairSuggestions = supportsPairing ? _suggestPairsForClass(cls) : [];
+ reasons.push({
+ reason: `Over physical capacity: needs ${needed}p but the week only has ${rawCapacity} single-subject slots` +
  (supportsPairing && hasRules ? ' (Can-Pair rules add some extra room, but likely not enough)' :
  supportsPairing ? ' (pairing is allowed here but no Can-Pair rules are configured for it)' :
- ' (this class can\'t use pairing)'));
+ ' (this class can\'t use pairing)'),
+ solution: supportsPairing && hasRules
+ ? `Add more Can-Pair combinations for ${cls} in Settings → Timetable Rules so more subjects can share a slot, or trim ${needed - rawCapacity}p worth of periods off lower-priority subjects.`
+ : supportsPairing
+ ? `Go to Settings → Timetable Rules and add Can-Pair rules for ${cls}'s real subject combinations — pairing is allowed here but none are configured yet.`
+ : `This class can't use pairing, so the only fixes are: reduce total periods requested for ${cls} by ${needed - rawCapacity}p, or add more teaching periods to the week in Settings → Time Slots.`,
+ pairSuggestions
+ });
  }
 
  // 2) Subject -> Classes conflicts on this class's own assignments.
@@ -3700,7 +3709,11 @@ function _getClassProblemReasons(cls) {
  if (a.cls === cls && !_subjectAllowedInClass(a.subject, cls)) blocked.push(a.subject);
  }));
  if (blocked.length) {
- reasons.push(`${[...new Set(blocked)].join(', ')} ${blocked.length===1?'is':'are'} assigned here but restricted from this class in Subject → Classes settings`);
+ const blockedList = [...new Set(blocked)];
+ reasons.push({
+ reason: `${blockedList.join(', ')} ${blocked.length===1?'is':'are'} assigned here but restricted from this class in Subject → Classes settings`,
+ solution: `Open Settings → Subject → Classes and either allow ${blockedList.join(', ')} for ${cls}, or reassign ${blocked.length===1?'that subject':'those subjects'} away from ${cls} in Teachers if ${blocked.length===1?'it':'they'} shouldn't be taught here.`
+ });
  }
 
  // 3) Teachers on this class who are individually short on availability
@@ -3715,15 +3728,79 @@ function _getClassProblemReasons(cls) {
  if (assigned > avail) shortTeachers.add(`${t.fname} ${t.lname}`);
  });
  if (shortTeachers.size) {
- reasons.push(`${shortTeachers.size} teacher${shortTeachers.size!==1?'s':''} here ${shortTeachers.size!==1?'are':'is'} short on availability: ${[...shortTeachers].slice(0,3).join(', ')}${shortTeachers.size>3?`, +${shortTeachers.size-3} more`:''}`);
+ reasons.push({
+ reason: `${shortTeachers.size} teacher${shortTeachers.size!==1?'s':''} here ${shortTeachers.size!==1?'are':'is'} short on availability: ${[...shortTeachers].slice(0,3).join(', ')}${shortTeachers.size>3?`, +${shortTeachers.size-3} more`:''}`,
+ solution: `In Teachers → Availability, add more free periods across the week for ${[...shortTeachers].slice(0,3).join(', ')}${shortTeachers.size>3?', and the others listed':''}, or move some of ${shortTeachers.size!==1?'their':'their'} assigned periods to a co-teacher so no single teacher is over their own weekly capacity.`
+ });
+ }
+
+ // 4) Teachers on this class with a day where they have ZERO available
+ // slots. Check #3 only looks at week-TOTAL assigned vs available, so a
+ // teacher can pass that check easily (plenty of slots overall) while
+ // still being unplaceable on one specific day — which forces all of
+ // their periods for every class they teach onto the remaining days and
+ // is a common real cause of a shortfall that #3 misses entirely.
+ const zeroDayTeachers = [];
+ const zeroDayNames = [];
+ teachers.forEach(t => {
+ const teachesThisClass = (t.assignments || []).some(a => a.cls === cls);
+ if (!teachesThisClass) return;
+ const zeroDays = DAYS.filter(d => {
+ const avail = ((t.availability||{})[d]||[]).filter(id => teachSlots.some(ts=>ts.id===id) && _slotAllowedOnDay(d,id,teachSlots)).length;
+ return avail === 0;
+ });
+ if (zeroDays.length) {
+ zeroDayTeachers.push(`${t.fname} ${t.lname} (0 slots on ${zeroDays.join(', ')})`);
+ zeroDayNames.push(`${t.fname} ${t.lname}`);
+ }
+ });
+ if (zeroDayTeachers.length) {
+ reasons.push({
+ reason: `${zeroDayTeachers.length} teacher${zeroDayTeachers.length!==1?'s':''} here ${zeroDayTeachers.length!==1?'have':'has'} at least one day with zero available periods, which forces all of ${zeroDayTeachers.length!==1?'their':'their'} periods (for every class ${zeroDayTeachers.length!==1?'they':'they'} teach) onto fewer days: ${zeroDayTeachers.slice(0,3).join('; ')}${zeroDayTeachers.length>3?`, +${zeroDayTeachers.length-3} more`:''}`,
+ solution: `In Teachers → Availability, open a single period on their zero day${zeroDayTeachers.length!==1?'s':''} for ${zeroDayNames.slice(0,3).join(', ')}${zeroDayNames.length>3?`, +${zeroDayNames.length-3} more`:''} — even one freed-up slot per blocked day usually clears the jam. If their schedule truly can't change, split ${cls}'s periods with a co-teacher who is free that day instead.`
+ });
  }
 
  return reasons;
 }
 
-// Prefix classes with unresolved generation gaps with a warning icon in the
-// Timetable page's class selector, so problems are visible while browsing —
-// this select lives inside a .no-print toolbar, so it never prints.
+// Detects a DIFFERENT failure mode than the shortfall reasons above: a class
+// can have a perfectly healthy planned-vs-plotted total (even 100%) while
+// still being badly distributed across the week — e.g. crammed onto Monday
+// and Tuesday with almost nothing on Thursday. A student sitting idle from
+// 7am to 1pm on a school day is a real problem the coverage % alone hides.
+//
+// The comparison is against what's TYPICAL FOR THAT DAY SCHOOL-WIDE, not a
+// flat "should have ~9 periods" assumption — some schools legitimately run
+// a light or empty Saturday for every class, and that's normal, not a bug.
+// Only a day that's thin for THIS class while busy for most others gets
+// flagged.
+function _getClassDayBalanceIssues(cls, term) {
+ term = term || 1;
+ const allClasses = loadCustomClasses();
+ const byDay = {};
+ DAYS.forEach(d => byDay[d] = {});
+ ttSlots.filter(s => s.term === term).forEach(s => {
+ if (!byDay[s.day]) return;
+ byDay[s.day][s.cls] = (byDay[s.day][s.cls] || 0) + 1;
+ });
+
+ const issues = [];
+ DAYS.forEach(day => {
+ const counts = allClasses.map(c => byDay[day][c] || 0);
+ const nonZero = counts.filter(n => n > 0);
+ if (!nonZero.length) return; // whole school is unused this day — normal, skip
+ const sorted = [...nonZero].sort((a,b) => a-b);
+ const median = sorted[Math.floor(sorted.length/2)];
+ const thisCount = byDay[day][cls] || 0;
+ // Only flag a real gap: the school-wide day is substantial (median >= 3)
+ // and this class is at half that or worse.
+ if (median >= 3 && thisCount <= Math.floor(median/2)) {
+ issues.push({ day, thisCount, median });
+ }
+ });
+ return issues;
+}
 function _markProblemClassesInSelect() {
  const el = document.getElementById('tt-class-select');
  if (!el) return;
@@ -3889,7 +3966,20 @@ function renderCoverage() {
  const pct = x.planned > 0 ? Math.round(x.plotted / x.planned * 100) : 0;
  const reasons = _getClassProblemReasons(x.cls);
  const reasonHtml = reasons.length
- ? `<ul style="margin:4px 0 0 18px;padding:0;color:#7a2a1a">${reasons.map(r => `<li>${r}</li>`).join('')}</ul>`
+ ? `<ul style="margin:4px 0 0 18px;padding:0;color:#7a2a1a">${reasons.map(r => {
+ const pairHtml = (r.pairSuggestions && r.pairSuggestions.length)
+ ? `<div style="margin-top:6px">
+ <div style="font-weight:600;color:#1a3a5c">Subjects that could be paired for ${x.cls} (not yet covered by a rule):</div>
+ <div style="display:flex;flex-direction:column;gap:4px;margin-top:4px">
+ ${r.pairSuggestions.map(p => `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1px solid #cfd8e3;border-radius:6px;padding:4px 8px">
+ <span>${p.a} + ${p.b}</span>
+ <button class="btn btn-primary" style="font-size:.68rem;padding:3px 8px;white-space:nowrap" onclick="addCanPairSuggestion('${p.a.replace(/'/g,"\\'")}','${p.b.replace(/'/g,"\\'")}','${x.cls.replace(/'/g,"\\'")}')">Add rule</button>
+ </div>`).join('')}
+ </div>
+ </div>`
+ : '';
+ return `<li style="margin-bottom:5px">${r.reason}<div style="margin:3px 0 0;padding:4px 8px;background:#f4f7fb;border-left:3px solid #1a3a5c;color:#1a3a5c;font-style:normal"><strong>→ Proposed solution:</strong> ${r.solution}${pairHtml}</div></li>`;
+ }).join('')}</ul>`
  : `<div style="margin:4px 0 0;color:#888;font-style:italic">No structural cause found — likely ordinary slot contention from queue order (try the repair pass or reduce competing periods).</div>`;
  return `<div style="background:#fff;border:1px solid #f5b8ae;border-radius:6px;padding:7px 10px">
  <strong style="color:#7a2a1a">${x.cls}</strong>
@@ -3902,7 +3992,34 @@ function renderCoverage() {
  </div>`
  : '';
 
- wrap.innerHTML = problemBanner + ` <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"> <div style="background:#e8f5e9;border:1px solid #b6dfc2;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#1a7a3a;font-size:1rem">${pct}%</div> <div style="color:#555">Coverage</div> </div> <div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:var(--navy);font-size:1rem">${doneGrand}p</div> <div style="color:#555">Plotted</div> </div> <div style="background:#f0f4f9;border:1px solid #ccc;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#555;font-size:1rem">${planGrand}p</div> <div style="color:#555">Planned</div> </div> <div style="background:#fff0f0;border:1px solid #ffb3b3;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#cc0000;font-size:1rem">${unplotted}p</div> <div style="color:#555">Unplotted</div> </div> ${overNote} <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b06000;font-size:1rem">${totalTarget}p</div> <div style="color:#555">Target (all classes)</div> </div> </div> <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px"> <span style="background:#e8f5e9;color:#1a7a3a;padding:1px 6px;border-radius:6px">■ Fully plotted</span> &nbsp; <span style="background:#fff8e1;color:#b06000;padding:1px 6px;border-radius:6px">■ Partially plotted</span> &nbsp; <span style="background:#fff0f0;color:#cc0000;padding:1px 6px;border-radius:6px">■ Not plotted</span> &nbsp;
+ // Day-balance warnings — a SEPARATE check from the shortfall banner above.
+ // Runs across every class currently in view (even ones at 100% coverage),
+ // because a class can hit its weekly total while still being crammed onto
+ // 2-3 days and left nearly empty on others.
+ const dayBalanceDetail = classList
+ .map(c => ({ cls: c, issues: _getClassDayBalanceIssues(c, term) }))
+ .filter(x => x.issues.length);
+
+ const dayBalanceBanner = dayBalanceDetail.length
+ ? `<div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;font-size:.78rem;margin-bottom:12px">
+ <strong style="color:#8a6100">⚠ Day-balance warnings in ${dayBalanceDetail.length} class${dayBalanceDetail.length!==1?'es':''}</strong>
+ <span style="color:#555"> — weekly total looks fine, but specific days are left almost empty:</span>
+ <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+ ${dayBalanceDetail.map(x => `<div style="background:#fff;border:1px solid #ffe082;border-radius:6px;padding:7px 10px">
+ <strong style="color:#8a6100">${x.cls}</strong>
+ <ul style="margin:4px 0 0 18px;padding:0;color:#8a6100">
+ ${x.issues.map(iss => `<li style="margin-bottom:5px">${iss.day}: only ${iss.thisCount} period${iss.thisCount!==1?'s':''} plotted, vs. a typical ${iss.median}p for other classes that day
+ <div style="margin:3px 0 0;padding:4px 8px;background:#f4f7fb;border-left:3px solid #1a3a5c;color:#1a3a5c;font-style:normal">
+ <div><strong>→ Proposed solution:</strong> Move some of ${x.cls}'s periods from its busiest day(s) onto ${iss.day} — check which teacher's availability is steering periods away from ${iss.day} in Teachers → Availability, or use "Fix 3-in-a-row" / a manual drag on the Timetable page to rebalance.</div>
+ <button class="btn btn-primary" style="margin-top:6px;font-size:.72rem;padding:4px 10px" onclick="fixClassDayBalance('${x.cls.replace(/'/g,"\\'")}','${iss.day}')">⚡ Auto-fix this day</button>
+ </div></li>`).join('')}
+ </ul>
+ </div>`).join('')}
+ </div>
+ </div>`
+ : '';
+
+ wrap.innerHTML = problemBanner + dayBalanceBanner + ` <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"> <div style="background:#e8f5e9;border:1px solid #b6dfc2;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#1a7a3a;font-size:1rem">${pct}%</div> <div style="color:#555">Coverage</div> </div> <div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:var(--navy);font-size:1rem">${doneGrand}p</div> <div style="color:#555">Plotted</div> </div> <div style="background:#f0f4f9;border:1px solid #ccc;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#555;font-size:1rem">${planGrand}p</div> <div style="color:#555">Planned</div> </div> <div style="background:#fff0f0;border:1px solid #ffb3b3;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#cc0000;font-size:1rem">${unplotted}p</div> <div style="color:#555">Unplotted</div> </div> ${overNote} <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b06000;font-size:1rem">${totalTarget}p</div> <div style="color:#555">Target (all classes)</div> </div> </div> <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px"> <span style="background:#e8f5e9;color:#1a7a3a;padding:1px 6px;border-radius:6px">■ Fully plotted</span> &nbsp; <span style="background:#fff8e1;color:#b06000;padding:1px 6px;border-radius:6px">■ Partially plotted</span> &nbsp; <span style="background:#fff0f0;color:#cc0000;padding:1px 6px;border-radius:6px">■ Not plotted</span> &nbsp;
  Plan = planned periods/week · Done = plotted periods </p> <table style="border-collapse:collapse;width:100%;font-size:.72rem"> <thead> <tr> <th rowspan="2" style="padding:5px 10px;font-size:.68rem;background:#1a3a5c;color:#fff;text-align:left;border:1px solid #1a3a5c">Subject</th>
  ${colHeaders} <th colspan="2" style="padding:5px 8px;font-size:.65rem;background:#1a3a5c;color:#fff;text-align:center;border:1px solid #1a3a5c">Total</th> </tr> <tr>${subHeaders} <th style="padding:3px 6px;font-size:.6rem;background:#2a4a6c;color:#cde;text-align:center;border:1px solid #ccc">Plan</th> <th style="padding:3px 6px;font-size:.6rem;background:#2a4a6c;color:#cde;text-align:center;border:1px solid #ccc">Done</th> </tr> </thead> <tbody>${rows}</tbody> <tfoot> <tr> <td style="padding:4px 10px;font-size:.73rem;font-weight:700;background:#1a3a5c;color:#fff;border:1px solid #aaa">TOTAL</td>
  ${totalCells} <td style="padding:4px 6px;text-align:center;font-weight:700;font-size:.73rem;background:#1a3a5c;color:#fff;border:1px solid #aaa">${planGrand}p</td> <td style="padding:4px 6px;text-align:center;font-weight:700;font-size:.73rem;background:#1a3a5c;color:${doneGrand>=planGrand?'#7fffb0':'#ffb3b3'};border:1px solid #aaa">${doneGrand}p</td> </tr> </tfoot> </table>`;
@@ -4558,6 +4675,67 @@ function _tryPlace(cls, subject, day, slotId, teacherId, term, teachSlots) {
  cls, day, slotId, teacherId, subject, term
  });
  return true;
+}
+
+// Auto-fix action for a Subject Coverage day-balance warning: tries to
+// relocate periods from this class's busiest other day(s) onto the thin
+// target day, until it reaches the school-wide typical count for that day
+// (or runs out of movable periods). Reuses _tryPlace() for every placement
+// so it can never violate a rule the generator itself wouldn't — teacher
+// double-booking, pairing rules, subject eligibility, consecutive-period
+// limits are all still enforced exactly as they are for a fresh Auto-Generate.
+function fixClassDayBalance(cls, targetDay) {
+ const term = 1;
+ const issues = _getClassDayBalanceIssues(cls, term);
+ const issue = issues.find(i => i.day === targetDay);
+ if (!issue) { showToast(`${cls} on ${targetDay} no longer looks unbalanced — try Refresh.`); return; }
+
+ const teachSlots = getTeachingSlots();
+ const wanted = Math.max(1, issue.median - issue.thisCount);
+
+ // Pull from the busiest other day(s) first, so this also thins out the
+ // day that's currently overloaded rather than just patching the gap.
+ const dayCounts = {};
+ DAYS.forEach(d => dayCounts[d] = ttSlots.filter(s => s.term===term && s.cls===cls && s.day===d).length);
+ const sourceDays = DAYS.filter(d => d !== targetDay).sort((a,b) => dayCounts[b]-dayCounts[a]);
+
+ let moved = 0, stuck = [];
+ sourceDays.forEach(day => {
+ if (moved >= wanted) return;
+ const daySlots = ttSlots.filter(s => s.term===term && s.cls===cls && s.day===day);
+ daySlots.forEach(rec => {
+ if (moved >= wanted) return;
+ const { subject, teacherId } = rec;
+ const idx = ttSlots.indexOf(rec);
+ if (idx === -1) return;
+ ttSlots.splice(idx, 1); // lift out before searching, so the search sees the grid without it
+
+ // _tryPlace does NOT check teacher availability itself (the generator
+ // filters that upstream) — so restrict candidates to slots this
+ // specific teacher is actually free for on the target day, same as
+ // fixConsecutiveViolations() does.
+ const t = teachers.find(x => x.id === teacherId);
+ const ids = (t && t.availability && t.availability[targetDay]) || [];
+ let placed = false;
+ for (const s of teachSlots) {
+ if (ids.indexOf(s.id) < 0) continue;
+ if (_tryPlace(cls, subject, targetDay, s.id, teacherId, term, teachSlots)) { placed = true; break; }
+ }
+ if (placed) moved++;
+ else { ttSlots.push(rec); stuck.push(`${subject} (${day.slice(0,3)})`); }
+ });
+ });
+
+ save('sm_ttslots', ttSlots);
+ renderTimetable();
+ if (typeof renderCoverage === 'function') renderCoverage();
+
+ if (moved > 0) {
+ showToast(`Moved ${moved} period${moved!==1?'s':''} onto ${targetDay} for ${cls}.` +
+ (moved < wanted ? ` ${wanted-moved} more couldn't be moved automatically — the teacher(s) involved aren't free on ${targetDay}.` : ''));
+ } else {
+ showToast(`Couldn't auto-move any periods onto ${targetDay} for ${cls} — every candidate teacher is unavailable that day. Try opening a slot for them in Teachers → Availability instead.`);
+ }
 }
 
 // Briefly highlight a specific class-timetable cell green to confirm a
@@ -7384,55 +7562,59 @@ function buildLHPreviewOnly(lh) {
 function buildLHHtml(lh) {
  // An uploaded letterhead image replaces the entire built-from-fields header.
  // Used by report cards, timetables, receipts — everything that calls this.
- // Rendered at 95% width (centered) so height scales down proportionally by
- // the same 5% — height:auto means height tracks width 1:1 for any uploaded
- // image's aspect ratio, so this shrinks height without leaving a gap below
- // the image the way a transform-based scale would.
+ // Rendered at 85.5% width (centered) — was 95%, reduced a further 10% on
+ // top of that per request. height:auto means height tracks width 1:1 for
+ // any uploaded image's aspect ratio, so shrinking width shrinks the
+ // rendered height by the same amount without leaving a gap below the
+ // image the way a transform-based scale would.
  if (lh && lh.image) {
  return '<div style="padding:0 0 8px;margin-bottom:10px;border-bottom:3px double #1a3a5c;' +
  '-webkit-print-color-adjust:exact;print-color-adjust:exact">' +
  '<img src="' + lh.image + '" alt="Letterhead" ' +
- 'style="display:block;width:95%;max-width:95%;height:auto;margin:0 auto;' +
+ 'style="display:block;width:85.5%;max-width:85.5%;height:auto;margin:0 auto;' +
  '-webkit-print-color-adjust:exact;print-color-adjust:exact" />' +
  '</div>';
  }
- // Full bilingual header matching the report card layout
+ // Full bilingual header matching the report card layout. Every dimension
+ // below (padding, margins, logo size, font sizes, line-height) is scaled
+ // ×0.9 together — a genuine reflow shrink, not a CSS transform, so the
+ // block's actual height drops ~10% with nothing left over below it.
  var leftBlock =
- '<div style="font-size:.68rem;line-height:1.55;color:#1a3a5c">' +
+ '<div style="font-size:.61rem;line-height:1.4;color:#1a3a5c">' +
  '<div>REPUBLIQUE DU CAMEROUN</div>' +
  '<div>Paix - Travail - Patrie</div>' +
  '<div>Ministère des Enseignements Secondaires</div>' +
  '<div>Délégation Régionale du Centre</div>' +
  '<div>Délégation Départementale du Mfoundi</div>' +
  (lh.line1 ? '<div style="font-weight:800;margin-top:3px">' + lh.line1 + '</div>' : '') +
- (lh.line2 ? '<div style="font-weight:700;font-size:.65rem">' + lh.line2 + '</div>' : '') +
- (lh.line3 ? '<div style="font-size:.63rem;color:#555">' + lh.line3 + '</div>' : '') +
- '<div style="margin-top:4px"><span style="background:#1a3a5c;color:#fff;font-size:.62rem;padding:2px 8px;border-radius:10px">Année scolaire 2025-2026</span></div>' +
+ (lh.line2 ? '<div style="font-weight:700;font-size:.59rem">' + lh.line2 + '</div>' : '') +
+ (lh.line3 ? '<div style="font-size:.57rem;color:#555">' + lh.line3 + '</div>' : '') +
+ '<div style="margin-top:4px"><span style="background:#1a3a5c;color:#fff;font-size:.56rem;padding:2px 7px;border-radius:9px">Année scolaire 2025-2026</span></div>' +
  '</div>';
 
  var rightBlock =
- '<div style="font-size:.68rem;line-height:1.55;color:#1a3a5c;text-align:right">' +
+ '<div style="font-size:.61rem;line-height:1.4;color:#1a3a5c;text-align:right">' +
  '<div>REPUBLIC OF CAMEROON</div>' +
  '<div>Peace - Work - Fatherland</div>' +
  '<div>Ministry of Secondary Education</div>' +
  '<div>&nbsp;</div>' +
  '<div>&nbsp;</div>' +
  (lh.fr1 ? '<div style="font-weight:800;margin-top:3px">' + lh.fr1 + '</div>' : '') +
- (lh.fr2 ? '<div style="font-weight:700;font-size:.65rem">' + lh.fr2 + '</div>' : '') +
- (lh.fr3 ? '<div style="font-size:.63rem;color:#555">' + lh.fr3 + '</div>' : '') +
- '<div style="margin-top:4px"><span style="background:#1a3a5c;color:#fff;font-size:.62rem;padding:2px 8px;border-radius:10px">Academic Year 2025-2026</span></div>' +
+ (lh.fr2 ? '<div style="font-weight:700;font-size:.59rem">' + lh.fr2 + '</div>' : '') +
+ (lh.fr3 ? '<div style="font-size:.57rem;color:#555">' + lh.fr3 + '</div>' : '') +
+ '<div style="margin-top:4px"><span style="background:#1a3a5c;color:#fff;font-size:.56rem;padding:2px 7px;border-radius:9px">Academic Year 2025-2026</span></div>' +
  '</div>';
 
  var centerBlock =
  '<div style="text-align:center">' +
  (lh.logo
- ? '<img src="'+lh.logo+'" style="max-height:76px;max-width:96px;object-fit:contain;display:block;margin:0 auto">'
- : '<div style="width:72px;height:72px;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#aaa;margin:0 auto">Logo</div>'
+ ? '<img src="'+lh.logo+'" style="max-height:68px;max-width:86px;object-fit:contain;display:block;margin:0 auto">'
+ : '<div style="width:65px;height:65px;border:2px dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:.54rem;color:#aaa;margin:0 auto">Logo</div>'
  ) +
  '</div>';
 
- return '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;' +
- 'padding:8px 0 10px;border-bottom:3px double #1a3a5c;margin-bottom:12px;-webkit-print-color-adjust:exact;print-color-adjust:exact">' +
+ return '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:11px;' +
+ 'padding:7px 0 9px;border-bottom:3px double #1a3a5c;margin-bottom:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact">' +
  leftBlock + centerBlock + rightBlock +
  '</div>';
 }
@@ -9691,6 +9873,56 @@ function _pairAllowedInSlot(newSubject, existingSubjects, cls, isManual) {
  });
 }
 
+// Suggests SPECIFIC subject pairs for a class that's over capacity, instead
+// of just pointing at Settings with no starting point. Only suggests pairs
+// that: (1) aren't already covered by an existing Can-Pair rule for this
+// class, (2) wouldn't be blocked by a genuine cross-series conflict (e.g. a
+// single-Arts subject paired with a single-Science subject — same check the
+// generator itself uses), and (3) skip compulsory subjects, which shouldn't
+// be combined away. Ranked lightest-combined-load first, since low-period
+// elective subjects are the safest, lowest-curriculum-risk candidates.
+function _suggestPairsForClass(cls, limit) {
+ limit = limit || 5;
+ if (!_classSupportsPairing(cls)) return [];
+ const subjects = [...new Set(
+ teachers.flatMap(t => (t.assignments || []).filter(a => a.cls === cls).map(a => a.subject))
+ )].filter(s => !isCompulsorySubject(s));
+
+ const candidates = [];
+ for (let i = 0; i < subjects.length; i++) {
+ for (let j = i + 1; j < subjects.length; j++) {
+ const a = subjects[i], b = subjects[j];
+ if (_isAllowedPair2nd(a, b, cls)) continue; // already covered by an existing rule
+ const sa = getSubjectSeries(a), sb = getSubjectSeries(b);
+ const aSingle = sa.length === 1, bSingle = sb.length === 1;
+ if (aSingle && bSingle && sa[0] !== sb[0]) continue; // genuine cross-series conflict
+ const weight = (getSubjectPeriodTarget(cls, a) || 0) + (getSubjectPeriodTarget(cls, b) || 0);
+ candidates.push({ a, b, weight });
+ }
+ }
+ candidates.sort((x, y) => x.weight - y.weight);
+ return candidates.slice(0, limit);
+}
+
+// Applies one suggested pair directly as a class-scoped Can-Pair rule —
+// the parameterized equivalent of addCanPairRule(), which reads its inputs
+// from the Settings page's own form fields instead.
+function addCanPairSuggestion(a, b, cls) {
+ const pairs = loadCanPairs();
+ const subjects = [a, b].map(s => s.toLowerCase()).sort();
+ const isDup = pairs.some(p => {
+ if (p.c) return false; // only compare 2-subject rules here
+ const existing = [p.a, p.b].map(s => s.toLowerCase()).sort();
+ return existing.join('|') === subjects.join('|') && _ruleAppliesToClass(p, cls);
+ });
+ if (isDup) { showToast(`${a} + ${b} is already paired for ${cls}.`); return; }
+ pairs.push({ a, b, classes: [cls] });
+ save('sm_canpairs', pairs);
+ if (typeof renderSubjectsPanel === 'function') renderSubjectsPanel();
+ if (typeof renderCoverage === 'function') renderCoverage();
+ showToast(`Added Can-Pair rule: ${a} + ${b} for ${cls}.`);
+}
+
 // Check if subject is compulsory for F1-F5. Matches by prefix (case-
 // insensitive, on a word boundary) rather than requiring an exact string, so
 // a school using the fuller name "English Language" still matches the
@@ -10188,7 +10420,15 @@ function promptRenameBaseClass(oldName) {
 
 function populateAllClassDropdowns() {
  const cls = loadCustomClasses();
- const opts = cls.map(c => `<option>${c}</option>`).join('');
+ // value is explicit (not left to default to the option's text) so that
+ // later text-only edits — e.g. _markProblemClassesInSelect() prefixing a
+ // ⚠ icon onto the visible label — can never change what .value reports.
+ // Previously, warning-flagged classes silently became unselectable by
+ // their real name (tt-class-select.value would return "⚠ Form 1 C"
+ // instead of "Form 1 C"), breaking renderTimetable/printTimetable/
+ // renderCoverage's class filter for exactly the classes needing the most
+ // attention.
+ const opts = cls.map(c => `<option value="${c}">${c}</option>`).join('');
  const ids = ['grades-class','tt-class','tt-class-select','class-filter','s-class','es-class',
  'report-class-sel'];
  ids.forEach(id => {
