@@ -1801,7 +1801,7 @@
   </div>
 </div>
 
-<!-- ═══════════ STUDENTS PAGE --> <div class="page" id="page-students"> <div class="search-bar"> <input type="text" id="student-search" placeholder="Search by name or ID…" oninput="filterStudents()" /> <select id="class-filter" onchange="filterStudents()"> <option value="">All Classes</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">All Students</span> <span class="panel-title" style="color:var(--muted);font-weight:400" id="student-count"></span> </div> <div class="panel-body"> <table> <thead> <tr><th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Actions</th></tr> </thead> <tbody id="students-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ CLASS LIST / MARK SHEET PAGE --> <div class="page" id="page-grades"> <div class="classlist-toolbar no-print"> <select id="grades-class" onchange="renderClassList()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="grades-term" onchange="renderClassList()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="grades-subject" onchange="renderClassList()"> <option value="">— Select Subject —</option> <option>Mathematics</option><option>English Language</option> <option>Physics</option><option>Chemistry</option> <option>Biology</option><option>Computer Science</option> <option>History</option><option>Geography</option> <option>French</option><option>Economics</option> <option>ICT</option> </select> <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" /> <select id="grades-seq" onchange="renderClassList()" title="Each term has 2 sequences" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> </div> <!-- Formula bar — admin only --> <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end"> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>CA Max Score</label> <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Exam Max Score</label> <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Default Coeff</label> <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" /> </div> <div style="font-size:.78rem;color:var(--muted);align-self:center">
+<!-- ═══════════ STUDENTS PAGE --> <div class="page" id="page-students"> <div class="search-bar"> <input type="text" id="student-search" placeholder="Search by name or ID…" oninput="filterStudents()" /> <select id="class-filter" onchange="filterStudents()"> <option value="">All Classes</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button> <button class="btn btn-ghost" onclick="openImportStudentsModal()"> Import Students</button> <button class="btn btn-danger" onclick="openDeleteAllStudents()" title="Permanently delete every student and all their linked payments, grades and marks"> Delete All Students</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">All Students</span> <span class="panel-title" style="color:var(--muted);font-weight:400" id="student-count"></span> </div> <div class="panel-body"> <table> <thead> <tr><th>#</th><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Actions</th></tr> </thead> <tbody id="students-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ CLASS LIST / MARK SHEET PAGE --> <div class="page" id="page-grades"> <div class="classlist-toolbar no-print"> <select id="grades-class" onchange="renderClassList()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="grades-term" onchange="renderClassList()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="grades-subject" onchange="renderClassList()"> <option value="">— Select Subject —</option> <option>Mathematics</option><option>English Language</option> <option>Physics</option><option>Chemistry</option> <option>Biology</option><option>Computer Science</option> <option>History</option><option>Geography</option> <option>French</option><option>Economics</option> <option>ICT</option> </select> <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" /> <select id="grades-seq" onchange="renderClassList()" title="Each term has 2 sequences" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> </div> <!-- Formula bar — admin only --> <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end"> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>CA Max Score</label> <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Exam Max Score</label> <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Default Coeff</label> <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" /> </div> <div style="font-size:.78rem;color:var(--muted);align-self:center">
  Total/100 = CA + Exam &nbsp;|&nbsp; Total/20 = (Total/100 ÷ 100) × 20 &nbsp;|&nbsp; G.Total = Total/20 × Coeff </div> </div> <div class="mark-sheet" id="mark-sheet-container"> <div class="mark-sheet-header"> <div> <div style="font-family:var(--serif);font-size:1.1rem;color:var(--navy)" id="cl-title">Class List</div> <div style="font-size:.78rem;color:var(--muted)" id="cl-subtitle">Select a class and subject above</div> </div> <div style="font-size:.78rem;color:var(--muted);text-align:right" id="cl-meta"></div> </div> <div style="overflow-x:auto"> <table class="mark-table" id="mark-table"> <thead> <tr> <th style="width:36px">No</th> <th style="text-align:left;min-width:180px">Names and First Name</th> <th style="width:36px">Sex</th> <th id="th-ca" style="width:60px">CA/<span id="th-ca-max">30</span></th> <th id="th-exam" style="width:70px">Exam/<span id="th-exam-max">70</span></th> <th style="width:70px">Total/100</th> <th style="width:60px">Total/20</th> <th style="width:50px">Coeff</th> <th style="width:60px">G.Total</th> </tr> </thead> <tbody id="classlist-body"> <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr> </tbody> </table> <div id="classlist-avg" style="padding:8px 14px;border-top:1px solid var(--border);background:#f9fafb"></div> </div> </div> </div> <!-- ═══════════ TIMETABLE PAGE --> <div class="page" id="page-timetable"> <div class="search-bar no-print"> <select id="tt-class-select" onchange="renderTimetable()"> <option value="">All Classes</option> </select> <button id="btn-tt-generate" class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()"> Auto-Generate</button> <button id="btn-tt-clear" class="btn btn-ghost no-print" onclick="clearTimetable()"> Clear All</button> <button class="btn btn-ghost no-print" onclick="fixConsecutiveViolations()" title="Find and move any Form 1-5 subject running more than 2 straight periods">Fix 3-in-a-row</button> <button class="btn btn-ghost no-print" onclick="printTimetable()"> Print View</button> <button class="btn btn-ghost no-print" onclick="printAllClassTimetables()"> Print All Classes</button> </div> <div class="panel" style="overflow-x:auto"> <div class="panel-header no-print"> <span class="panel-title" id="tt-panel-title">Weekly Timetable</span> <span id="tt-panel-hint" style="font-size:.78rem;color:var(--muted)">Click any cell to assign ·  to remove</span> </div> <div id="timetable-wrap" style="overflow-x:auto;font-size:.72rem"></div> </div> <!-- Subject Coverage Summary --> <div class="panel no-print" id="coverage-panel-section" style="margin-top:18px"> <div class="panel-header"> <span class="panel-title"> Subject Coverage — Periods Plotted Per Class</span> <div style="display:flex;gap:8px;align-items:center"> <select id="coverage-class-filter" onchange="renderCoverage()" style="font-size:.78rem"> <option value="">All Classes</option> </select> <button class="btn btn-ghost" style="font-size:.72rem;padding:3px 8px" onclick="renderCoverage()"> Refresh</button> </div> </div> <div style="padding:14px;overflow-x:auto"> <div id="coverage-wrap"></div> </div> </div> </div> <!-- ═══════════ REPORTS PAGE --> <div class="page" id="page-reports"> <div class="search-bar no-print"> <select id="report-mode" onchange="toggleReportMode()"> <option value="individual">Individual Student</option> <option value="class">Entire Class</option> </select> <select id="report-student" style="display:block" onchange="updateEnrolledCount()"> <option value="">Select student…</option> </select> <select id="report-class-sel" style="display:none" onchange="updateEnrolledCount()"> <option value="">— Select Class —</option> </select> <select id="report-term"> <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option> </select> <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" /> <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px;background:#f0f4f9;border-color:#b3d1f0" min="1" value="0" readonly title="Auto-calculated from students in this class" /> <button class="btn btn-primary" onclick="generateReport()">Generate</button> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> </div> <div id="report-output"></div> </div> <!-- ═══════════ PAYMENTS PAGE --> <div class="page" id="page-payments">
  <div class="search-bar">
    <input type="text" id="payment-search-top" placeholder="Search student by name or receipt number…"
@@ -1923,8 +1923,8 @@
  Manage all subjects. Define which subjects <strong style="color:#0e7a4e">can run in the same period</strong> across different classes,
  and which <strong style="color:#cc3300">cannot</strong>.
  Compulsory subjects (Maths, English, French) for F1–F5 are enforced automatically. </p> <!-- Subject list --> <div style="margin-bottom:18px"> <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">All Subjects</div> <div id="subjects-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:36px;padding:8px;border:1px solid var(--border);border-radius:8px;background:#f9fafb"></div> <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"> <input type="text" id="new-subject-input" placeholder="e.g. Technical Drawing" style="flex:1;max-width:220px" onkeydown="if(event.key==='Enter')addSubject()" /> <button class="btn btn-primary" onclick="addSubject()">+ Add</button> <label class="btn btn-ghost" style="cursor:pointer" title="Upload a plain text or CSV file with one subject per line">
- Upload Subjects <input type="file" accept=".txt,.csv" style="display:none" onchange="uploadSubjects(this)" /> </label> <button class="btn btn-ghost" onclick="downloadSubjectsTemplate()" title="Download a sample subjects file">⬇ Template</button> <button class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000;margin-left:auto" onclick="deleteAllSubjects()"> Delete All Subjects</button> </div> <p style="font-size:.7rem;color:var(--muted);margin-top:6px">Upload a .txt or .csv with one subject name per line to bulk-add subjects.</p> </div> <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px"> <!-- CAN be paired --> <div> <div style="font-weight:600;font-size:.82rem;margin-bottom:6px;color:#0e7a4e"> Can Run in Same Period</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Pairs allowed to run simultaneously. Pick which classes the rule applies to.</p> <div id="canpair-list" style="min-height:40px;padding:8px;border:1px solid #c3e8d0;border-radius:8px;background:#f0fbf5;margin-bottom:10px;max-height:200px;overflow-y:auto"></div> <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"> <div class="ms-wrap" style="position:relative"> <button type="button" class="btn btn-ghost" id="canpair-classes-btn" style="font-size:.72rem;padding:6px 10px;white-space:nowrap" onclick="toggleClassPicker('canpair')">All classes ▾</button> <div id="canpair-classes-panel" class="ms-panel" style="display:none;position:absolute;top:100%;left:0;z-index:30;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;max-height:240px;overflow-y:auto;box-shadow:0 6px 18px rgba(0,0,0,.15);min-width:200px;margin-top:4px"></div> </div> <select id="canpair-a" style="flex:1;min-width:100px"><option value="">Subject A…</option></select> <span style="font-size:.8rem;color:#0e7a4e;font-weight:700">+</span> <select id="canpair-b" style="flex:1;min-width:100px"><option value="">Subject B…</option></select> <span style="font-size:.8rem;color:#0e7a4e;font-weight:700">+</span> <select id="canpair-c" style="flex:1;min-width:100px"><option value="">(Optional 3rd…)</option></select> <button class="btn btn-ghost" style="color:#0e7a4e;border-color:#0e7a4e" onclick="addCanPairRule()">+ Add</button> </div> </div> <!-- CANNOT be paired --> <div> <div style="font-weight:600;font-size:.82rem;margin-bottom:6px;color:#cc3300"> Cannot Run in Same Period</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Pairs that must never share a slot. Pick which classes the rule applies to.</p> <div id="nopair-list" style="min-height:40px;padding:8px;border:1px solid #f5c6b8;border-radius:8px;background:#fff8f0;margin-bottom:10px;max-height:200px;overflow-y:auto"></div> <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"> <div class="ms-wrap" style="position:relative"> <button type="button" class="btn btn-ghost" id="nopair-classes-btn" style="font-size:.72rem;padding:6px 10px;white-space:nowrap" onclick="toggleClassPicker('nopair')">All classes ▾</button> <div id="nopair-classes-panel" class="ms-panel" style="display:none;position:absolute;top:100%;left:0;z-index:30;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;max-height:240px;overflow-y:auto;box-shadow:0 6px 18px rgba(0,0,0,.15);min-width:200px;margin-top:4px"></div> </div> <select id="nopair-a" style="flex:1;min-width:100px"><option value="">Subject A…</option></select> <span style="font-size:.8rem;color:#cc3300;font-weight:700">≠</span> <select id="nopair-b" style="flex:1;min-width:100px"><option value="">Subject B…</option></select> <button class="btn btn-ghost" style="color:#cc3300;border-color:#cc3300" onclick="addNoPairRule()">+ Add</button> </div> </div> </div> <div style="margin-top:16px;padding:10px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)"> <strong>Compulsory for F1–F5:</strong> Mathematics, English, French are always enforced when auto-generating.
- When another teacher tries to take the same time slot already used by one of these subjects in the same class group, the slot shows <strong>"TAKEN"</strong>. </div> <div style="margin-top:14px;display:flex;gap:8px"> <button class="btn btn-ghost" onclick="resetSubjects()">Clear All Subjects &amp; Rules</button> <button class="btn btn-ghost" onclick="resetPairingRules()" title="Restore GCE A-Level default pairing rules (editable per school)"> Reset to GCE Defaults</button> <button class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="deleteAllSubjects()"> Delete All Subjects</button> <button class="btn btn-primary" style="margin-left:auto" onclick="saveSubjects()"> Save Subjects &amp; Rules</button> </div> </div> </div> </div> <div style="margin-top:24px"> <div class="panel"> <div class="panel-header"><span class="panel-title"> Series (e.g. Arts / Science)</span></div> <div style="padding:20px"> <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px"> Define the series your school uses to group streams and subjects — e.g. <strong>Arts</strong> and <strong>Science</strong>. Once defined, tag each stream with a Series below (in Custom Classes &amp; Streams) and tag each subject with the Series it belongs to. A class tagged with a Series will only ever be scheduled subjects belonging to that Series — so Form 4A (Arts) and Form 4B (Science) can never be assigned each other's subjects. Applies to any class that has streams. Leave a stream or subject untagged to keep it unrestricted. </p> <div id="series-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:36px;padding:8px;border:1px solid var(--border);border-radius:8px;background:#f9fafb"></div> <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"> <input type="text" id="new-series-input" placeholder="e.g. Arts" style="flex:1;max-width:220px" onkeydown="if(event.key==='Enter')addSeries()" /> <button class="btn btn-primary" onclick="addSeries()">+ Add Series</button> </div> <div style="margin-top:18px"> <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">Assign Subjects to a Series</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Tick every series a subject belongs to. A subject with no ticks is unrestricted and can run in any class, tagged or not (useful for compulsory subjects like Mathematics/English). <strong>A subject tagged to exactly ONE series can never be auto-paired by the timetable generator</strong> — even with a matching Can-Pair rule, it will only be placed in a shared slot if you add it there yourself in the timetable. Tag a subject to BOTH series (or leave it untagged) if you want the generator to auto-pair it.</p> <div id="subject-series-table" style="overflow-x:auto"></div> </div> </div> </div> </div> <div style="margin-top:24px"> <div class="panel"> <div class="panel-header"><span class="panel-title"> Custom Classes &amp; Streams</span></div> <div style="padding:20px"> <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">
+ Upload Subjects <input type="file" accept=".txt,.csv" style="display:none" onchange="uploadSubjects(this)" /> </label> <button class="btn btn-ghost" onclick="downloadSubjectsTemplate()" title="Download a sample subjects file">⬇ Template</button> <button class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000;margin-left:auto" onclick="deleteAllSubjects()"> Delete All Subjects</button> </div> <p style="font-size:.7rem;color:var(--muted);margin-top:6px">Upload a .txt or .csv with one subject name per line to bulk-add subjects.</p> </div> <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px"> <!-- CAN be paired --> <div> <div style="font-weight:600;font-size:.82rem;margin-bottom:6px;color:#0e7a4e"> Can Run in Same Period</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Pairs allowed to run simultaneously. Pick which classes the rule applies to.</p> <div id="canpair-list" style="min-height:40px;padding:8px;border:1px solid #c3e8d0;border-radius:8px;background:#f0fbf5;margin-bottom:10px;max-height:200px;overflow-y:auto"></div> <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"> <div class="ms-wrap" style="position:relative"> <button type="button" class="btn btn-ghost" id="canpair-classes-btn" style="font-size:.72rem;padding:6px 10px;white-space:nowrap" onclick="toggleClassPicker('canpair')">All classes ▾</button> <div id="canpair-classes-panel" class="ms-panel" style="display:none;position:absolute;top:100%;left:0;z-index:30;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;max-height:240px;overflow-y:auto;box-shadow:0 6px 18px rgba(0,0,0,.15);min-width:200px;margin-top:4px"></div> </div> <select id="canpair-a" style="flex:1;min-width:100px"><option value="">Subject A…</option></select> <span style="font-size:.8rem;color:#0e7a4e;font-weight:700">+</span> <select id="canpair-b" style="flex:1;min-width:100px"><option value="">Subject B…</option></select> <span style="font-size:.8rem;color:#0e7a4e;font-weight:700">+</span> <select id="canpair-c" style="flex:1;min-width:100px"><option value="">(Optional 3rd…)</option></select> <button class="btn btn-ghost" style="color:#0e7a4e;border-color:#0e7a4e" onclick="addCanPairRule()">+ Add</button> </div> </div> <!-- CANNOT be paired --> <div> <div style="font-weight:600;font-size:.82rem;margin-bottom:6px;color:#cc3300"> Cannot Run in Same Period</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Subject A cannot share a slot with any of the Subject B's picked below. Pick which classes the rule applies to.</p> <div id="nopair-list" style="min-height:40px;padding:8px;border:1px solid #f5c6b8;border-radius:8px;background:#fff8f0;margin-bottom:10px;max-height:200px;overflow-y:auto"></div> <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"> <div class="ms-wrap" style="position:relative"> <button type="button" class="btn btn-ghost" id="nopair-classes-btn" style="font-size:.72rem;padding:6px 10px;white-space:nowrap" onclick="toggleClassPicker('nopair')">All classes ▾</button> <div id="nopair-classes-panel" class="ms-panel" style="display:none;position:absolute;top:100%;left:0;z-index:30;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;max-height:240px;overflow-y:auto;box-shadow:0 6px 18px rgba(0,0,0,.15);min-width:200px;margin-top:4px"></div> </div> <select id="nopair-a" style="flex:1;min-width:100px"><option value="">Subject A…</option></select> <span style="font-size:.8rem;color:#cc3300;font-weight:700">≠</span> <div class="ms-wrap" style="position:relative;flex:1;min-width:150px"> <button type="button" class="btn btn-ghost" id="nopair-subjects-btn" style="font-size:.72rem;padding:6px 10px;white-space:nowrap;width:100%;text-align:left" onclick="toggleSubjectPicker('nopair')">Subject B… ▾</button> <div id="nopair-subjects-panel" class="ms-panel" style="display:none;position:absolute;top:100%;left:0;z-index:30;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px;max-height:240px;overflow-y:auto;box-shadow:0 6px 18px rgba(0,0,0,.15);min-width:200px;margin-top:4px"></div> </div> <button class="btn btn-ghost" style="color:#cc3300;border-color:#cc3300" onclick="addNoPairRule()">+ Add</button> </div> </div> </div> <div style="margin-top:16px;padding:10px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)"> <strong>Compulsory for F1–F5:</strong> Mathematics, English, French are always enforced when auto-generating.
+ When another teacher tries to take the same time slot already used by one of these subjects in the same class group, the slot shows <strong>"TAKEN"</strong>. </div> <div style="margin-top:18px"> <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">Which Classes Each Subject Can Be Taught In</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Tick every class a subject is allowed in. A subject with no ticks is unrestricted and can be taught in any class (useful for compulsory subjects like Mathematics/English/French). Restricting a subject here filters it out of the Subject dropdown when assigning a teacher to a class it isn't allowed in.</p> <div id="subject-class-table" style="overflow-x:auto"></div> </div> <div style="margin-top:14px;display:flex;gap:8px"> <button class="btn btn-ghost" onclick="resetSubjects()">Clear All Subjects &amp; Rules</button> <button class="btn btn-ghost" onclick="resetPairingRules()" title="Restore GCE A-Level default pairing rules (editable per school)"> Reset to GCE Defaults</button> <button class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="deleteAllSubjects()"> Delete All Subjects</button> <button class="btn btn-primary" style="margin-left:auto" onclick="saveSubjects()"> Save Subjects &amp; Rules</button> </div> </div> </div> </div> <div style="margin-top:24px"> <div class="panel"> <div class="panel-header"><span class="panel-title"> Series (e.g. Arts / Science)</span></div> <div style="padding:20px"> <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px"> Define the series your school uses to group streams and subjects — e.g. <strong>Arts</strong> and <strong>Science</strong>. Once defined, tag each stream with a Series below (in Custom Classes &amp; Streams) and tag each subject with the Series it belongs to. A class tagged with a Series will only ever be scheduled subjects belonging to that Series — so Form 4A (Arts) and Form 4B (Science) can never be assigned each other's subjects. Applies to any class that has streams. Leave a stream or subject untagged to keep it unrestricted. </p> <div id="series-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:36px;padding:8px;border:1px solid var(--border);border-radius:8px;background:#f9fafb"></div> <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"> <input type="text" id="new-series-input" placeholder="e.g. Arts" style="flex:1;max-width:220px" onkeydown="if(event.key==='Enter')addSeries()" /> <button class="btn btn-primary" onclick="addSeries()">+ Add Series</button> </div> <div style="margin-top:18px"> <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">Assign Subjects to a Series</div> <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px">Tick every series a subject belongs to. A subject with no ticks is unrestricted and can run in any class, tagged or not (useful for compulsory subjects like Mathematics/English). <strong>A subject tagged to exactly ONE series can never be auto-paired by the timetable generator</strong> — even with a matching Can-Pair rule, it will only be placed in a shared slot if you add it there yourself in the timetable. Tag a subject to BOTH series (or leave it untagged) if you want the generator to auto-pair it.</p> <div id="subject-series-table" style="overflow-x:auto"></div> </div> </div> </div> </div> <div style="margin-top:24px"> <div class="panel"> <div class="panel-header"><span class="panel-title"> Custom Classes &amp; Streams</span></div> <div style="padding:20px"> <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">
  Define base classes (e.g. Form 1) then add streams/sections (e.g. A, B, Science, Arts).
  Generated combinations appear in all class dropdowns. </p> <!-- Base classes --> <div style="margin-bottom:16px"> <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">Base Classes</div> <div id="custom-classes-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div> <div style="display:flex;gap:8px;align-items:center"> <input type="text" id="new-class-input" placeholder="e.g. Form 1" style="max-width:160px" onkeydown="if(event.key==='Enter')addCustomClass()" /> <button class="btn btn-primary" onclick="addCustomClass()">+ Add Base Class</button> </div> </div> <!-- Streams --> <div style="margin-bottom:16px"> <div style="font-weight:600;font-size:.82rem;margin-bottom:8px;color:var(--navy)">Streams / Sections</div> <p style="font-size:.75rem;color:var(--muted);margin-bottom:8px">
  Select the class to add a stream to, enter the stream label, then click Add.
@@ -1989,6 +1989,11 @@
 <div class="modal-overlay" id="modal-delete-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title" style="color:var(--red)"> Delete Student</span> <button class="modal-close" onclick="closeModal('modal-delete-student')">×</button> </div> <div class="modal-body"> <div class="delete-warning"> <strong>This action cannot be undone.</strong> <div id="delete-summary" style="margin-top:8px;color:var(--text)"></div> <ul id="delete-data-list"></ul> </div> <p style="font-size:.85rem;color:var(--muted)">
  All payments and grades linked to this student will also be permanently deleted.
  Are you sure you want to continue? </p> <input type="hidden" id="delete-student-id" /> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-delete-student')">Cancel</button> <button class="btn btn-danger" onclick="confirmDeleteStudent()">Yes, Delete Student</button> </div> </div>
+</div> <!-- Delete ALL Students Confirmation Modal -->
+<div class="modal-overlay" id="modal-delete-all-students"> <div class="modal"> <div class="modal-header"> <span class="modal-title" style="color:var(--red)"> Delete ALL Students</span> <button class="modal-close" onclick="closeModal('modal-delete-all-students')">×</button> </div> <div class="modal-body"> <div class="delete-warning"> <strong>This action cannot be undone.</strong> <div id="delete-all-summary" style="margin-top:8px;color:var(--text)"></div> </div> <p style="font-size:.85rem;color:var(--muted);margin-top:10px"> Every student record, plus all payments, grades and mark-sheet entries linked to them, will be permanently deleted school-wide. Nothing on the Teachers, Timetable, or Settings pages is affected. </p> <div class="form-group" style="margin-top:14px"> <label>Type <strong>DELETE ALL</strong> to confirm</label> <input type="text" id="delete-all-confirm-text" placeholder="DELETE ALL" oninput="_syncDeleteAllStudentsBtn()" autocomplete="off" /> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-delete-all-students')">Cancel</button> <button class="btn btn-danger" id="btn-confirm-delete-all-students" disabled onclick="confirmDeleteAllStudents()">Yes, Delete All Students</button> </div> </div>
+</div> <!-- Import Students Modal -->
+<div class="modal-overlay" id="modal-import-students"> <div class="modal" style="max-width:640px"> <div class="modal-header"> <span class="modal-title"> Import Students (CSV / Excel)</span> <button class="modal-close" onclick="closeModal('modal-import-students')">×</button> </div> <div class="modal-body"> <div id="import-students-step-upload"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">
+ Upload a <strong>.csv</strong>, <strong>.xls</strong> or <strong>.xlsx</strong> file. The first row should be column headers. </p> <div class="logo-upload-zone" onclick="document.getElementById('import-students-file-input').click()" style="padding:30px"> <div style="font-size:2rem;margin-bottom:6px"></div> <div style="font-size:.85rem;color:var(--muted)">Click to choose a file</div> <div style="font-size:.72rem;color:var(--muted);margin-top:4px" id="import-students-file-name">No file selected</div> </div> <input type="file" id="import-students-file-input" accept=".csv,.xls,.xlsx" style="display:none" onchange="handleStudentImportFileSelect(event)" /> <div style="margin-top:16px;padding:12px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)"> <strong>Expected columns</strong> (case-insensitive, order doesn't matter):<br> <code>First Name</code>, <code>Last Name</code>, <code>Matricule/ID</code>, <code>Class</code>, <code>Gender</code>, <code>Date of Birth</code>, <code>Place of Birth</code>, <code>Repeater</code>, <code>Parent/Guardian Name</code>, <code>Parent Phone</code>, <code>Parent Email</code><br> <span style="color:var(--muted)">Matricule/ID must be unique — rows with a Matricule that already exists are skipped, not overwritten.</span> </div> <div style="margin-top:10px"> <button class="btn btn-ghost" onclick="downloadStudentImportTemplate()">⬇ Download CSV Template</button> </div> </div> <div id="import-students-step-preview" style="display:none"> <p style="font-size:.85rem;margin-bottom:10px"><span id="import-students-summary"></span></p> <div style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:8px"> <table style="width:100%;font-size:.75rem;border-collapse:collapse"> <thead id="import-students-preview-head" style="background:var(--navy);color:#fff;position:sticky;top:0"></thead> <tbody id="import-students-preview-body"></tbody> </table> </div> <div id="import-students-warnings" style="margin-top:10px;font-size:.78rem;color:#b85c00"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-import-students')">Cancel</button> <button class="btn btn-ghost" id="import-students-back-btn" style="display:none" onclick="importStudentsGoBack()"> Back</button> <button class="btn btn-primary" id="import-students-confirm-btn" style="display:none" onclick="confirmImportStudents()">Import Students</button> </div> </div>
 </div> <!-- Add / Edit Teacher Modal -->
 <div class="modal-overlay" id="modal-teacher"> <div class="modal" style="max-width:640px"> <div class="modal-header"> <span class="modal-title" id="teacher-modal-title">Add Teacher</span> <button class="modal-close" onclick="closeModal('modal-teacher')">×</button> </div> <div class="modal-body" style="max-height:72vh;overflow-y:auto"> <input type="hidden" id="t-id" /> <!-- Basic Info --> <div class="form-row"> <div class="form-group"><label>First Name *</label><input type="text" id="t-fname" placeholder="Mary" /></div> <div class="form-group"><label>Last Name *</label><input type="text" id="t-lname" placeholder="Akor" /></div> </div> <div class="form-row"> <div class="form-group"><label>Teacher Code *</label><input type="text" id="t-code" placeholder="e.g. ENG 10" style="text-transform:uppercase" /></div> <div class="form-group"><label>Email</label><input type="email" id="t-email" placeholder="teacher@school.cm" /></div> </div> <div class="form-row"> <div class="form-group"><label>Phone</label><input type="tel" id="t-phone" placeholder="677000002" /></div> <div class="form-group"> <label>Staff Type</label> <label style="display:flex;align-items:center;gap:8px;font-weight:400;font-size:.82rem;cursor:pointer;padding:8px 0"> <input type="checkbox" id="t-permanent" style="width:auto;margin:0" /> <span>Permanent staff</span> </label> <div style="font-size:.7rem;color:var(--muted);line-height:1.4">Permanent teachers are plotted <strong>after</strong> all non-permanent staff, who have narrower availability.</div> </div> </div> <!-- Availability --> <div class="assign-section-label">Available Days &amp; Periods</div> <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px">
  Select the days this teacher is available, then choose which periods they can teach on each day. </p> <div id="avail-grid"> <!-- Rendered by JS --> </div> <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"> <button type="button" class="btn btn-ghost" style="font-size:.75rem" onclick="addAvailDay()">+ Add Day</button> <button type="button" class="btn btn-ghost" style="font-size:.75rem" onclick="setAllDaysAllPeriods()">Select All Days &amp; Periods</button> <button type="button" class="btn btn-ghost" style="font-size:.75rem;color:#cc0000" onclick="clearAllAvailability()">Clear All</button> </div> <!-- Class–Subject Assignments --> <div class="assign-section-label">
@@ -3422,7 +3427,7 @@ function _renderClassTTGrid(cls, timeSlots, term, isTeacher, forPrint) {
 }
 
 function renderTimetable() {
- var term  = parseInt(document.getElementById('tt-term')?.value || '1');
+ var term = 1; // timetable has no term concept -- one year-round schedule
  var timeSlots = loadTimeSlots();
  var teachSlots= timeSlots.filter(function(s){ return !s.isBreak; });
  var isTeacher = currentUser && currentUser.role === 'teacher';
@@ -3486,7 +3491,7 @@ function _refreshClassBlock(cls) {
  if (blocks[i].getAttribute('data-cls') === cls) { target = blocks[i]; break; }
  }
  if (!target) { renderTimetable(); return; }
- var term = parseInt(document.getElementById('tt-term')?.value || '1');
+ var term = 1; // timetable has no term concept -- one year-round schedule
  var isTeacher = currentUser && currentUser.role === 'teacher';
  target.outerHTML = _classBlockHTML(cls, loadTimeSlots(), term, isTeacher);
 }
@@ -3628,6 +3633,109 @@ function printAllClassTimetables() {
 
 function toggleCoveragePanel() {} // panel is now always visible
 
+// Which classes have generation problems (some planned periods never got
+// plotted). Mirrors the same planned/plotted computation used by
+// renderCoverage() so the two stay consistent. On-screen use only — every
+// place this feeds into (tt-class-select, the Coverage panel) lives inside
+// a .no-print container, so none of it ever appears on a printed timetable.
+function _getClassesWithGenerationProblems(term) {
+ term = term || 1;
+ const allClasses = loadCustomClasses();
+ const streamRules = loadStreams();
+ const planned = {}, plotted = {};
+ allClasses.forEach(c => { planned[c] = 0; plotted[c] = 0; });
+
+ teachers.forEach(t => {
+ (t.assignments || []).forEach(a => {
+ const expanded = (() => {
+ const v = streamRules.filter(r => r.cls === a.cls)
+ .map(r => r.cls + r.sep + r.stream)
+ .filter(v => allClasses.includes(v));
+ return v.length ? v : [a.cls];
+ })();
+ expanded.forEach(c => {
+ if (!(c in planned)) return;
+ const pp = Math.round(parseInt(a.periodsPerWeek) / expanded.length) || 2;
+ planned[c] += pp;
+ });
+ });
+ });
+ ttSlots.filter(s => s.term === term).forEach(s => {
+ if (s.cls in plotted) plotted[s.cls]++;
+ });
+
+ return allClasses.filter(c => plotted[c] < planned[c]);
+}
+
+// Diagnose WHY a class has unplotted periods — the same three factors that
+// turned out to matter in practice: the class's raw weekly slot ceiling,
+// Subject->Classes conflicts on that class's own assignments, and teachers
+// on that class who are individually short on availability. Returns an
+// array of short human-readable reason strings; empty if none apply (in
+// which case the shortfall is likely ordinary slot contention from queue
+// order, not a structural cause).
+function _getClassProblemReasons(cls) {
+ const reasons = [];
+ const teachSlots = getTeachingSlots();
+
+ // 1) Raw capacity ceiling — how many (day, slot) instances this class
+ // could ever have in a week, single-subject-per-slot, before any pairing.
+ const rawCapacity = DAYS.reduce((sum, day) =>
+ sum + teachSlots.filter(s => _slotAllowedOnDay(day, s.id, teachSlots)).length, 0);
+ const needed = teachers.reduce((sum, t) =>
+ sum + (t.assignments || []).filter(a => a.cls === cls)
+ .reduce((s2, a) => s2 + (parseInt(a.periodsPerWeek) || 0), 0), 0);
+ if (needed > rawCapacity) {
+ const supportsPairing = _classSupportsPairing(cls);
+ const hasRules = loadCanPairs().some(p => _ruleAppliesToClass ? _ruleAppliesToClass(p, cls) : true);
+ reasons.push(`Over physical capacity: needs ${needed}p but the week only has ${rawCapacity} single-subject slots` +
+ (supportsPairing && hasRules ? ' (Can-Pair rules add some extra room, but likely not enough)' :
+ supportsPairing ? ' (pairing is allowed here but no Can-Pair rules are configured for it)' :
+ ' (this class can\'t use pairing)'));
+ }
+
+ // 2) Subject -> Classes conflicts on this class's own assignments.
+ const blocked = [];
+ teachers.forEach(t => (t.assignments || []).forEach(a => {
+ if (a.cls === cls && !_subjectAllowedInClass(a.subject, cls)) blocked.push(a.subject);
+ }));
+ if (blocked.length) {
+ reasons.push(`${[...new Set(blocked)].join(', ')} ${blocked.length===1?'is':'are'} assigned here but restricted from this class in Subject → Classes settings`);
+ }
+
+ // 3) Teachers on this class who are individually short on availability
+ // (their total assigned periods, across ALL their classes, exceed their
+ // total available slot capacity).
+ const shortTeachers = new Set();
+ teachers.forEach(t => {
+ const teachesThisClass = (t.assignments || []).some(a => a.cls === cls);
+ if (!teachesThisClass) return;
+ const assigned = (t.assignments || []).reduce((s,a) => s + (parseInt(a.periodsPerWeek)||0), 0);
+ const avail = DAYS.reduce((s,d) => s + ((t.availability||{})[d]||[]).filter(id => teachSlots.some(ts=>ts.id===id) && _slotAllowedOnDay(d,id,teachSlots)).length, 0);
+ if (assigned > avail) shortTeachers.add(`${t.fname} ${t.lname}`);
+ });
+ if (shortTeachers.size) {
+ reasons.push(`${shortTeachers.size} teacher${shortTeachers.size!==1?'s':''} here ${shortTeachers.size!==1?'are':'is'} short on availability: ${[...shortTeachers].slice(0,3).join(', ')}${shortTeachers.size>3?`, +${shortTeachers.size-3} more`:''}`);
+ }
+
+ return reasons;
+}
+
+// Prefix classes with unresolved generation gaps with a warning icon in the
+// Timetable page's class selector, so problems are visible while browsing —
+// this select lives inside a .no-print toolbar, so it never prints.
+function _markProblemClassesInSelect() {
+ const el = document.getElementById('tt-class-select');
+ if (!el) return;
+ const problems = new Set(_getClassesWithGenerationProblems(1));
+ const cur = el.value;
+ [...el.options].forEach(o => {
+ if (!o.value) return; // skip "All Classes"
+ o.textContent = (problems.has(o.value) ? '⚠ ' : '') + o.value;
+ });
+ if (cur) el.value = cur;
+}
+
 function renderCoverage() {
  const wrap = document.getElementById('coverage-wrap');
  if (!wrap) return;
@@ -3686,11 +3794,24 @@ function renderCoverage() {
  return;
  }
 
+ // Classes with a generation problem (some planned periods never got
+ // plotted) — flagged in the header row below and in the banner above the
+ // table. On-screen indicator only; this whole panel is .no-print.
+ const problemDetail = classList
+ .map(c => {
+ const pl = Object.values(planned[c]||{}).reduce((a,b)=>a+b,0);
+ const pl2 = Object.values(plotted[c]||{}).reduce((a,b)=>a+b,0);
+ return { cls: c, planned: pl, plotted: pl2, gap: pl - pl2 };
+ })
+ .filter(x => x.gap > 0)
+ .sort((a,b) => b.gap - a.gap); // worst shortfall first
+ const problemClasses = new Set(problemDetail.map(x => x.cls));
+
  // ── Table ────────────────────────────────────────────────────────
  const th = s => `<th style="padding:5px 8px;font-size:.65rem;background:#1a3a5c;color:#fff;text-align:center;white-space:nowrap;border:1px solid #1a3a5c">${s}</th>`;
 
  const colHeaders = classList.map(c =>
- `<th colspan="2" style="padding:5px 8px;font-size:.65rem;background:#1a3a5c;color:#fff;text-align:center;white-space:nowrap;border:1px solid #ccc">${c}</th>`
+ `<th colspan="2" style="padding:5px 8px;font-size:.65rem;background:${problemClasses.has(c)?'#7a2a1a':'#1a3a5c'};color:#fff;text-align:center;white-space:nowrap;border:1px solid #ccc" title="${problemClasses.has(c)?'Generation problem — not all planned periods were plotted':''}">${problemClasses.has(c)?'⚠ ':''}${c}</th>`
  ).join('');
 
  const subHeaders = classList.map(() =>
@@ -3755,10 +3876,38 @@ function renderCoverage() {
  ? `<div style="background:#fdecea;border:1px solid #f5b8ae;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b03024;font-size:1rem">${overPlotted}p</div> <div style="color:#555">Extra / stray slots</div> </div>`
  : '';
 
- wrap.innerHTML = ` <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"> <div style="background:#e8f5e9;border:1px solid #b6dfc2;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#1a7a3a;font-size:1rem">${pct}%</div> <div style="color:#555">Coverage</div> </div> <div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:var(--navy);font-size:1rem">${doneGrand}p</div> <div style="color:#555">Plotted</div> </div> <div style="background:#f0f4f9;border:1px solid #ccc;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#555;font-size:1rem">${planGrand}p</div> <div style="color:#555">Planned</div> </div> <div style="background:#fff0f0;border:1px solid #ffb3b3;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#cc0000;font-size:1rem">${unplotted}p</div> <div style="color:#555">Unplotted</div> </div> ${overNote} <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b06000;font-size:1rem">${totalTarget}p</div> <div style="color:#555">Target (all classes)</div> </div> </div> <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px"> <span style="background:#e8f5e9;color:#1a7a3a;padding:1px 6px;border-radius:6px">■ Fully plotted</span> &nbsp; <span style="background:#fff8e1;color:#b06000;padding:1px 6px;border-radius:6px">■ Partially plotted</span> &nbsp; <span style="background:#fff0f0;color:#cc0000;padding:1px 6px;border-radius:6px">■ Not plotted</span> &nbsp;
+ // On-screen-only banner naming which classes have a generation problem
+ // (some planned periods never got plotted), with the actual numbers per
+ // class so it's useful at a glance, not just a name list. This whole
+ // panel is .no-print, so it never shows up on a printed timetable.
+ const problemBanner = problemDetail.length
+ ? `<div style="background:#fdecea;border:1px solid #f5b8ae;border-radius:8px;padding:10px 14px;font-size:.78rem;margin-bottom:12px">
+ <strong style="color:#b03024">⚠ Generation problems in ${problemDetail.length} class${problemDetail.length!==1?'es':''}</strong>
+ <span style="color:#555"> — not all planned periods could be plotted:</span>
+ <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+ ${problemDetail.map(x => {
+ const pct = x.planned > 0 ? Math.round(x.plotted / x.planned * 100) : 0;
+ const reasons = _getClassProblemReasons(x.cls);
+ const reasonHtml = reasons.length
+ ? `<ul style="margin:4px 0 0 18px;padding:0;color:#7a2a1a">${reasons.map(r => `<li>${r}</li>`).join('')}</ul>`
+ : `<div style="margin:4px 0 0;color:#888;font-style:italic">No structural cause found — likely ordinary slot contention from queue order (try the repair pass or reduce competing periods).</div>`;
+ return `<div style="background:#fff;border:1px solid #f5b8ae;border-radius:6px;padding:7px 10px">
+ <strong style="color:#7a2a1a">${x.cls}</strong>
+ <span style="color:#555"> — ${x.plotted}/${x.planned}p (${pct}%), </span>
+ <span style="color:#cc0000;font-weight:700">${x.gap}p short</span>
+ ${reasonHtml}
+ </div>`;
+ }).join('')}
+ </div>
+ </div>`
+ : '';
+
+ wrap.innerHTML = problemBanner + ` <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"> <div style="background:#e8f5e9;border:1px solid #b6dfc2;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#1a7a3a;font-size:1rem">${pct}%</div> <div style="color:#555">Coverage</div> </div> <div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:var(--navy);font-size:1rem">${doneGrand}p</div> <div style="color:#555">Plotted</div> </div> <div style="background:#f0f4f9;border:1px solid #ccc;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#555;font-size:1rem">${planGrand}p</div> <div style="color:#555">Planned</div> </div> <div style="background:#fff0f0;border:1px solid #ffb3b3;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#cc0000;font-size:1rem">${unplotted}p</div> <div style="color:#555">Unplotted</div> </div> ${overNote} <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b06000;font-size:1rem">${totalTarget}p</div> <div style="color:#555">Target (all classes)</div> </div> </div> <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px"> <span style="background:#e8f5e9;color:#1a7a3a;padding:1px 6px;border-radius:6px">■ Fully plotted</span> &nbsp; <span style="background:#fff8e1;color:#b06000;padding:1px 6px;border-radius:6px">■ Partially plotted</span> &nbsp; <span style="background:#fff0f0;color:#cc0000;padding:1px 6px;border-radius:6px">■ Not plotted</span> &nbsp;
  Plan = planned periods/week · Done = plotted periods </p> <table style="border-collapse:collapse;width:100%;font-size:.72rem"> <thead> <tr> <th rowspan="2" style="padding:5px 10px;font-size:.68rem;background:#1a3a5c;color:#fff;text-align:left;border:1px solid #1a3a5c">Subject</th>
  ${colHeaders} <th colspan="2" style="padding:5px 8px;font-size:.65rem;background:#1a3a5c;color:#fff;text-align:center;border:1px solid #1a3a5c">Total</th> </tr> <tr>${subHeaders} <th style="padding:3px 6px;font-size:.6rem;background:#2a4a6c;color:#cde;text-align:center;border:1px solid #ccc">Plan</th> <th style="padding:3px 6px;font-size:.6rem;background:#2a4a6c;color:#cde;text-align:center;border:1px solid #ccc">Done</th> </tr> </thead> <tbody>${rows}</tbody> <tfoot> <tr> <td style="padding:4px 10px;font-size:.73rem;font-weight:700;background:#1a3a5c;color:#fff;border:1px solid #aaa">TOTAL</td>
  ${totalCells} <td style="padding:4px 6px;text-align:center;font-weight:700;font-size:.73rem;background:#1a3a5c;color:#fff;border:1px solid #aaa">${planGrand}p</td> <td style="padding:4px 6px;text-align:center;font-weight:700;font-size:.73rem;background:#1a3a5c;color:${doneGrand>=planGrand?'#7fffb0':'#ffb3b3'};border:1px solid #aaa">${doneGrand}p</td> </tr> </tfoot> </table>`;
+
+ _markProblemClassesInSelect();
 }
 
 function _renderTeacherPersonalTimetable(t, term, timeSlots, teachSlots) {
@@ -3843,8 +3992,14 @@ function ensureCompulsorySlots(term) {
  // Uses the REAL, streamed class list (e.g. "Form 1 A") rather than the bare
  // "Form 1".."Form 5" constant, since that never matches an actual class.
  const realCompulsoryClasses = loadCustomClasses().filter(_isFirstCycleClass);
+ // Match against the REAL subject names actually in use (e.g. "English
+ // Language"), not just the bare compulsory keyword ("English") -- a school
+ // using a fuller subject name would otherwise never get this guarantee at
+ // all, since nothing in their data is literally named "English".
+ const allSubjectsInUse = [...new Set(teachers.flatMap(function(t) { return (t.assignments||[]).map(function(a) { return a.subject; }); }))];
+ const compulsorySubjectsInUse = allSubjectsInUse.filter(isCompulsorySubject);
  realCompulsoryClasses.forEach(function(cls) {
- COMPULSORY_SUBJECTS.forEach(function(subj) {
+ compulsorySubjectsInUse.forEach(function(subj) {
  var already = ttSlots.some(function(s) { return s.cls===cls && s.subject===subj && s.term===term; });
  if (already) return;
  // Find a teacher who teaches this subject to this class
@@ -3862,7 +4017,7 @@ function ensureCompulsorySlots(term) {
  var teachSlots = getTeachingSlots();
  outer: for (var di=0; di<DAYS.length; di++) {
  var day = DAYS[di];
- var avail = (teacher.availability[day]||[]);
+ var avail = (teacher.availability[day]||[]).filter(function(id) { return _slotAllowedOnDay(day, id, teachSlots); });
  for (var si=0; si<avail.length; si++) {
  var slotId = avail[si];
  if (_tryPlace(cls, subj, day, slotId, teacher.id, term, teachSlots)) {
@@ -3879,12 +4034,14 @@ function ensureCompulsorySlots(term) {
 // ══════════════════════════════════════════════════════════════════════
 
 function autoGenerateAllTerms() {
- if (!confirm('Generate timetable for ALL 3 terms? This will replace all existing slots.')) return;
+ if (!confirm('Generate the timetable? This will replace all existing slots.')) return;
  ttSlots = [];
 
  const teachSlots = getTeachingSlots();
 
- [1, 2, 3].forEach(function(term) {
+ // The timetable has no term concept -- one year-round schedule, generated
+ // once below.
+ (function(term) {
 
  // ── Build assignment queue ────────────────────────────────────────
  const queue = [];
@@ -3964,35 +4121,34 @@ function autoGenerateAllTerms() {
  // naturally schedules the hardest-to-place teacher before the flexible ones.
  queue.forEach(function(item) {
  item._availCount = DAYS.reduce(function(sum, day) {
- return sum + (item.availability[day] || []).filter(id => teachSlots.some(s => s.id === id)).length;
+ return sum + (item.availability[day] || []).filter(id => teachSlots.some(s => s.id === id) && _slotAllowedOnDay(day, id, teachSlots)).length;
  }, 0);
  item._tightness = item.periodsPerWeek / Math.max(1, item._availCount);
  });
  //
- // ── Rule 3: cross-stream first-cycle subjects first (tiebreak) ────
+ // ── Rule 2b: single-series subjects first, as a TIEBREAK only ─────
+ // Scoped to classes that actually support pairing (Form 4/5, Sixth Form —
+ // never Form 1-3, where this concept doesn't apply). A single-series
+ // subject (tagged to only Arts, or only Science) can ONLY combine with a
+ // same-series partner, so it has fewer ways to ever succeed. A cross-stream
+ // subject (tagged to both series, or untagged) can pair with either side,
+ // so it's more likely to still find a way in even with fewer slots left.
+ // Standard most-constrained-first scheduling theory says the item more
+ // likely to fail should get first pick — so single-series goes first here.
+ //
+ // Deliberately a TIEBREAK, not a primary key: real demand (tightness)
+ // always wins first, so a high-demand cross-stream subject (e.g.
+ // Mathematics) stays protected by its own tightness regardless of series
+ // tag — it's never bumped behind a low-demand single-series subject just
+ // for being cross-stream. A starvation guard after placement (below) is
+ // the backstop in case any subject still ends up with zero periods.
+ queue.forEach(function(item) {
+ item._pairingNarrow = _classSupportsPairing(item.cls) && !_isCrossStream(item.subject);
+ });
  queue.sort(function(a, b) {
  if (Math.abs(a._tightness - b._tightness) > 0.0001) return b._tightness - a._tightness;
+ if (a._pairingNarrow !== b._pairingNarrow) return a._pairingNarrow ? -1 : 1;
  if (a.permanent !== b.permanent) return a.permanent ? 1 : -1;
- const aFirst = _getClassCycle(a.cls) === 'first';
- const bFirst = _getClassCycle(b.cls) === 'first';
- const aCross = aFirst && _isCrossStream(a.subject);
- const bCross = bFirst && _isCrossStream(b.subject);
- if (aCross && !bCross) return -1;
- if (!aCross && bCross) return 1;
- if (aFirst && !bFirst) return -1;
- if (!aFirst && bFirst) return 1;
- // Rule 3b: within SECOND CYCLE only — subjects that cut across both
- // series (tagged Arts+Science, or left untagged/unrestricted) are plotted
- // BEFORE subjects tagged to exactly one series. Single-series subjects can
- // no longer auto-pair (see _pairAllowedInSlot), so they can only ever take
- // a slot of their own — giving cross-series subjects first pick would
- // otherwise let them eat up the open slots those single-series subjects
- // depend on.
- if (!aFirst && !bFirst) {
- const aSingleSeries = _isSingleSeriesSubject(a.subject);
- const bSingleSeries = _isSingleSeriesSubject(b.subject);
- if (aSingleSeries !== bSingleSeries) return aSingleSeries ? 1 : -1;
- }
  return 0;
  });
 
@@ -4091,8 +4247,19 @@ function autoGenerateAllTerms() {
  // placed with slack to spare, being lower-priority/looser), then retry
  // the blocked placement. Bounded globally so this can't runaway on a
  // large school.
+ //
+ // Items with ZERO periods placed go first, ahead of items that are merely
+ // short of target — a subject invisible on the timetable entirely is a
+ // worse outcome than one that's just under its full target, so a starved
+ // item gets first claim on the shared repair budget rather than losing out
+ // to a higher-tightness item that already has partial coverage.
  let repairBudget = 800;
- queue.forEach(function(item) {
+ const repairOrder = queue.slice().sort((a, b) => {
+ const aStarved = a._placed === 0, bStarved = b._placed === 0;
+ if (aStarved !== bStarved) return aStarved ? -1 : 1;
+ return 0; // otherwise keep original (tightness) order — .sort() is stable
+ });
+ repairOrder.forEach(function(item) {
  if (repairBudget <= 0) return;
  if (item._placed >= item.periodsPerWeek) return;
  const combos = _getDenseCombos(item.availability, teachSlots);
@@ -4183,7 +4350,7 @@ function autoGenerateAllTerms() {
  });
 
  ensureCompulsorySlots(term);
- });
+ })(1);
 
  save('sm_ttslots', ttSlots);
  renderTimetable();
@@ -4197,12 +4364,21 @@ function autoGenerateAllTerms() {
 function _getDenseCombos(availability, teachSlots) {
  const combos = [];
  DAYS.forEach(function(day) {
- const slotIds = (availability[day] || []).filter(id => teachSlots.some(s => s.id === id));
+ const slotIds = (availability[day] || []).filter(id => teachSlots.some(s => s.id === id) && _slotAllowedOnDay(day, id, teachSlots));
  slotIds.forEach(function(slotId) {
  combos.push({ day, slotId });
  });
  });
  return combos;
+}
+
+// Saturday is a half day — only morning periods (start time before
+// SATURDAY_MORNING_CUTOFF) may ever be scheduled. All other days are
+// unrestricted by this check.
+function _slotAllowedOnDay(day, slotId, teachSlots) {
+ if (day !== 'Saturday') return true;
+ const slot = teachSlots.find(s => s.id === slotId);
+ return !!slot && slot.start < SATURDAY_MORNING_CUTOFF;
 }
 
 // _tryPlace: place a slot if all constraints pass
@@ -4288,7 +4464,7 @@ function findConsecutiveViolations(term) {
 }
 
 function fixConsecutiveViolations() {
- const term = parseInt(document.getElementById('tt-term')?.value || '1');
+ const term = 1; // timetable has no term concept -- one year-round schedule
  const viol = findConsecutiveViolations(term);
  if (!viol.length) return showToast('No 3-in-a-row problems found');
 
@@ -4349,6 +4525,11 @@ function _tryPlace(cls, subject, day, slotId, teacherId, term, teachSlots) {
  // tagged with a Series (e.g. Arts/Science) if the subject itself is tagged
  // with that same Series (or is unrestricted). Untagged classes are unaffected.
  if (!_seriesAllowsSubjectForClass(subject, cls)) return false;
+
+ // C0b: Subject -> Classes eligibility (Settings > Subjects & Pairing Rules >
+ // "Which Classes Each Subject Can Be Taught In"). A subject with no classes
+ // ticked is unrestricted; otherwise it may only be placed in a ticked class.
+ if (!_subjectAllowedInClass(subject, cls)) return false;
 
  // C3: slot cap — Form 1/2/3 allow ONLY ONE subject per slot (no pairing)
  //  Form 4+ and L6/U6 allow up to MAX_PARALLEL_PER_CLASS (combined periods)
@@ -4625,7 +4806,7 @@ function _getUnplottedSwapSuggestions(teacherId, term) {
 }
 
 function openGapSuggestions(teacherId) {
- const term = parseInt(document.getElementById('tt-term')?.value || '1');
+ const term = 1; // timetable has no term concept -- one year-round schedule
  const t = teachers.find(x => x.id === teacherId);
  const suggestions = _getGapSuggestions(teacherId, term);
  const swaps = _getSwapSuggestions(teacherId, term);
@@ -5250,6 +5431,276 @@ function confirmDeleteStudent() {
 // kept for any legacy calls
 function deleteStudent(id) { openDeleteStudent(id); }
 
+function openDeleteAllStudents() {
+ if (!students.length) return showToast('There are no students to delete');
+
+ const totalPayments = payments.reduce((a, p) => a + p.amount, 0);
+ const gradeCount = grades.length;
+ const markSheetTotal = students.reduce((sum, s) => sum + _msCountStudentSheets(s.id), 0);
+
+ document.getElementById('delete-all-summary').innerHTML =
+ `<strong>${students.length}</strong> student${students.length!==1?'s':''} will be deleted, along with:` +
+ `<ul style="margin:6px 0 0 18px">` +
+ `<li>${payments.length} payment record${payments.length!==1?'s':''} totalling <strong>${totalPayments.toLocaleString()} XAF</strong></li>` +
+ `<li>${gradeCount} grade record${gradeCount!==1?'s':''}</li>` +
+ `<li>${markSheetTotal} mark-sheet entr${markSheetTotal!==1?'ies':'y'}</li>` +
+ `</ul>`;
+
+ document.getElementById('delete-all-confirm-text').value = '';
+ document.getElementById('btn-confirm-delete-all-students').disabled = true;
+ document.getElementById('modal-delete-all-students').classList.add('open');
+}
+
+function _syncDeleteAllStudentsBtn() {
+ const typed = document.getElementById('delete-all-confirm-text').value.trim();
+ document.getElementById('btn-confirm-delete-all-students').disabled = (typed !== 'DELETE ALL');
+}
+
+function confirmDeleteAllStudents() {
+ const typed = document.getElementById('delete-all-confirm-text').value.trim();
+ if (typed !== 'DELETE ALL') return; // safety net — button should already be disabled
+
+ const ids = students.map(s => s.id);
+ ids.forEach(id => _msDeleteStudent(id));
+ const count = students.length;
+
+ students = [];
+ payments = [];
+ grades  = [];
+ save('sm_students', students);
+ save('sm_payments', payments);
+ save('sm_grades', grades);
+
+ closeModal('modal-delete-all-students');
+ renderAll();
+ showToast(`${count} student${count!==1?'s':''} and all linked data deleted`);
+}
+
+// ══════════════════════════════════════════════════════════
+// IMPORT STUDENTS (CSV / Excel) — mirrors the Teacher import
+// pipeline (same file-reading and header-repair approach), but with its
+// own expected-header set. Deliberately NOT sharing IMPORT_EXPECTED_HEADERS
+// or buildRowObjects with the teacher importer: a differently-shaped header
+// row silently mismapped against the wrong template is exactly the bug
+// that broke teacher-availability parsing earlier — keeping the column
+// schemas and their positional-repair logic fully separate avoids that.
+// ══════════════════════════════════════════════════════════
+let _importParsedStudents = [];
+
+function openImportStudentsModal() {
+ document.getElementById('import-students-step-upload').style.display = 'block';
+ document.getElementById('import-students-step-preview').style.display = 'none';
+ document.getElementById('import-students-back-btn').style.display = 'none';
+ document.getElementById('import-students-confirm-btn').style.display = 'none';
+ document.getElementById('import-students-file-name').textContent = 'No file selected';
+ document.getElementById('import-students-file-input').value = '';
+ document.getElementById('import-students-warnings').innerHTML = '';
+ _importParsedStudents = [];
+ document.getElementById('modal-import-students').classList.add('open');
+}
+
+function importStudentsGoBack() {
+ document.getElementById('import-students-step-upload').style.display = 'block';
+ document.getElementById('import-students-step-preview').style.display = 'none';
+ document.getElementById('import-students-back-btn').style.display = 'none';
+ document.getElementById('import-students-confirm-btn').style.display = 'none';
+}
+
+function downloadStudentImportTemplate() {
+ const headers = ['First Name','Last Name','Matricule/ID','Class','Gender','Date of Birth',
+ 'Place of Birth','Repeater','Parent/Guardian Name','Parent Phone','Parent Email'];
+ const sample = [
+ ['Mary','Bih','SJFS-25-0001','Form 1 A','F','2014-03-12','Yaoundé','No','Mr. Bih Tanyi','677000001','bih.mary@gmail.com'],
+ ['Peter','Nkwenti','SJFS-25-0002','Form 2 B','M','2013-07-04','Douala','No','Mrs. Nkwenti Grace','677000002',''],
+ ];
+ const csv = [headers, ...sample].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+ const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url; a.download = 'students_import_template.csv';
+ document.body.appendChild(a); a.click(); document.body.removeChild(a);
+ URL.revokeObjectURL(url);
+}
+
+function handleStudentImportFileSelect(evt) {
+ const file = evt.target.files[0];
+ if (!file) return;
+ document.getElementById('import-students-file-name').textContent = file.name;
+
+ if (typeof XLSX === 'undefined') {
+ showToast(' Excel/CSV library failed to load — check your internet connection and try again');
+ return;
+ }
+
+ const reader = new FileReader();
+ reader.onload = function(e) {
+ try {
+ const data = new Uint8Array(e.target.result);
+ const wb = XLSX.read(data, { type: 'array', cellDates: true });
+ if (!wb.SheetNames.length) throw new Error('No sheets found in file');
+ const sheet = wb.Sheets[wb.SheetNames[0]];
+ const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false });
+ const rows = buildStudentRowObjects(aoa);
+ processStudentImportRows(rows);
+ } catch (err) {
+ console.error('Student import error:', err);
+ showToast(' Could not read file: ' + err.message);
+ }
+ };
+ reader.onerror = function() {
+ showToast(' Failed to read the file — please try again');
+ };
+ reader.readAsArrayBuffer(file);
+}
+
+const STUDENT_IMPORT_EXPECTED_HEADERS = ['First Name','Last Name','Matricule/ID','Class','Gender',
+ 'Date of Birth','Place of Birth','Repeater','Parent/Guardian Name','Parent Phone','Parent Email'];
+
+// Same positional-repair strategy as buildRowObjects (teacher import), scoped
+// to the student header set so the two schemas can never cross-contaminate.
+function buildStudentRowObjects(aoa) {
+ if (!aoa || !aoa.length) return [];
+ const headerRow = aoa[0] || [];
+ const dataRows  = aoa.slice(1);
+
+ const expectedNorm = STUDENT_IMPORT_EXPECTED_HEADERS.map(_normHeader);
+
+ let positionalMatches = 0;
+ for (let i = 0; i < Math.min(headerRow.length, expectedNorm.length); i++) {
+ if (_normHeader(headerRow[i]) === expectedNorm[i]) positionalMatches++;
+ }
+
+ let columnMap;
+ if (positionalMatches >= 3) {
+ columnMap = headerRow.map((_, i) => STUDENT_IMPORT_EXPECTED_HEADERS[i] || null);
+ } else {
+ columnMap = headerRow.map(h => {
+ const norm = _normHeader(h);
+ const idx = expectedNorm.indexOf(norm);
+ return idx >= 0 ? STUDENT_IMPORT_EXPECTED_HEADERS[idx] : h;
+ });
+ }
+
+ return dataRows
+ .filter(r => r.some(c => String(c).trim() !== ''))
+ .map(r => {
+ const obj = {};
+ columnMap.forEach((field, i) => {
+ if (!field) return;
+ obj[field] = r[i] !== undefined ? r[i] : '';
+ });
+ return obj;
+ });
+}
+
+function processStudentImportRows(rows) {
+ if (!rows || !rows.length) { showToast('No rows found in file'); return; }
+
+ const warnings = [];
+ const parsed = [];
+ const seenNums = new Set(); // catch duplicates within the file itself
+ const existingNums = new Set(students.map(s => (s.num||'').toLowerCase()));
+ const knownClasses = loadCustomClasses();
+
+ rows.forEach((row, idx) => {
+ const fname = _getCol(row,'First Name','Firstname','First','Fname');
+ const lname = _getCol(row,'Last Name','Lastname','Last','Lname','Surname');
+ const num  = _getCol(row,'Matricule/ID','Matricule','ID','Student ID','Num');
+ const cls  = _getCol(row,'Class','Cls');
+ let gender = _getCol(row,'Gender','Sex').toUpperCase();
+ gender = (gender === 'F' || gender === 'FEMALE') ? 'F' : 'M';
+ const dob  = _getCol(row,'Date of Birth','DOB','Birth Date');
+ const pob  = _getCol(row,'Place of Birth','POB','Birthplace');
+ const repeaterRaw = _getCol(row,'Repeater').toLowerCase();
+ const repeater = ['yes','y','true','1'].includes(repeaterRaw) ? 'Yes' : 'No';
+ const parent = _getCol(row,'Parent/Guardian Name','Parent','Guardian','Parent Name');
+ const phone  = _getCol(row,'Parent Phone','Phone','Tel','Telephone');
+ const email  = _getCol(row,'Parent Email','Email');
+
+ if (!fname || !lname || !num) {
+ warnings.push(`Row ${idx+2}: missing First Name, Last Name, or Matricule/ID — skipped`);
+ return;
+ }
+ const numKey = num.toLowerCase();
+ if (existingNums.has(numKey)) {
+ warnings.push(`Row ${idx+2} (${fname} ${lname}): Matricule "${num}" already exists — skipped, not overwritten`);
+ return;
+ }
+ if (seenNums.has(numKey)) {
+ warnings.push(`Row ${idx+2} (${fname} ${lname}): Matricule "${num}" appears more than once in this file — only the first was kept`);
+ return;
+ }
+ seenNums.add(numKey);
+
+ if (cls && !knownClasses.includes(cls)) {
+ warnings.push(`"${cls}" is not a known class — will be added automatically`);
+ }
+
+ parsed.push({
+ id: 'imp' + Date.now() + Math.random().toString(36).slice(2,6),
+ num, fname, lname, cls, gender, dob, pob, repeater, parent, phone, email, photo: ''
+ });
+ });
+
+ _importParsedStudents = parsed;
+ renderStudentImportPreview(warnings);
+}
+
+function renderStudentImportPreview(warnings) {
+ document.getElementById('import-students-step-upload').style.display = 'none';
+ document.getElementById('import-students-step-preview').style.display = 'block';
+ document.getElementById('import-students-back-btn').style.display = 'inline-flex';
+ document.getElementById('import-students-confirm-btn').style.display = 'inline-flex';
+
+ const list = _importParsedStudents;
+ document.getElementById('import-students-summary').innerHTML =
+ `Found <strong>${list.length}</strong> student${list.length!==1?'s':''} ready to import.`;
+
+ document.getElementById('import-students-preview-head').innerHTML =
+ '<tr><th style="padding:6px 8px;text-align:left">Name</th><th style="padding:6px 8px">Matricule</th>' +
+ '<th style="padding:6px 8px;text-align:left">Class</th><th style="padding:6px 8px">Gender</th>' +
+ '<th style="padding:6px 8px;text-align:left">Parent</th><th style="padding:6px 8px">Phone</th></tr>';
+
+ document.getElementById('import-students-preview-body').innerHTML = list.map(s =>
+ `<tr style="border-bottom:1px solid var(--border)"> <td style="padding:6px 8px"><strong>${s.fname} ${s.lname}</strong></td> <td style="padding:6px 8px;text-align:center;font-family:monospace">${s.num||'—'}</td> <td style="padding:6px 8px">${s.cls||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.gender||'—'}</td> <td style="padding:6px 8px">${s.parent||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.phone||'—'}</td> </tr>`
+ ).join('');
+
+ const wEl = document.getElementById('import-students-warnings');
+ if (warnings.length) {
+ const unique = [...new Set(warnings)];
+ wEl.innerHTML = ' <strong>' + unique.length + ' notice(s):</strong><br>' + unique.slice(0,10).map(w => '• ' + w).join('<br>') +
+ (unique.length > 10 ? `<br>…and ${unique.length-10} more` : '');
+ } else {
+ wEl.innerHTML = '';
+ }
+}
+
+function confirmImportStudents() {
+ if (!_importParsedStudents.length) return;
+
+ // Re-check against current state at confirm time too (in case something
+ // changed since the preview was built), same defensive pattern as
+ // duplicate-matricule checking during preview.
+ const existingNums = new Set(students.map(s => (s.num||'').toLowerCase()));
+ const toAdd = _importParsedStudents.filter(s => !existingNums.has((s.num||'').toLowerCase()));
+ const skipped = _importParsedStudents.length - toAdd.length;
+
+ students.push(...toAdd);
+ save('sm_students', students);
+
+ // Auto-add any unknown classes encountered, matching the teacher importer's behaviour.
+ const knownClasses = loadCustomClasses();
+ let clsChanged = false;
+ toAdd.forEach(s => {
+ if (s.cls && !knownClasses.includes(s.cls)) { knownClasses.push(s.cls); clsChanged = true; }
+ });
+ if (clsChanged) save('sm_custom_classes', knownClasses);
+
+ closeModal('modal-import-students');
+ renderAll();
+ showToast(`${toAdd.length} student${toAdd.length!==1?'s':''} imported` + (skipped ? ` — ${skipped} skipped (duplicate matricule)` : ''));
+}
+
 
 
 // ══════════════════════════════════════════════════════════
@@ -5775,12 +6226,35 @@ function addAssignRow(cls = '', subject = '', periods = 2) {
  const div = document.createElement('div');
  div.className = 'assign-row';
  const classes  = loadCustomClasses();
- const subjects = loadSubjects().filter(s => s !== 'PREPS');
- div.innerHTML = ` <div class="form-group"> <label>Class</label> <select class="ar-cls"> <option value="">Select class…</option>
+ const allSubjects = loadSubjects().filter(s => s !== 'PREPS');
+ // Filter to subjects allowed in the pre-selected class (if any), but never
+ // silently drop an already-assigned subject even if it's since been
+ // restricted out of this class — that would destroy existing data.
+ let subjects = cls ? allSubjects.filter(s => _subjectAllowedInClass(s, cls)) : allSubjects;
+ if (subject && !subjects.includes(subject)) subjects = [subject, ...subjects];
+ div.innerHTML = ` <div class="form-group"> <label>Class</label> <select class="ar-cls" onchange="_filterAssignSubjectsForClass(this)"> <option value="">Select class…</option>
  ${classes.map(c => `<option value="${c}" ${c === cls ? 'selected' : ''}>${c}</option>`).join('')} </select> </div> <div class="form-group"> <label>Subject</label> <select class="ar-subj assign-subject-sel"> <option value="">Select subject…</option>
  ${subjects.map(s => `<option value="${s}" ${s === subject ? 'selected' : ''}>${s}</option>`).join('')} </select> </div> <div class="form-group" style="max-width:90px"> <label>Periods/Wk</label> <input type="number" class="ar-periods" min="1" max="20" value="${periods}" style="width:100%" title="How many periods per week this teacher teaches this subject to this class" /> </div> <button type="button" class="btn-icon btn-icon-remove" onclick="this.closest('.assign-row').remove()" title="Remove row">×</button>
  `;
  container.appendChild(div);
+}
+
+// Re-filter a row's Subject dropdown to only subjects allowed in the newly
+// picked Class (unrestricted subjects always included). Keeps whatever was
+// already selected as an option even if it's no longer allowed, rather than
+// silently discarding it.
+function _filterAssignSubjectsForClass(clsSelect) {
+ const row = clsSelect.closest('.assign-row');
+ if (!row) return;
+ const subjSel = row.querySelector('.ar-subj');
+ if (!subjSel) return;
+ const cls = clsSelect.value;
+ const cur = subjSel.value;
+ const allSubjects = loadSubjects().filter(s => s !== 'PREPS');
+ let subjects = cls ? allSubjects.filter(s => _subjectAllowedInClass(s, cls)) : allSubjects;
+ if (cur && !subjects.includes(cur)) subjects = [cur, ...subjects];
+ subjSel.innerHTML = '<option value="">Select subject…</option>' +
+ subjects.map(s => `<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('');
 }
 
 function getAssignmentsFromRows() {
@@ -5840,7 +6314,7 @@ function saveTeacher() {
  const permanent  = !!document.getElementById('t-permanent')?.checked;
  const availability = getAvailFromGrid();
  const assignments  = getAssignmentsFromRows();
- const term = parseInt(document.getElementById('tt-term')?.value || '1');
+ const term = 1; // timetable has no term concept -- one year-round schedule
 
  if (id) {
  const idx = teachers.findIndex(t => t.id === id);
@@ -6539,13 +7013,18 @@ const ALLOWED_PAIRS_2ND_CYCLE = [
  ['PMS','PMM'],  ['PMM','PMS'],
 ];
 
-// Rule 3: cross-stream subjects (science/arts) for 1st cycle — placed first
-const CROSS_STREAM_SUBJECTS_1ST = [
- 'Physics','Literature','Chemistry','History','Biology','Geography','Mathematics','Economics'
-];
-
+// Cross-stream subjects (a subject NOT tagged to exactly one Series — i.e.
+// tagged to both Arts+Science, or left untagged/unrestricted) has a wide
+// pool of valid slots. Single-series subjects (tagged to only Arts, or only
+// Science) are narrow: they can only combine with a same-series partner.
+// This used to be a separate hardcoded subject-name list here for Form 4/5
+// (exact string match, so it never recognised e.g. "Literature in English",
+// only bare "Literature") plus a second, different, correctly data-driven
+// mechanism for Sixth Form. Unified onto the one real Settings-driven
+// mechanism (Subject Series) for both, so it works for whatever your actual
+// subject names are and updates automatically as you edit Series tags.
 function _isCrossStream(subject) {
- return CROSS_STREAM_SUBJECTS_1ST.some(s => s.toLowerCase() === subject.toLowerCase());
+ return !_isSingleSeriesSubject(subject);
 }
 
 // Rule 1: teacher must be available on at least 1 day
@@ -6558,7 +7037,7 @@ function _teacherHasEnoughDays(availability) {
 function _getAvailCombos(availability, teachSlots) {
  const byDay = {};
  DAYS.forEach(day => {
- byDay[day] = (availability[day] || []).filter(id => teachSlots.some(s => s.id === id));
+ byDay[day] = (availability[day] || []).filter(id => teachSlots.some(s => s.id === id) && _slotAllowedOnDay(day, id, teachSlots));
  });
  const maxSlots = Math.max(...DAYS.map(d => byDay[d].length), 0);
  const combos = [];
@@ -6645,7 +7124,7 @@ function filterTeacherSubjects() {
  const cls  = document.getElementById('tta-class').value;
  const day  = document.getElementById('tta-day').value;
  const slotId = parseInt(document.getElementById('tta-period').value);
- const term  = parseInt(document.getElementById('tta-term')?.value || document.getElementById('tt-term')?.value || '1');
+ const term = 1; // timetable has no term concept -- one year-round schedule
 
  const subSel = document.getElementById('tta-subject');
  subSel.innerHTML = '<option value="">Select subject…</option>';
@@ -6709,7 +7188,7 @@ function confirmTTAssign() {
  const slotId  = parseInt(document.getElementById('tta-period').value);
  const teacherId = document.getElementById('tta-teacher').value;
  const subject  = document.getElementById('tta-subject').value;
- const term  = parseInt(document.getElementById('tta-term')?.value || document.getElementById('tt-term')?.value || '1');
+ const term = 1; // timetable has no term concept -- one year-round schedule
 
  if (!teacherId || !subject) return showToast('Please select a teacher and subject');
 
@@ -7036,10 +7515,18 @@ function handleLogoUpload(evt) {
  var pi = document.getElementById('logo-preview-img');
  if(pi){pi.src=src;pi.style.display='block';}
  var hint=document.getElementById('logo-upload-hint'); if(hint) hint.style.display='none';
- // Update preview box with new logo
+ // Persist the logo — this was previously missing, so the logo would show
+ // in the Settings preview but never actually save, leaving the header
+ // logo and print watermark stuck on the old (empty) value forever.
  var lh = loadLH(); lh.logo = src;
+ try { save('sm_letterhead', lh); }
+ catch (err) { return showToast('Not enough storage space — try a smaller image'); }
  var pb = document.querySelector('.lh-preview-box');
  if(pb) pb.innerHTML = buildLHPreviewOnly(lh);
+ // Refresh the live page (letterhead header + watermark) so the change is
+ // visible immediately instead of only after the next unrelated re-render.
+ if (typeof applyLHToPage === 'function') applyLHToPage();
+ showToast('School logo saved');
  };
  reader.readAsDataURL(file);
 }
@@ -8422,6 +8909,7 @@ const SM_KEYS = [
  'sm_teachers','sm_ttslots','sm_students','sm_payments',
  'sm_subjects','sm_custom_classes','sm_base_classes','sm_streams',
  'sm_nopairs','sm_canpairs','sm_timeslots','sm_series','sm_subject_series',
+ 'sm_subject_classes',
  'sm_lh_left','sm_lh_right','sm_lh_logo',
  'sm_grades','sm_academic_year','sm_school_name',
  'sm_subject_period_targets',
@@ -8721,6 +9209,11 @@ function removeSubject(name) {
  delete seriesMap[name];
  saveSubjectSeries(seriesMap);
  }
+ const classesMap = loadSubjectClasses();
+ if (Object.prototype.hasOwnProperty.call(classesMap, name)) {
+ delete classesMap[name];
+ saveSubjectClasses(classesMap);
+ }
  const targets = loadSubjectPeriodTargets();
  let targetsChanged = false;
  Object.keys(targets).forEach(key => {
@@ -8801,6 +9294,75 @@ function _resetClassPicker(prefix) {
  _updateClassPickerLabel(prefix);
 }
 
+// ── Subject multi-select picker (used by "Cannot Run in Same Period") ──
+// Lets you tick 2+ subjects at once; addNoPairRule() then creates a no-pair
+// rule for every pair among the ticked subjects, instead of one at a time.
+const _subjectPickerSelections = {}; // prefix -> array of selected subject names
+
+function renderSubjectPickerPanel(prefix) {
+ const panel = document.getElementById(prefix + '-subjects-panel');
+ if (!panel) return;
+ const subjects = loadSubjects().filter(s => s !== 'PREPS');
+ const checked = _subjectPickerSelections[prefix] || [];
+ const rows = subjects.map(s => {
+ const safe = s.replace(/'/g,"\\'");
+ const isChecked = checked.includes(s) ? 'checked' : '';
+ return `<label style="display:flex;align-items:center;gap:6px;padding:3px 4px;font-size:.76rem;white-space:nowrap;cursor:pointer">
+ <input type="checkbox" value="${s.replace(/"/g,'&quot;')}" ${isChecked} onchange="_onSubjectPickerToggle('${prefix}','${safe}',this.checked)" /> ${s} </label>`;
+ }).join('');
+ panel.innerHTML = `
+ <div style="display:flex;gap:8px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+ <a href="#" style="font-size:.7rem" onclick="event.preventDefault();_setAllSubjectPicker('${prefix}',true)">Select all</a>
+ <a href="#" style="font-size:.7rem" onclick="event.preventDefault();_setAllSubjectPicker('${prefix}',false)">Clear</a>
+ </div>
+ ${rows || '<span style="font-size:.72rem;color:var(--muted)">No subjects defined yet</span>'}`;
+}
+
+function toggleSubjectPicker(prefix) {
+ const panel = document.getElementById(prefix + '-subjects-panel');
+ if (!panel) return;
+ const isOpen = panel.style.display === 'block';
+ document.querySelectorAll('.ms-panel').forEach(p => p.style.display = 'none');
+ if (!isOpen) {
+ renderSubjectPickerPanel(prefix);
+ panel.style.display = 'block';
+ setTimeout(() => {
+ document.addEventListener('click', function closeHandler(e) {
+ if (!e.target.closest('.ms-wrap')) {
+ panel.style.display = 'none';
+ document.removeEventListener('click', closeHandler);
+ }
+ });
+ }, 0);
+ }
+}
+
+function _onSubjectPickerToggle(prefix, subj, isChecked) {
+ const cur = _subjectPickerSelections[prefix] || [];
+ _subjectPickerSelections[prefix] = isChecked ? [...new Set([...cur, subj])] : cur.filter(s => s !== subj);
+ _updateSubjectPickerLabel(prefix);
+}
+
+function _setAllSubjectPicker(prefix, selectAll) {
+ _subjectPickerSelections[prefix] = selectAll ? loadSubjects().filter(s => s !== 'PREPS') : [];
+ renderSubjectPickerPanel(prefix);
+ _updateSubjectPickerLabel(prefix);
+}
+
+function _updateSubjectPickerLabel(prefix) {
+ const btn = document.getElementById(prefix + '-subjects-btn');
+ if (!btn) return;
+ const sel = _subjectPickerSelections[prefix] || [];
+ if (!sel.length) btn.textContent = 'Select subjects ▾';
+ else if (sel.length <= 2) btn.textContent = sel.join(', ') + ' ▾';
+ else btn.textContent = sel.length + ' subjects ▾';
+}
+
+function _resetSubjectPicker(prefix) {
+ _subjectPickerSelections[prefix] = [];
+ _updateSubjectPickerLabel(prefix);
+}
+
 function addCanPairRule() {
  const a  = document.getElementById('canpair-a')?.value;
  const b  = document.getElementById('canpair-b')?.value;
@@ -8837,22 +9399,29 @@ function removeCanPair(index) {
 }
 
 function addNoPairRule() {
- const a  = document.getElementById('nopair-a')?.value;
- const b  = document.getElementById('nopair-b')?.value;
+ const a = document.getElementById('nopair-a')?.value;
+ const bList = (_subjectPickerSelections['nopair'] || []).filter(s => s !== a);
  const classes = (_classPickerSelections['nopair'] || []).slice();
- if (!a || !b || a === b) return showToast('Select two different subjects');
+ if (!a) return showToast('Select Subject A');
+ if (!bList.length) return showToast('Pick at least one Subject B');
+
  const pairs = loadNoPairs();
  const classKey = classes.slice().sort().join('|');
+ let added = 0;
+ bList.forEach(b => {
  const isDup = pairs.some(p => {
  const existingClassKey = (p.classes || []).slice().sort().join('|');
  return ((p.a===a&&p.b===b)||(p.a===b&&p.b===a)) && existingClassKey === classKey;
  });
- if (isDup) return showToast('Rule already exists for these classes');
+ if (isDup) return;
  pairs.push({a, b, classes});
+ added++;
+ });
  save('sm_nopairs', pairs);
  renderSubjectsPanel();
  _resetClassPicker('nopair');
- showToast('No-pair rule added ');
+ _resetSubjectPicker('nopair');
+ showToast(added ? `Added ${added} no-pair rule${added!==1?'s':''}` : 'Those rules already existed');
 }
 
 function removeNoPair(index) {
@@ -8871,6 +9440,7 @@ function renderSubjectsPanel() {
  const nopairs  = loadNoPairs();
  const canpairs = loadCanPairs();
  renderSubjectSeriesTable();
+ renderSubjectClassTable();
 
  // Subject pills
  const sl = document.getElementById('subjects-list');
@@ -8934,13 +9504,16 @@ function renderSubjectsPanel() {
  }
  }
 
- // Populate all four subject selects in this panel
+ // Populate the Can-Pair subject selects and Subject A (No-Pair) in this panel
  const subjectsNoPreps = subjects.filter(s => s !== 'PREPS');
  const opts = subjectsNoPreps.map(s => `<option>${s}</option>`).join('');
- ['canpair-a','canpair-b','nopair-a','nopair-b'].forEach(id => {
+ ['canpair-a','canpair-b','nopair-a'].forEach(id => {
  const el = document.getElementById(id);
  if (el) el.innerHTML = '<option value="">Subject…</option>' + opts;
  });
+ // "Cannot Run in Same Period" Subject B uses a checkbox multi-select instead
+ // of a dropdown — refresh it in case the subject list changed.
+ renderSubjectPickerPanel('nopair');
 }
 
 function populateAllSubjectDropdowns() {
@@ -8949,18 +9522,24 @@ function populateAllSubjectDropdowns() {
  const gs = document.getElementById('grades-subject');
  if (gs) gs.innerHTML = '<option value="">— Select Subject —</option>' + opts;
  document.querySelectorAll('.assign-subject-sel').forEach(sel => {
+ const row = sel.closest('.assign-row');
+ const clsSel = row ? row.querySelector('.ar-cls') : null;
+ if (clsSel) { _filterAssignSubjectsForClass(clsSel); return; }
  const cur = sel.value;
  sel.innerHTML = '<option value="">Subject…</option>' + opts;
  if (cur) sel.value = cur;
  });
- // Pairing rule dropdowns
- ['canpair-a','canpair-b','nopair-a','nopair-b'].forEach(id => {
+ // Pairing rule dropdowns (Can-Pair + No-Pair's Subject A)
+ ['canpair-a','canpair-b','nopair-a'].forEach(id => {
  const el = document.getElementById(id);
  if (!el) return;
  const cur = el.value;
  el.innerHTML = '<option value="">Subject…</option>' + opts;
  if (cur) el.value = cur;
  });
+ // "Cannot Run in Same Period" Subject B checkbox multi-select — refresh in
+ // case the subject list changed while its panel happens to be open.
+ renderSubjectPickerPanel('nopair');
  // Optional 3rd subject for can-pair
  const cc = document.getElementById('canpair-c');
  if (cc) {
@@ -9075,11 +9654,14 @@ function setSixthFormFreePairing(v) {
 }
 
 // A subject tagged to EXACTLY ONE Series (e.g. only "Arts", not both, not
-// untagged) is treated as belonging squarely to that stream and may not be
-// auto-paired by the generator. It can still share a slot, but only if a
-// human admin places it there manually via the timetable's Assign modal.
-// Subjects tagged to both series, or left untagged (unrestricted), are
-// unaffected and may still be auto-paired per the Can-Pair rules.
+// untagged) belongs squarely to that stream. Two single-series subjects from
+// DIFFERENT series (e.g. one Arts-only, one Science-only) should not be
+// auto-paired — that combination only makes sense with a human's judgement,
+// via the timetable's Assign modal. But two single-series subjects from the
+// SAME series (e.g. two Arts-only subjects like History + Religious Studies)
+// are exactly the normal case a Can-Pair rule is meant to describe, and must
+// still auto-pair. Subjects tagged to both series, or left untagged
+// (unrestricted), never block a combination on their own.
 function _isSingleSeriesSubject(subject) {
  return getSubjectSeries(subject).length === 1;
 }
@@ -9088,10 +9670,15 @@ function _pairAllowedInSlot(newSubject, existingSubjects, cls, isManual) {
  if (!existingSubjects || existingSubjects.length === 0) return true;
  if (cls && !_classSupportsPairing(cls)) return false;
  if (!isManual) {
- // Auto-generation only: single-series subjects never auto-pair, even if a
- // Can-Pair rule would otherwise allow the combination.
+ // Auto-generation only: block ONLY a genuine cross-series conflict —
+ // single-series subjects from two different series in the same combo.
+ // Same-series (or untagged/dual-series) subjects are unaffected.
  const combo = [...existingSubjects, newSubject];
- if (combo.some(_isSingleSeriesSubject)) return false;
+ const singleSeriesTags = combo
+ .map(s => getSubjectSeries(s))
+ .filter(arr => arr.length === 1)
+ .map(arr => arr[0]);
+ if (new Set(singleSeriesTags).size > 1) return false;
  }
  const wanted = [...existingSubjects, newSubject].map(s => s.toLowerCase()).sort().join('|');
  const pairs = loadCanPairs().filter(p => _ruleAppliesToClass(p, cls));
@@ -9104,9 +9691,17 @@ function _pairAllowedInSlot(newSubject, existingSubjects, cls, isManual) {
  });
 }
 
-// Check if subject is compulsory for F1-F5
+// Check if subject is compulsory for F1-F5. Matches by prefix (case-
+// insensitive, on a word boundary) rather than requiring an exact string, so
+// a school using the fuller name "English Language" still matches the
+// compulsory keyword "English" -- while "Additional Mathematics" correctly
+// does NOT match "Mathematics" (it doesn't start with it).
 function isCompulsorySubject(subj) {
- return COMPULSORY_SUBJECTS.some(c => c.toLowerCase()===subj.toLowerCase());
+ const s = (subj || '').trim().toLowerCase();
+ return COMPULSORY_SUBJECTS.some(c => {
+ const cl = c.toLowerCase();
+ return s === cl || s.startsWith(cl + ' ');
+ });
 }
 
 // Check if a compulsory subject is already taken at this slot by another F1-F5 class
@@ -9276,6 +9871,58 @@ function toggleSubjectSeries(subject, series, checked) {
  saveSubjectSeries(map);
 }
 
+// ── Subject -> allowed Classes (which classes a subject can be taught in) ──
+// A subject with no entry, or an empty array, is unrestricted (allowed in
+// any class) -- same "no ticks = unrestricted" convention as Subject Series.
+function loadSubjectClasses() { return load('sm_subject_classes', {}); }
+function saveSubjectClasses(map) { save('sm_subject_classes', map); }
+
+function getSubjectClasses(subject) {
+ const map = loadSubjectClasses();
+ return map[subject] || [];
+}
+
+function _subjectAllowedInClass(subject, cls) {
+ const allowed = getSubjectClasses(subject);
+ if (!allowed.length) return true; // unrestricted
+ return allowed.includes(cls);
+}
+
+function renderSubjectClassTable() {
+ const el = document.getElementById('subject-class-table');
+ if (!el) return;
+ const classes = loadCustomClasses();
+ const subjects = loadSubjects().filter(s => s !== 'PREPS');
+ if (!classes.length) {
+ el.innerHTML = '<span style="font-size:.75rem;color:var(--muted)">No classes defined yet</span>';
+ return;
+ }
+ if (!subjects.length) {
+ el.innerHTML = '<span style="font-size:.75rem;color:var(--muted)">No subjects yet — add subjects above first</span>';
+ return;
+ }
+ const map = loadSubjectClasses();
+ el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.76rem"><thead><tr style="background:var(--navy);color:#fff"><th style="padding:5px 8px;text-align:left">Subject</th>${classes.map(c=>`<th style="padding:5px 8px">${c}</th>`).join('')}</tr></thead><tbody>${
+ subjects.map(subj => {
+ const safe = subj.replace(/'/g,"\\'");
+ const assigned = map[subj] || [];
+ return `<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px;white-space:nowrap">${subj}</td>${
+ classes.map(c => `<td style="padding:5px 8px;text-align:center"><input type="checkbox" ${assigned.includes(c)?'checked':''} onchange="toggleSubjectClass('${safe}','${c.replace(/'/g,"\\'")}',this.checked)" /></td>`).join('')
+ }</tr>`;
+ }).join('')
+ }</tbody></table>`;
+}
+
+function toggleSubjectClass(subject, cls, checked) {
+ const map = loadSubjectClasses();
+ const cur = map[subject] || [];
+ map[subject] = checked ? [...new Set([...cur, cls])] : cur.filter(c => c !== cls);
+ saveSubjectClasses(map);
+ // Refresh any open teacher-assignment subject dropdowns so the new
+ // restriction takes effect immediately.
+ document.querySelectorAll('.ar-cls').forEach(sel => _filterAssignSubjectsForClass(sel));
+}
+
 function _populateStreamClassSel() {
  const sel = document.getElementById('stream-class-sel');
  if (!sel) return;
@@ -9366,6 +10013,7 @@ function _rebuildAndPreview() {
 
  // Auto-apply to all dropdowns (including timetable class selector) immediately
  _autoApply();
+ renderSubjectClassTable(); // class list may have changed — keep columns in sync
 
  // Streams display — grouped by class
  const sl = document.getElementById('streams-list');
@@ -9554,6 +10202,7 @@ function populateAllClassDropdowns() {
  if (cur && [...el.options].some(o => o.value === cur)) el.value = cur;
  });
  renderCustomClassList();
+ if (typeof _markProblemClassesInSelect === 'function') _markProblemClassesInSelect();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -9898,8 +10547,10 @@ function renderTimeSlotsTable() {
  onchange="updateTimeSlotField(${slot.id},'label',this.value)" />
  ${slot.isBreak ? '<span style="font-size:.68rem;color:#888;margin-left:6px">break</span>' : ''} </td> <td style="padding:6px 10px"> <input type="time" value="${slot.start}"
  style="padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:.8rem"
+ title="Editing this directly overrides the auto-filled value from the previous period's End time"
  onchange="updateTimeSlotField(${slot.id},'start',this.value)" /> </td> <td style="padding:6px 10px"> <input type="time" value="${slot.end}"
  style="padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:.8rem"
+ title="Changing this also updates the Start time of the next period below"
  onchange="updateTimeSlotField(${slot.id},'end',this.value)" /> </td> <td style="padding:6px 10px;text-align:center"> <input type="number" value="${slotDurationMinutes(slot)}" min="1" max="480"
  style="width:62px;padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:.8rem;text-align:center"
  title="Duration in minutes — changing this updates the End time automatically"
@@ -9909,11 +10560,22 @@ function renderTimeSlotsTable() {
  ${remaining > 0 ? `<span style="color:#0e7a4e">${remaining} period${remaining!==1?'s':''} remaining</span>` : `<span style="color:#cc3300">Maximum ${MAX_TEACHING_PERIODS} periods reached</span>`} </td> </tr>`;
 }
 
+// Force every period after the first to start exactly when the one before
+// Auto-fills the NEXT row's Start Time from this row's new End Time — a
+// one-hop convenience default, not a hard invariant. It only ever touches
+// the single adjacent row, so a Start Time you've manually typed anywhere
+// else in the table is never silently overwritten by an unrelated edit.
+function _fillNextStart(slots, idx) {
+ if (slots[idx + 1]) slots[idx + 1].start = slots[idx].end;
+ return slots;
+}
+
 function updateTimeSlotField(id, field, value) {
  const slots = loadTimeSlots();
  const idx = slots.findIndex(s => s.id === id);
  if (idx < 0) return;
  slots[idx][field] = value;
+ if (field === 'end') _fillNextStart(slots, idx);
  save('sm_timeslots', slots);
  renderTimeSlotsTable();
 }
@@ -9931,6 +10593,7 @@ function updateSlotDuration(id, mins) {
  const eh = Math.floor(total / 60) % 24;
  const em = total % 60;
  slots[idx].end = String(eh).padStart(2,'0') + ':' + String(em).padStart(2,'0');
+ _fillNextStart(slots, idx);
  save('sm_timeslots', slots);
  renderTimeSlotsTable();
  showToast('Duration updated — End time set to ' + slots[idx].end);
@@ -9963,7 +10626,14 @@ function addMinutes(timeStr, mins) {
 }
 
 function removeTimeSlot(id) {
- const slots = loadTimeSlots().filter(s => s.id !== id);
+ const slots = loadTimeSlots();
+ const idx = slots.findIndex(s => s.id === id);
+ if (idx < 0) return;
+ const prev = slots[idx - 1];
+ slots.splice(idx, 1);
+ // Only patch the single junction left behind by the removed row — every
+ // other manually-set Start Time in the table is left untouched.
+ if (prev && slots[idx]) slots[idx].start = prev.end;
  save('sm_timeslots', slots);
  renderTimeSlotsTable();
 }
