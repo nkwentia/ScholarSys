@@ -1811,8 +1811,12 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Parent Phone</label>
-            <input type="tel" id="reg-phone" placeholder="e.g. 677123456" />
+            <label>Father's Number</label>
+            <input type="tel" id="reg-father-phone" placeholder="e.g. 677123456" />
+          </div>
+          <div class="form-group">
+            <label>Mother's Number</label>
+            <input type="tel" id="reg-mother-phone" placeholder="e.g. 677123457" />
           </div>
         </div>
 
@@ -1943,7 +1947,10 @@
      </div>
    </div>
  </div>
-</div> <!-- ═══════════ TEACHERS PAGE --> <div class="page" id="page-teachers"> <div class="search-bar"> <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="filterTeachers()" /> <button id="btn-import-teachers" class="btn btn-ghost" onclick="openImportTeachersModal()"> Import (CSV/Excel)</button> <button id="btn-export-csv" class="btn btn-ghost" onclick="exportTeachers('csv')"> Export CSV</button> <button id="btn-export-xlsx" class="btn btn-ghost" onclick="exportTeachers('xlsx')"> Export Excel</button> <button class="btn btn-ghost" onclick="printAllTeacherTimetables()"> Print All Timetables</button> <button id="btn-delete-all-teachers" class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()"> Delete All Teachers</button> <button id="btn-add-teacher" class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">Teaching Staff</span> <span id="teacher-count" style="color:var(--muted);font-size:.85rem"></span> </div> <div class="panel-body" style="overflow-x:auto"> <table style="table-layout:fixed;width:100%"> <thead> <tr><th style="width:16%">Name</th><th style="width:30%">Classes &amp; Subjects</th><th style="width:14%">Available Days</th><th style="width:12%">Phone</th><th style="width:110px">Actions</th></tr> </thead> <tbody id="teachers-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ ACCESS CONTROL PAGE --> <div class="page" id="page-access"> <div class="panels-row" style="grid-template-columns:1fr"> <!-- Staff Accounts Table --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Staff Accounts & Permissions</span> <div style="display:flex;gap:8px"> <button class="btn btn-ghost" style="font-size:.78rem" onclick="syncAccountsFromTeachers()" title="Creates accounts for new teachers and removes accounts for teachers deleted from the system"> Sync from Teachers</button> <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" onclick="openAddStaffModal()">+ Add Staff Account</button> </div> </div> <!-- Default password notice --> <div id="default-pw-notice" style="margin:0 16px 12px;padding:10px 14px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;font-size:.8rem;display:none"> <strong style="color:#b06000"> Default Teacher Password:</strong> <span style="font-family:monospace;font-size:.9rem;background:#fffde7;padding:2px 8px;border-radius:4px;border:1px solid #ffe082;margin:0 6px">teacher@123</span>
+</div> <!-- ═══════════ TEACHERS PAGE --> <div class="page" id="page-teachers"> <div class="search-bar"> <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="filterTeachers()" /> <button id="btn-import-teachers" class="btn btn-ghost" onclick="openImportTeachersModal()"> Import (CSV/Excel)</button> <button id="btn-export-csv" class="btn btn-ghost" onclick="exportTeachers('csv')"> Export CSV</button> <button id="btn-export-xlsx" class="btn btn-ghost" onclick="exportTeachers('xlsx')"> Export Excel</button> <button class="btn btn-ghost" onclick="printAllTeacherTimetables()"> Print All Timetables</button> <button class="btn btn-ghost" onclick="openDuplicateAssignmentCheck()" title="Flags class+subject combos assigned to unusually many teachers or unusually high combined periods"> Check Duplicate Assignments</button> <button id="btn-delete-all-teachers" class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()"> Delete All Teachers</button> <button id="btn-add-teacher" class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">Teaching Staff</span> <span id="teacher-count" style="color:var(--muted);font-size:.85rem"></span> </div> <div class="panel-body" style="overflow-x:auto"> <table style="table-layout:fixed;width:100%"> <thead> <tr><th style="width:16%">Name</th><th style="width:30%">Classes &amp; Subjects</th><th style="width:14%">Available Days</th><th style="width:12%">Phone</th><th style="width:110px">Actions</th></tr> </thead> <tbody id="teachers-body"></tbody> </table> </div> </div> </div> <!-- Duplicate Class+Subject Assignment Check Modal -->
+<div class="modal-overlay" id="modal-dup-assign"> <div class="modal" style="max-width:820px"> <div class="modal-header"> <span class="modal-title"> Duplicate Assignment Check</span> <button class="modal-close" onclick="closeModal('modal-dup-assign')">×</button> </div> <div class="modal-body" style="max-height:74vh;overflow-y:auto"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">
+ Flags any class+subject combination where the <strong>average periods/week per teacher</strong> is unusually high — that's what actually causes the Sixth Form-style fill-rate problem (stale or duplicate teacher assignments left over from earlier setup/reshuffles). This scales with how many teachers are involved: a subject legitimately split across several teachers can have a higher combined total without any single teacher being overloaded, so raw totals and raw headcount are both misleading on their own. </p> <div id="dup-assign-summary" style="font-size:.85rem;margin-bottom:10px"></div> <div id="dup-assign-body"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-dup-assign')">Close</button> </div> </div>
+</div> <!-- ═══════════ ACCESS CONTROL PAGE --> <div class="page" id="page-access"> <div class="panels-row" style="grid-template-columns:1fr"> <!-- Staff Accounts Table --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Staff Accounts & Permissions</span> <div style="display:flex;gap:8px"> <button class="btn btn-ghost" style="font-size:.78rem" onclick="syncAccountsFromTeachers()" title="Creates accounts for new teachers and removes accounts for teachers deleted from the system"> Sync from Teachers</button> <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" onclick="openAddStaffModal()">+ Add Staff Account</button> </div> </div> <!-- Default password notice --> <div id="default-pw-notice" style="margin:0 16px 12px;padding:10px 14px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;font-size:.8rem;display:none"> <strong style="color:#b06000"> Default Teacher Password:</strong> <span style="font-family:monospace;font-size:.9rem;background:#fffde7;padding:2px 8px;border-radius:4px;border:1px solid #ffe082;margin:0 6px">teacher@123</span>
  All imported teachers use this password until they change it. <button onclick="document.getElementById('default-pw-notice').style.display='none'" style="float:right;background:none;border:none;cursor:pointer;color:#888;font-size:.85rem" title="Dismiss">×</button> </div> <div class="panel-body" style="overflow-x:auto"> <table class="perm-table"> <thead> <tr> <th>Name</th><th>Username</th><th>Password</th><th>Role</th> <th>Admin Overview</th><th>Students</th><th>Class List</th> <th>Timetable</th><th>Reports</th><th>Finance</th><th>Teachers</th> <th>Actions</th> </tr> </thead> <tbody id="access-body"></tbody> </table> </div> </div> </div> <!-- Quick Apply Presets — full-width, below the table --> <div style="margin-top:20px"> <div class="panel"> <div class="panel-header"><span class="panel-title">Quick Apply Presets</span></div> <div style="padding:16px 20px;display:flex;gap:10px;flex-wrap:wrap"> <button class="btn btn-ghost" onclick="applyPreset('teacher')">
  Apply Teacher preset to all Teachers </button> <button class="btn btn-ghost" onclick="applyPreset('readonly')">
  Set all non-admin to Read Only </button> <button class="btn btn-ghost" onclick="applyPreset('nofinance')">
@@ -2011,11 +2018,11 @@
  </div>
  </div> </div> </div> </div>
 </div> <!-- ═══════════════════════════════════════════════════════ MODALS --> <!-- Add Student Modal -->
-<div class="modal-overlay" id="modal-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Add New Student</span> <button class="modal-close" onclick="closeModal('modal-student')">×</button> </div> <div class="modal-body"> <!-- Photo upload --> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="s-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('s-photo-input').click()"> <img id="s-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="s-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('s-photo-input','s-photo-img','s-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="s-fname" placeholder="John" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="s-lname" placeholder="Doe" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="s-num" placeholder="JATEC24001" /></div> <div class="form-group"> <label>Class</label> <select id="s-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="s-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="s-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="s-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Father's Name</label><input type="text" id="s-father" placeholder="Mr. John Doe Sr." /></div> <div class="form-group"><label>Mother's Name</label><input type="text" id="s-mother" placeholder="Mrs. Jane Doe" /></div> <div class="form-row"> <div class="form-group"><label>Parent Phone</label><input type="tel" id="s-phone" placeholder="677000001" /></div> <div class="form-group"><label>Parent Email</label><input type="email" id="s-email" placeholder="parent@email.com" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-student')">Cancel</button> <button class="btn btn-primary" onclick="addStudent()">Save Student</button> </div> </div>
+<div class="modal-overlay" id="modal-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Add New Student</span> <button class="modal-close" onclick="closeModal('modal-student')">×</button> </div> <div class="modal-body"> <!-- Photo upload --> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="s-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('s-photo-input').click()"> <img id="s-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="s-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('s-photo-input','s-photo-img','s-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="s-fname" placeholder="John" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="s-lname" placeholder="Doe" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="s-num" placeholder="JATEC24001" /></div> <div class="form-group"> <label>Class</label> <select id="s-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="s-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="s-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="s-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Father's Name</label><input type="text" id="s-father" placeholder="Mr. John Doe Sr." /></div> <div class="form-group"><label>Mother's Name</label><input type="text" id="s-mother" placeholder="Mrs. Jane Doe" /></div> <div class="form-row"> <div class="form-group"><label>Father's Number</label><input type="tel" id="s-father-phone" placeholder="677000001" /></div> <div class="form-group"><label>Mother's Number</label><input type="tel" id="s-mother-phone" placeholder="677000002" /></div> </div> <div class="form-row"> <div class="form-group"><label>Parent Email</label><input type="email" id="s-email" placeholder="parent@email.com" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-student')">Cancel</button> <button class="btn btn-primary" onclick="addStudent()">Save Student</button> </div> </div>
 </div> <!-- Grade Entry Modal -->
 <div class="modal-overlay" id="modal-grade"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Enter Grades</span> <button class="modal-close" onclick="closeModal('modal-grade')">×</button> </div> <div class="modal-body"> <div class="form-row"> <div class="form-group"><label>Student</label> <select id="g-student"><option value="">Select student…</option></select> </div> <div class="form-group"><label>Subject</label> <select id="g-subject"> <option>Mathematics</option><option>English</option><option>Physics</option> <option>Chemistry</option><option>Biology</option><option>History</option> <option>Geography</option><option>Computer Science</option> </select> </div> </div> <div class="form-row"> <div class="form-group"><label>Score</label><input type="number" id="g-score" placeholder="0–100" min="0" max="100" /></div> <div class="form-group"><label>Max Score</label><input type="number" id="g-max" value="100" /></div> </div> <div class="form-row"> <div class="form-group"><label>Term</label> <select id="g-term"><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select> </div> <div class="form-group"><label>Academic Year</label><input type="text" id="g-year" value="2024/2025" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-grade')">Cancel</button> <button class="btn btn-primary" onclick="saveGrade()">Save Grade</button> </div> </div>
 </div> <!-- Edit Student Modal -->
-<div class="modal-overlay" id="modal-edit-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Edit Student</span> <button class="modal-close" onclick="closeModal('modal-edit-student')">×</button> </div> <div class="modal-body"> <input type="hidden" id="es-id" /> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="es-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('es-photo-input').click()"> <img id="es-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="es-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="es-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('es-photo-input','es-photo-img','es-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="es-fname" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="es-lname" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="es-num" /></div> <div class="form-group"> <label>Class</label> <select id="es-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="es-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="es-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="es-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="es-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Father's Name</label><input type="text" id="es-father" /></div> <div class="form-group"><label>Mother's Name</label><input type="text" id="es-mother" /></div> <div class="form-row"> <div class="form-group"><label>Parent Phone</label><input type="tel" id="es-phone" /></div> <div class="form-group"><label>Parent Email</label><input type="email" id="es-email" /></div> </div> <div id="es-data-note" style="margin-top:10px;padding:10px 14px;background:#eef5fb;border-radius:8px;font-size:.8rem;color:var(--muted)"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-edit-student')">Cancel</button> <button class="btn btn-primary" onclick="saveEditStudent()">Save Changes</button> </div> </div>
+<div class="modal-overlay" id="modal-edit-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Edit Student</span> <button class="modal-close" onclick="closeModal('modal-edit-student')">×</button> </div> <div class="modal-body"> <input type="hidden" id="es-id" /> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="es-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('es-photo-input').click()"> <img id="es-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="es-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="es-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('es-photo-input','es-photo-img','es-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="es-fname" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="es-lname" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="es-num" /></div> <div class="form-group"> <label>Class</label> <select id="es-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="es-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="es-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="es-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="es-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Father's Name</label><input type="text" id="es-father" /></div> <div class="form-group"><label>Mother's Name</label><input type="text" id="es-mother" /></div> <div class="form-row"> <div class="form-group"><label>Father's Number</label><input type="tel" id="es-father-phone" /></div> <div class="form-group"><label>Mother's Number</label><input type="tel" id="es-mother-phone" /></div> </div> <div class="form-row"> <div class="form-group"><label>Parent Email</label><input type="email" id="es-email" /></div> </div> <div id="es-data-note" style="margin-top:10px;padding:10px 14px;background:#eef5fb;border-radius:8px;font-size:.8rem;color:var(--muted)"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-edit-student')">Cancel</button> <button class="btn btn-primary" onclick="saveEditStudent()">Save Changes</button> </div> </div>
 </div> <!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="modal-delete-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title" style="color:var(--red)"> Delete Student</span> <button class="modal-close" onclick="closeModal('modal-delete-student')">×</button> </div> <div class="modal-body"> <div class="delete-warning"> <strong>This action cannot be undone.</strong> <div id="delete-summary" style="margin-top:8px;color:var(--text)"></div> <ul id="delete-data-list"></ul> </div> <p style="font-size:.85rem;color:var(--muted)">
  All payments and grades linked to this student will also be permanently deleted.
@@ -2024,7 +2031,7 @@
 <div class="modal-overlay" id="modal-delete-all-students"> <div class="modal"> <div class="modal-header"> <span class="modal-title" style="color:var(--red)"> Delete ALL Students</span> <button class="modal-close" onclick="closeModal('modal-delete-all-students')">×</button> </div> <div class="modal-body"> <div class="delete-warning"> <strong>This action cannot be undone.</strong> <div id="delete-all-summary" style="margin-top:8px;color:var(--text)"></div> </div> <p style="font-size:.85rem;color:var(--muted);margin-top:10px"> Every student record, plus all payments, grades and mark-sheet entries linked to them, will be permanently deleted school-wide. Nothing on the Teachers, Timetable, or Settings pages is affected. </p> <div class="form-group" style="margin-top:14px"> <label>Type <strong>DELETE ALL</strong> to confirm</label> <input type="text" id="delete-all-confirm-text" placeholder="DELETE ALL" oninput="_syncDeleteAllStudentsBtn()" autocomplete="off" /> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-delete-all-students')">Cancel</button> <button class="btn btn-danger" id="btn-confirm-delete-all-students" disabled onclick="confirmDeleteAllStudents()">Yes, Delete All Students</button> </div> </div>
 </div> <!-- Import Students Modal -->
 <div class="modal-overlay" id="modal-import-students"> <div class="modal" style="max-width:640px"> <div class="modal-header"> <span class="modal-title"> Import Students (CSV / Excel)</span> <button class="modal-close" onclick="closeModal('modal-import-students')">×</button> </div> <div class="modal-body"> <div id="import-students-step-upload"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">
- Upload a <strong>.csv</strong>, <strong>.xls</strong> or <strong>.xlsx</strong> file. The first row should be column headers. </p> <div class="logo-upload-zone" onclick="document.getElementById('import-students-file-input').click()" style="padding:30px"> <div style="font-size:2rem;margin-bottom:6px"></div> <div style="font-size:.85rem;color:var(--muted)">Click to choose a file</div> <div style="font-size:.72rem;color:var(--muted);margin-top:4px" id="import-students-file-name">No file selected</div> </div> <input type="file" id="import-students-file-input" accept=".csv,.xls,.xlsx" style="display:none" onchange="handleStudentImportFileSelect(event)" /> <div style="margin-top:16px;padding:12px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)"> <strong>Expected columns</strong> (case-insensitive, order doesn't matter):<br> <code>First Name</code>, <code>Last Name</code>, <code>Matricule/ID</code>, <code>Class</code>, <code>Gender</code>, <code>Date of Birth</code>, <code>Place of Birth</code>, <code>Repeater</code>, <code>Father Name</code>, <code>Mother Name</code>, <code>Parent Phone</code>, <code>Parent Email</code><br> <span style="color:var(--muted)">Matricule/ID must be unique — rows with a Matricule that already exists are skipped, not overwritten.</span> </div> <div style="margin-top:10px"> <button class="btn btn-ghost" onclick="downloadStudentImportTemplate()">⬇ Download CSV Template</button> </div> </div> <div id="import-students-step-preview" style="display:none"> <p style="font-size:.85rem;margin-bottom:10px"><span id="import-students-summary"></span></p> <div style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:8px"> <table style="width:100%;font-size:.75rem;border-collapse:collapse"> <thead id="import-students-preview-head" style="background:var(--navy);color:#fff;position:sticky;top:0"></thead> <tbody id="import-students-preview-body"></tbody> </table> </div> <div id="import-students-warnings" style="margin-top:10px;font-size:.78rem;color:#b85c00"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-import-students')">Cancel</button> <button class="btn btn-ghost" id="import-students-back-btn" style="display:none" onclick="importStudentsGoBack()"> Back</button> <button class="btn btn-primary" id="import-students-confirm-btn" style="display:none" onclick="confirmImportStudents()">Import Students</button> </div> </div>
+ Upload a <strong>.csv</strong>, <strong>.xls</strong> or <strong>.xlsx</strong> file. The first row should be column headers. </p> <div class="logo-upload-zone" onclick="document.getElementById('import-students-file-input').click()" style="padding:30px"> <div style="font-size:2rem;margin-bottom:6px"></div> <div style="font-size:.85rem;color:var(--muted)">Click to choose a file</div> <div style="font-size:.72rem;color:var(--muted);margin-top:4px" id="import-students-file-name">No file selected</div> </div> <input type="file" id="import-students-file-input" accept=".csv,.xls,.xlsx" style="display:none" onchange="handleStudentImportFileSelect(event)" /> <div style="margin-top:16px;padding:12px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)"> <strong>Expected columns</strong> (case-insensitive, order doesn't matter):<br> <code>First Name</code>, <code>Last Name</code>, <code>Matricule/ID</code>, <code>Class</code>, <code>Gender</code>, <code>Date of Birth</code>, <code>Place of Birth</code>, <code>Repeater</code>, <code>Father Name</code>, <code>Mother Name</code>, <code>Father Phone</code>, <code>Mother Phone</code>, <code>Parent Email</code><br> <span style="color:var(--muted)">Matricule/ID must be unique — rows with a Matricule that already exists are skipped, not overwritten.</span> </div> <div style="margin-top:10px"> <button class="btn btn-ghost" onclick="downloadStudentImportTemplate()">⬇ Download CSV Template</button> </div> </div> <div id="import-students-step-preview" style="display:none"> <p style="font-size:.85rem;margin-bottom:10px"><span id="import-students-summary"></span></p> <div style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:8px"> <table style="width:100%;font-size:.75rem;border-collapse:collapse"> <thead id="import-students-preview-head" style="background:var(--navy);color:#fff;position:sticky;top:0"></thead> <tbody id="import-students-preview-body"></tbody> </table> </div> <div id="import-students-warnings" style="margin-top:10px;font-size:.78rem;color:#b85c00"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-import-students')">Cancel</button> <button class="btn btn-ghost" id="import-students-back-btn" style="display:none" onclick="importStudentsGoBack()"> Back</button> <button class="btn btn-primary" id="import-students-confirm-btn" style="display:none" onclick="confirmImportStudents()">Import Students</button> </div> </div>
 </div> <!-- Add / Edit Teacher Modal -->
 <div class="modal-overlay" id="modal-ocr-import"> <div class="modal" style="max-width:820px"> <div class="modal-header"> <span class="modal-title"> Import Marks from Image, PDF or Word</span> <button class="modal-close" onclick="closeModal('modal-ocr-import')">×</button> </div> <div class="modal-body" style="max-height:74vh;overflow-y:auto">
 
@@ -2544,7 +2551,11 @@ function printStudentDirectory() {
  const rows = filtered.map((s, idx) => {
  const father = s.father || s.parentName || s.parent || '—';
  const mother = s.mother || '—';
- const phone = s.phone || s.parentPhone || '—';
+ // Old records only ever had one combined phone number — treated as the
+ // father's number by default, same convention used everywhere else this
+ // session (edit form, students table), so nothing old goes missing.
+ const fatherPhone = s.fatherPhone || s.phone || s.parentPhone || '—';
+ const motherPhone = s.motherPhone || '—';
  const email = s.email || '—';
  return '<tr>' +
  '<td class="center">' + (idx + 1) + '</td>' +
@@ -2552,8 +2563,9 @@ function printStudentDirectory() {
  '<td>' + s.lname.toUpperCase() + ' ' + s.fname + '</td>' +
  '<td class="center">' + (s.cls || '—') + '</td>' +
  '<td>' + father + '</td>' +
+ '<td>' + fatherPhone + '</td>' +
  '<td>' + mother + '</td>' +
- '<td>' + phone + '</td>' +
+ '<td>' + motherPhone + '</td>' +
  '<td>' + email + '</td>' +
  '</tr>';
  }).join('');
@@ -2565,8 +2577,8 @@ function printStudentDirectory() {
  '<div style="font-size:.8rem;color:#555">' + contextLabel + ' &middot; ' + filtered.length + ' student' + (filtered.length === 1 ? '' : 's') +
  ' &middot; Generated ' + new Date().toLocaleDateString() + '</div>' +
  '<table><thead><tr>' +
- '<th style="width:30px">#</th><th style="width:90px">Matricule</th><th>Name</th><th style="width:70px">Class</th>' +
- '<th>Father</th><th>Mother</th><th style="width:100px">Phone</th><th>Email</th>' +
+ '<th style="width:26px">#</th><th style="width:80px">Matricule</th><th>Name</th><th style="width:60px">Class</th>' +
+ '<th>Father</th><th style="width:88px">Father\'s No.</th><th>Mother</th><th style="width:88px">Mother\'s No.</th><th>Email</th>' +
  '</tr></thead><tbody>' + rows + '</tbody></table>';
 
  _openStudentListPrintWindow(body, 'Student Directory');
@@ -2612,7 +2624,7 @@ function renderStudents() {
  return ` <tr> <td><span style="font-family:monospace;font-size:.78rem;color:var(--muted)">S${idx + 1}</span></td> <td><strong>${s.fname} ${s.lname}</strong></td> <td><span class="badge badge-blue">${s.cls}</span></td> </tr>`;
  }
  const hasData = (paymentCountByStudent[s.id] || 0) > 0 || (gradeCountByStudent[s.id] || 0) > 0;
- return ` <tr> <td><span style="font-family:monospace;font-size:.78rem;color:var(--muted)">${s.num}</span></td> <td><strong>${s.fname} ${s.lname}</strong></td> <td><span class="badge badge-blue">${s.cls}</span></td> <td>${s.father || s.parentName || s.parent || '—'}</td> <td>${s.phone || s.parentPhone || '—'}</td> <td> <div class="action-btns"> <button class="btn btn-ghost" style="font-size:.75rem;padding:4px 10px" onclick="openEditStudent('${s.id}')"> Edit</button> <button class="btn ${hasData ? 'btn-warning' : 'btn-danger'}" style="font-size:.75rem;padding:4px 10px" onclick="openDeleteStudent('${s.id}')">
+ return ` <tr> <td><span style="font-family:monospace;font-size:.78rem;color:var(--muted)">${s.num}</span></td> <td><strong>${s.fname} ${s.lname}</strong></td> <td><span class="badge badge-blue">${s.cls}</span></td> <td>${s.father || s.parentName || s.parent || '—'}</td> <td>${s.fatherPhone || s.phone || s.parentPhone || '—'}</td> <td> <div class="action-btns"> <button class="btn btn-ghost" style="font-size:.75rem;padding:4px 10px" onclick="openEditStudent('${s.id}')"> Edit</button> <button class="btn ${hasData ? 'btn-warning' : 'btn-danger'}" style="font-size:.75rem;padding:4px 10px" onclick="openDeleteStudent('${s.id}')">
  ${hasData ? ' Delete' : ' Delete'} </button> </div> </td> </tr>`;
  }).join('');
 }
@@ -2653,7 +2665,8 @@ function submitRegistration() {
   const num     = (document.getElementById('reg-num')?.value  || '').trim();
   const father  = (document.getElementById('reg-father')?.value || '').trim();
   const mother  = (document.getElementById('reg-mother')?.value || '').trim();
-  const phone   = (document.getElementById('reg-phone')?.value  || '').trim();
+  const fatherPhone = (document.getElementById('reg-father-phone')?.value || '').trim();
+  const motherPhone = (document.getElementById('reg-mother-phone')?.value || '').trim();
   const repeater= document.getElementById('reg-repeater')?.value || 'No';
   const preview = document.getElementById('reg-photo-preview');
   const photo   = (preview && preview.style.display !== 'none') ? preview.src : '';
@@ -2676,7 +2689,7 @@ function submitRegistration() {
     num:         autoNum,
     fname, lname, gender, dob, pob, cls,
     father, mother,
-    phone,
+    fatherPhone, motherPhone,
     repeater,
     photo,
   };
@@ -2694,7 +2707,7 @@ function submitRegistration() {
 }
 
 function clearRegistrationForm(keepClass) {
-  ['reg-lname','reg-fname','reg-dob','reg-pob','reg-num','reg-father','reg-mother','reg-phone'].forEach(id => {
+  ['reg-lname','reg-fname','reg-dob','reg-pob','reg-num','reg-father','reg-mother','reg-father-phone','reg-mother-phone'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -3234,12 +3247,83 @@ function ocrImportGoBack() {
 // Runs an image (data URL) through Tesseract.js and returns plain text
 // lines. Shared by: direct image upload, and scanned/image-only PDF pages
 // (rendered to a canvas first, then handed here).
+// Otsu's binarization — converts a photo to pure black/white using an
+// automatically-computed threshold (rather than a fixed guess), which is
+// the standard first step real OCR pipelines run before recognition. A
+// photographed class list is almost always unevenly lit; this gives
+// Tesseract a clean, high-contrast image instead of the raw photo, with no
+// server, no GPU, and no external library — just the Canvas API every
+// browser already has.
+function _binarizeImageForOcr(imageDataUrl) {
+ return new Promise(function(resolve, reject) {
+ var img = new Image();
+ img.onload = function() {
+ try {
+ var canvas = document.createElement('canvas');
+ canvas.width = img.naturalWidth;
+ canvas.height = img.naturalHeight;
+ var ctx = canvas.getContext('2d');
+ ctx.drawImage(img, 0, 0);
+ var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+ var data = imageData.data;
+ var pixelCount = canvas.width * canvas.height;
+
+ // Grayscale (standard luminance weights) + build a 256-bin histogram
+ // in the same pass — no need for a second loop over every pixel.
+ var histogram = new Array(256).fill(0);
+ var gray = new Uint8ClampedArray(pixelCount);
+ for (var i = 0, p = 0; i < data.length; i += 4, p++) {
+ var g = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+ gray[p] = g;
+ histogram[g]++;
+ }
+
+ // Otsu: find the threshold that maximizes between-class variance —
+ // i.e. the split that best separates "ink" pixels from "paper" pixels
+ // for THIS specific photo, rather than a fixed guess that only works
+ // for one lighting condition.
+ var sumAll = 0;
+ for (var t = 0; t < 256; t++) sumAll += t * histogram[t];
+ var sumB = 0, wB = 0, wF = 0, maxVariance = 0, threshold = 128;
+ for (var t2 = 0; t2 < 256; t2++) {
+ wB += histogram[t2];
+ if (wB === 0) continue;
+ wF = pixelCount - wB;
+ if (wF === 0) break;
+ sumB += t2 * histogram[t2];
+ var mB = sumB / wB;
+ var mF = (sumAll - sumB) / wF;
+ var variance = wB * wF * (mB - mF) * (mB - mF);
+ if (variance > maxVariance) { maxVariance = variance; threshold = t2; }
+ }
+
+ // Apply the computed threshold — pure black/white, no gray left at all.
+ for (var i2 = 0, p2 = 0; i2 < data.length; i2 += 4, p2++) {
+ var v = gray[p2] >= threshold ? 255 : 0;
+ data[i2] = data[i2 + 1] = data[i2 + 2] = v;
+ }
+ ctx.putImageData(imageData, 0, 0);
+ resolve(canvas.toDataURL('image/png'));
+ } catch (err) {
+ // If preprocessing itself fails for any reason, fall back to the
+ // original image rather than blocking the import entirely.
+ resolve(imageDataUrl);
+ }
+ };
+ img.onerror = function() { resolve(imageDataUrl); };
+ img.src = imageDataUrl;
+ });
+}
+
 async function _extractLinesFromImage(imageDataUrl, progressEl) {
  if (!_ocrScriptsLoaded) {
  await _loadScriptOnce('./tess/tesseract.min.js');
  _ocrScriptsLoaded = true;
  }
  if (typeof Tesseract === 'undefined') throw new Error('Tesseract not available');
+
+ if (progressEl) progressEl.textContent = 'Cleaning up the image\u2026';
+ var cleanedImage = await _binarizeImageForOcr(imageDataUrl);
 
  var worker = await Tesseract.createWorker('eng', 1, {
  workerPath: './tess/worker.min.js',
@@ -3252,7 +3336,7 @@ async function _extractLinesFromImage(imageDataUrl, progressEl) {
  }
  }
  });
- var result = await worker.recognize(imageDataUrl);
+ var result = await worker.recognize(cleanedImage);
  await worker.terminate();
  return (result.data.lines || []).map(function(l) { return l.text.trim(); }).filter(Boolean);
 }
@@ -3276,7 +3360,15 @@ async function _extractLinesFromPdf(arrayBuffer, progressEl) {
  var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
  var allLines = [];
 
+ // Shown immediately so a multi-page/multi-class document uploaded by
+ // mistake is obvious right away, rather than only discovered after
+ // waiting through full extraction and finding hundreds of review rows.
+ if (pdf.numPages > 2) {
+ progressEl.textContent = 'This PDF has ' + pdf.numPages + ' pages \u2014 reading all of them\u2026 (expecting a single class sheet? check this is the right file)';
+ }
+
  for (var p = 1; p <= pdf.numPages; p++) {
+ if (pdf.numPages > 2) progressEl.textContent = 'Reading page ' + p + ' of ' + pdf.numPages + '\u2026';
  var page = await pdf.getPage(p);
  var textContent = await page.getTextContent();
 
@@ -3369,6 +3461,53 @@ function _extractLinesFromDocx(arrayBuffer, progressEl) {
  });
 }
 
+// Repairs a specific, very consistent extraction failure: when a table's
+// Name column is narrow enough that a two-word name wraps onto two lines
+// ("AKOR" / "Colette" stacked instead of "AKOR Colette" on one line),
+// while the other columns in that same visual row (No/Sex/CA/Exam) don't
+// wrap — our line-clustering sees three different vertical positions and
+// produces three fragments instead of recognizing them as one student row:
+// a lone surname, a numbered data row with NO name in it, then a lone
+// first name. This detects that exact three-part (or two-part) pattern
+// and stitches the fragments back into a single complete row before
+// anything gets matched against the roster — this is what was actually
+// inflating "130 students" into "272 rows detected".
+function _fuseWrappedNameFragments(lines) {
+ var isNameOnlyFragment = function(t) {
+ return typeof t === 'string' && /^[A-Za-z][A-Za-z.'\-]*$/.test(t.trim()) && t.trim().length > 1;
+ };
+ var isHeadlessDataRow = function(t) {
+ // A row number followed immediately by Sex + marks, with nothing
+ // alphabetic (i.e. no name) in between — the tell-tale sign this
+ // row's name got separated out into neighboring fragments.
+ return typeof t === 'string' && /^\d+\s+[MF]\b/.test(t.trim());
+ };
+
+ var fused = [];
+ var i = 0;
+ while (i < lines.length) {
+ var cur = lines[i];
+ var next = lines[i + 1];
+ var after = lines[i + 2];
+
+ if (isNameOnlyFragment(cur) && isHeadlessDataRow(next)) {
+ if (isNameOnlyFragment(after)) {
+ // Three-part split: SURNAME / "No Sex marks" / Firstname
+ fused.push(next.replace(/^(\d+)\s+/, '$1 ' + cur.trim() + ' ' + after.trim() + ' '));
+ i += 3;
+ continue;
+ }
+ // Two-part split: full name already together / "No Sex marks"
+ fused.push(next.replace(/^(\d+)\s+/, '$1 ' + cur.trim() + ' '));
+ i += 2;
+ continue;
+ }
+ fused.push(cur);
+ i++;
+ }
+ return fused;
+}
+
 async function runOcrRecognition() {
  if (!_ocrState || !_ocrState.fileType) return;
  var progressEl = document.getElementById('ocr-progress');
@@ -3392,6 +3531,7 @@ async function runOcrRecognition() {
  }
 
  lines = _filterHeaderLines(lines);
+ lines = _fuseWrappedNameFragments(lines);
  _renderOcrReview(lines);
  progressEl.style.display = 'none';
  document.getElementById('ocr-step-upload').style.display = 'none';
@@ -3464,6 +3604,21 @@ function _renderOcrReview(lines) {
 
  body.innerHTML = rowsHtml || '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">No text rows detected — try a clearer file.</td></tr>';
 
+ // ── Row-count sanity check — a class of N students should never produce
+ // wildly more than N rows. If it does, the far more likely explanation
+ // isn't 200 OCR errors — it's that the wrong file got uploaded (a
+ // multi-page or multi-class document instead of this one class's sheet),
+ // or a PDF's later pages are unrelated content bleeding into the count.
+ // This is shown ahead of the ambiguity/coverage panel since it's usually
+ // the actual root cause when the numbers look this far off.
+ var oversizedWarning = '';
+ if (lines.length > 20 && lines.length > roster.length * 2) {
+ oversizedWarning = '<div style="padding:10px 12px;background:#fdecea;border:1px solid #e0a0a0;border-radius:8px;margin-bottom:10px;font-size:.78rem;color:#7a1f1f">' +
+ '<strong>\u26a0 ' + lines.length + ' rows detected for a class of ' + roster.length + ' students \u2014 that\'s a lot more than expected.</strong><br>' +
+ 'This usually means the wrong file was uploaded (a multi-page or multi-class document instead of this one class\'s sheet), or a PDF has extra pages of unrelated content. ' +
+ 'Worth going Back and double-checking the file before reviewing 280 rows by hand.</div>';
+ }
+
  // ── Coverage & conflict check — the automated substitute for reading
  // every row by hand. Surfaces exactly the things worth a human look:
  // students the sheet appears to be missing entirely, students matched to
@@ -3482,15 +3637,15 @@ function _renderOcrReview(lines) {
  if (missingStudents.length) html += '<li>' + missingStudents.length + ' student(s) in this class have no matching row at all \u2014 check they weren\u2019t missed: ' +
  missingStudents.map(function(s) { return s.lname + ' ' + s.fname; }).join(', ') + '</li>';
  html += '</ul></div>';
- coveragePanel.innerHTML = html;
+ coveragePanel.innerHTML = oversizedWarning + html;
  } else {
- coveragePanel.innerHTML = '<div style="padding:8px 12px;background:#eafaf0;border:1px solid #9fdcb5;border-radius:8px;margin-bottom:10px;font-size:.78rem;color:#0a6b2e">' +
+ coveragePanel.innerHTML = oversizedWarning + '<div style="padding:8px 12px;background:#eafaf0;border:1px solid #9fdcb5;border-radius:8px;margin-bottom:10px;font-size:.78rem;color:#0a6b2e">' +
  '\u2705 Every student in the class matched a row, with no ambiguous or duplicate matches detected. Still worth a quick glance at the values themselves.</div>';
  }
 
  document.getElementById('ocr-review-summary').textContent =
  lines.length + ' row' + (lines.length === 1 ? '' : 's') + ' detected \u00b7 ' +
- matchedCount + ' auto-matched to a student \u2014 review any flagged rows above before confirming.';
+ matchedCount + ' auto-matched to a student.';
 }
 
 function confirmOcrImport() {
@@ -3517,11 +3672,33 @@ function confirmOcrImport() {
  _ocrState = null;
 }
 
-// Topic Tested / Competence Tested — one record per class+subject+term+seq,
-// completely separate from student marks (sm_mk_*) since this describes the
+// Topic Tested — one record per class+subject+term+seq, completely
+// separate from student marks (sm_mk_*) since this describes the
 // assessment itself, not any individual student's performance on it.
+// (Storage still keeps a `competence` slot alongside `topic` purely for
+// backward compatibility with entries saved before this was simplified
+// down to one field — every reader falls back to it automatically.)
+// Normalized (trimmed + lowercased) so "Form 1A " from one dropdown and
+// "Form 1A" from wherever the report card gets its subject list can never
+// silently produce two different keys — this was the actual bug: any
+// case/whitespace difference between where a topic was SAVED and where it
+// was later READ made the lookup miss with no error, just a blank "—".
 function _topicMetaKey(cls, subject, term, seq) {
- return 'sm_topic_' + String(cls).replace(/\s+/g, '_') + '_' + String(subject).replace(/\s+/g, '_') + '_' + term + '_' + seq;
+ var normCls = String(cls).trim().toLowerCase().replace(/\s+/g, '_');
+ var normSubject = String(subject).trim().toLowerCase().replace(/\s+/g, '_');
+ return 'sm_topic_' + normCls + '_' + normSubject + '_' + term + '_' + seq;
+}
+
+// Reads via the normalized key first; if that's empty, also checks the
+// exact-case key the OLD version of _topicMetaKey used to produce — so
+// anything already saved before this fix still shows up instead of being
+// silently orphaned by the key format changing under it.
+function _loadTopicMeta(cls, subject, term, seq) {
+ var empty = { topic: '', competence: '' };
+ var meta = load(_topicMetaKey(cls, subject, term, seq), empty);
+ if (meta.topic || meta.competence) return meta;
+ var legacyKey = 'sm_topic_' + String(cls).replace(/\s+/g, '_') + '_' + String(subject).replace(/\s+/g, '_') + '_' + term + '_' + seq;
+ return load(legacyKey, empty);
 }
 
 function saveTopicMeta(field, value) {
@@ -3597,14 +3774,14 @@ function renderClassList() {
  var isTeacher = currentUser && currentUser.role === 'teacher';
  var canEdit  = isAdmin || isTeacher;
 
- // ── Topic Tested / Competence Tested — per class+subject+term+sequence,
- // matching Cameroon's competency-based assessment convention (each
- // sequence evaluation names the topic/lesson and the competence it
- // assesses). Values are baked into the input's `value` attribute from
- // storage on every render — same pattern the CA/Exam inputs already use —
- // so Print and Export Word both show whatever was last saved, not just
- // whatever happens to be live in the DOM at the moment of export.
- var topicMeta = load(_topicMetaKey(cls, subject, term, seqNo), { topic: '', competence: '' });
+ // ── Topic Tested — per class+subject+term+sequence, matching Cameroon's
+ // competency-based assessment convention. Used to be two separate fields
+ // (Topic + Competence) — simplified to just one. Anything already saved
+ // under the old "Competence Tested" field still surfaces here (shown as
+ // the topic value if Topic itself was never filled in), so nothing typed
+ // in before this change is lost, it just no longer has its own input.
+ var topicMeta = _loadTopicMeta(cls, subject, term, seqNo);
+ var topicValue = topicMeta.topic || topicMeta.competence || '';
  var tcRow = document.getElementById('cl-topic-competence-row');
  if (tcRow) {
  tcRow.style.display = 'flex';
@@ -3612,15 +3789,12 @@ function renderClassList() {
  if (canEdit) {
  tcRow.innerHTML =
  '<div class="form-group" style="margin:0;flex:1;min-width:220px"><label style="font-size:.7rem">Topic Tested</label>' +
- '<input type="text" value="' + escAttr(topicMeta.topic) + '" placeholder="e.g. Fractions and Decimals" style="font-size:.82rem" onchange="saveTopicMeta(\'topic\',this.value)" /></div>' +
- '<div class="form-group" style="margin:0;flex:1;min-width:220px"><label style="font-size:.7rem">Competence Tested</label>' +
- '<input type="text" value="' + escAttr(topicMeta.competence) + '" placeholder="e.g. Solve real-life problems using fractions" style="font-size:.82rem" onchange="saveTopicMeta(\'competence\',this.value)" /></div>';
+ '<input type="text" value="' + escAttr(topicValue) + '" placeholder="e.g. Fractions and Decimals" style="font-size:.82rem" onchange="saveTopicMeta(\'topic\',this.value)" /></div>';
  } else {
- // Read-only viewers (e.g. no session context) still see the values,
- // just without editable inputs.
- tcRow.innerHTML = (topicMeta.topic ? '<div style="font-size:.8rem"><strong>Topic Tested:</strong> ' + topicMeta.topic + '</div>' : '') +
- (topicMeta.competence ? '<div style="font-size:.8rem"><strong>Competence Tested:</strong> ' + topicMeta.competence + '</div>' : '');
- if (!topicMeta.topic && !topicMeta.competence) tcRow.style.display = 'none';
+ // Read-only viewers (e.g. no session context) still see the value,
+ // just without an editable input.
+ tcRow.innerHTML = topicValue ? '<div style="font-size:.8rem"><strong>Topic Tested:</strong> ' + topicValue + '</div>' : '';
+ if (!topicValue) tcRow.style.display = 'none';
  }
  }
 
@@ -4791,6 +4965,36 @@ function _markProblemClassesInSelect() {
  if (cur) el.value = cur;
 }
 
+// Flags class+subject combinations with an unusually high AVERAGE
+// periods/week per teacher — not a flat total, and not raw teacher count.
+// This is the exact pattern that turned out to be silently inflating
+// "Planned" periods for Sixth Form classes well beyond what any class's
+// actual timetable could fit — not a scheduling-algorithm failure, a
+// stale/duplicate assignment left over from a staff change or import that
+// never got cleaned up. A flat total unfairly penalizes a subject
+// legitimately split across several teachers (more teachers can mean a
+// higher total with nobody overloaded); dividing by how many teachers are
+// actually involved keeps the number meaningful regardless of headcount.
+function _detectMultiTeacherSubjects(classList) {
+ var combos = {}; // "cls|||subject" -> { cls, subject, teachers:[{name,periods}], total }
+ teachers.forEach(function(t) {
+ (t.assignments || []).forEach(function(a) {
+ if (classList && classList.length && !classList.includes(a.cls)) return;
+ var key = a.cls + '|||' + a.subject;
+ if (!combos[key]) combos[key] = { cls: a.cls, subject: a.subject, teachers: [], total: 0 };
+ var periods = parseInt(a.periodsPerWeek) || 0;
+ combos[key].teachers.push({ name: ((t.fname || '') + ' ' + (t.lname || '')).trim(), periods: periods });
+ combos[key].total += periods;
+ });
+ });
+ // Same criterion as the Teachers page's Duplicate Assignment Check
+ // (DUP_ASSIGN_MAX_PERIODS_PER_TEACHER) — average periods per teacher,
+ // not the flat total and not headcount.
+ var flagged = Object.values(combos).filter(function(c) { return (c.total / c.teachers.length) > DUP_ASSIGN_MAX_PERIODS_PER_TEACHER; });
+ flagged.sort(function(a, b) { return (b.total / b.teachers.length) - (a.total / a.teachers.length); });
+ return flagged;
+}
+
 function renderCoverage() {
  const wrap = document.getElementById('coverage-wrap');
  if (!wrap) return;
@@ -4808,6 +5012,22 @@ function renderCoverage() {
  ccf.innerHTML = '<option value="">All Classes</option>' +
  allClasses.map(c => `<option${c===cur?' selected':''}>${c}</option>`).join('');
  }
+
+ // ── Multi-teacher check — runs regardless of whether a timetable has
+ // been generated yet, since it only depends on teacher assignment data.
+ const multiTeacherFlags = _detectMultiTeacherSubjects(classList);
+ const multiTeacherBanner = multiTeacherFlags.length
+ ? '<div style="padding:10px 14px;background:#fff4e0;border:1px solid #f0c060;border-radius:8px;margin-bottom:12px;font-size:.78rem">' +
+ '<strong>\u26a0 ' + multiTeacherFlags.length + ' class+subject combination(s) have an unusually high average periods/week per teacher</strong> ' +
+ '\u2014 more than a single subject typically needs per teacher, and usually means a stale or duplicate ' +
+ 'assignment rather than a genuine multi-teacher arrangement. Worth checking each:' +
+ '<ul style="margin:6px 0 0 18px;padding:0">' +
+ multiTeacherFlags.map(f =>
+ '<li style="margin-bottom:3px">' + f.cls + ' \u2014 ' + f.subject + ': <strong>' + (f.total / f.teachers.length).toFixed(1) + 'p/wk avg</strong> (' + f.total + 'p total across ' +
+ f.teachers.length + ' teacher' + (f.teachers.length === 1 ? '' : 's') + ': ' + f.teachers.map(t => t.name + ' ' + t.periods + 'p').join(', ') + ')</li>'
+ ).join('') +
+ '</ul></div>'
+ : '';
 
  // ── Build plotted map: cls  subject  count ─────────────────────
  const plotted = {};
@@ -4845,7 +5065,7 @@ function renderCoverage() {
  ])].sort();
 
  if (!allSubjects.length) {
- wrap.innerHTML = '<p style="color:var(--muted);font-size:.8rem;padding:8px">No data yet — generate the timetable first.</p>';
+ wrap.innerHTML = multiTeacherBanner + '<p style="color:var(--muted);font-size:.8rem;padding:8px">No data yet — generate the timetable first.</p>';
  return;
  }
 
@@ -4997,7 +5217,7 @@ function renderCoverage() {
  </div>`
  : '';
 
- wrap.innerHTML = problemBanner + dayBalanceBanner + ` <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"> <div style="background:#e8f5e9;border:1px solid #b6dfc2;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#1a7a3a;font-size:1rem">${pct}%</div> <div style="color:#555">Coverage</div> </div> <div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:var(--navy);font-size:1rem">${doneGrand}p</div> <div style="color:#555">Plotted</div> </div> <div style="background:#f0f4f9;border:1px solid #ccc;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#555;font-size:1rem">${planGrand}p</div> <div style="color:#555">Planned</div> </div> <div style="background:#fff0f0;border:1px solid #ffb3b3;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#cc0000;font-size:1rem">${unplotted}p</div> <div style="color:#555">Unplotted</div> </div> ${overNote} <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b06000;font-size:1rem">${totalTarget}p</div> <div style="color:#555">Target (all classes)</div> </div> </div> <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px"> <span style="background:#e8f5e9;color:#1a7a3a;padding:1px 6px;border-radius:6px">■ Fully plotted</span> &nbsp; <span style="background:#fff8e1;color:#b06000;padding:1px 6px;border-radius:6px">■ Partially plotted</span> &nbsp; <span style="background:#fff0f0;color:#cc0000;padding:1px 6px;border-radius:6px">■ Not plotted</span> &nbsp;
+ wrap.innerHTML = multiTeacherBanner + problemBanner + dayBalanceBanner + ` <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"> <div style="background:#e8f5e9;border:1px solid #b6dfc2;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#1a7a3a;font-size:1rem">${pct}%</div> <div style="color:#555">Coverage</div> </div> <div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:var(--navy);font-size:1rem">${doneGrand}p</div> <div style="color:#555">Plotted</div> </div> <div style="background:#f0f4f9;border:1px solid #ccc;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#555;font-size:1rem">${planGrand}p</div> <div style="color:#555">Planned</div> </div> <div style="background:#fff0f0;border:1px solid #ffb3b3;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#cc0000;font-size:1rem">${unplotted}p</div> <div style="color:#555">Unplotted</div> </div> ${overNote} <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 14px;font-size:.8rem"> <div style="font-weight:700;color:#b06000;font-size:1rem">${totalTarget}p</div> <div style="color:#555">Target (all classes)</div> </div> </div> <p style="font-size:.7rem;color:var(--muted);margin-bottom:8px"> <span style="background:#e8f5e9;color:#1a7a3a;padding:1px 6px;border-radius:6px">■ Fully plotted</span> &nbsp; <span style="background:#fff8e1;color:#b06000;padding:1px 6px;border-radius:6px">■ Partially plotted</span> &nbsp; <span style="background:#fff0f0;color:#cc0000;padding:1px 6px;border-radius:6px">■ Not plotted</span> &nbsp;
  Plan = planned periods/week · Done = plotted periods </p> <table style="border-collapse:collapse;width:100%;font-size:.72rem"> <thead> <tr> <th rowspan="2" style="padding:5px 10px;font-size:.68rem;background:#1a3a5c;color:#fff;text-align:left;border:1px solid #1a3a5c">Subject</th>
  ${colHeaders} <th colspan="2" style="padding:5px 8px;font-size:.65rem;background:#1a3a5c;color:#fff;text-align:center;border:1px solid #1a3a5c">Total</th> </tr> <tr>${subHeaders} <th style="padding:3px 6px;font-size:.6rem;background:#2a4a6c;color:#cde;text-align:center;border:1px solid #ccc">Plan</th> <th style="padding:3px 6px;font-size:.6rem;background:#2a4a6c;color:#cde;text-align:center;border:1px solid #ccc">Done</th> </tr> </thead> <tbody>${rows}</tbody> <tfoot> <tr> <td style="padding:4px 10px;font-size:.73rem;font-weight:700;background:#1a3a5c;color:#fff;border:1px solid #aaa">TOTAL</td>
  ${totalCells} <td style="padding:4px 6px;text-align:center;font-weight:700;font-size:.73rem;background:#1a3a5c;color:#fff;border:1px solid #aaa">${planGrand}p</td> <td style="padding:4px 6px;text-align:center;font-weight:700;font-size:.73rem;background:#1a3a5c;color:${doneGrand>=planGrand?'#7fffb0':'#ffb3b3'};border:1px solid #aaa">${doneGrand}p</td> </tr> </tfoot> </table>`;
@@ -6565,15 +6785,16 @@ function addStudent() {
  const repeater = document.getElementById('s-repeater')?.value || 'No';
  const father  = document.getElementById('s-father').value.trim();
  const mother  = document.getElementById('s-mother')?.value.trim() || '';
- const phone  = document.getElementById('s-phone').value.trim();
+ const fatherPhone = document.getElementById('s-father-phone').value.trim();
+ const motherPhone = document.getElementById('s-mother-phone')?.value.trim() || '';
  const email  = document.getElementById('s-email').value.trim();
  const photoImg = document.getElementById('s-photo-img');
  const photo  = (photoImg && photoImg.src && photoImg.src.indexOf('data:image') === 0) ? photoImg.src : '';
  if (!fname || !lname || !num) return showToast('Please fill required fields');
  if (students.find(s => s.num === num)) return showToast('Student number already exists');
- students.push({ id: 'S' + Date.now(), num, fname, lname, cls, gender, dob, pob, repeater, father, mother, phone, email, photo });
+ students.push({ id: 'S' + Date.now(), num, fname, lname, cls, gender, dob, pob, repeater, father, mother, fatherPhone, motherPhone, email, photo });
  save('sm_students', students);
- ['s-fname','s-lname','s-num','s-father','s-mother','s-phone','s-email','s-pob'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+ ['s-fname','s-lname','s-num','s-father','s-mother','s-father-phone','s-mother-phone','s-email','s-pob'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
  const pi = document.getElementById('s-photo-img'); if(pi){pi.src='';pi.style.display='none';}
  const ph = document.getElementById('s-photo-hint'); if(ph) ph.style.display='';
  closeModal('modal-student');
@@ -6601,7 +6822,12 @@ function openEditStudent(id) {
  // data that's actually there under a previous field name.
  document.getElementById('es-father').value  = s.father || s.parentName || s.parent || '';
  document.getElementById('es-mother').value  = s.mother || '';
- document.getElementById('es-phone').value  = s.phone || s.parentPhone || '';
+ // Old records only ever had one combined phone number (`phone` or
+ // `parentPhone`) — that single number is treated as the father's number
+ // by default on edit, same convention as the earlier name-field split,
+ // rather than leaving it stranded nowhere.
+ document.getElementById('es-father-phone').value = s.fatherPhone || s.phone || s.parentPhone || '';
+ document.getElementById('es-mother-phone').value = s.motherPhone || '';
  document.getElementById('es-email').value  = s.email || '';
  // Photo
  const pi = document.getElementById('es-photo-img');
@@ -6634,7 +6860,8 @@ function saveEditStudent() {
  const repeater = document.getElementById('es-repeater')?.value || 'No';
  const father  = document.getElementById('es-father').value.trim();
  const mother  = document.getElementById('es-mother')?.value.trim() || '';
- const phone  = document.getElementById('es-phone').value.trim();
+ const fatherPhone = document.getElementById('es-father-phone').value.trim();
+ const motherPhone = document.getElementById('es-mother-phone')?.value.trim() || '';
  const email  = document.getElementById('es-email').value.trim();
  const photoImg = document.getElementById('es-photo-img');
  const photo  = (photoImg && photoImg.src && photoImg.src.indexOf('data:image') === 0) ? photoImg.src : '';
@@ -6645,7 +6872,7 @@ function saveEditStudent() {
 
  const idx = students.findIndex(s => s.id === id);
  if (idx < 0) return;
- students[idx] = { ...students[idx], fname, lname, num, cls, gender, dob, pob, repeater, father, mother, phone, email, photo };
+ students[idx] = { ...students[idx], fname, lname, num, cls, gender, dob, pob, repeater, father, mother, fatherPhone, motherPhone, email, photo };
  save('sm_students', students);
  closeModal('modal-edit-student');
  renderAll();
@@ -6781,10 +7008,10 @@ function importStudentsGoBack() {
 
 function downloadStudentImportTemplate() {
  const headers = ['First Name','Last Name','Matricule/ID','Class','Gender','Date of Birth',
- 'Place of Birth','Repeater','Father Name','Mother Name','Parent Phone','Parent Email'];
+ 'Place of Birth','Repeater','Father Name','Mother Name','Father Phone','Mother Phone','Parent Email'];
  const sample = [
- ['Mary','Bih','SJFS-25-0001','Form 1 A','F','2014-03-12','Yaoundé','No','Mr. Bih Tanyi','Mrs. Bih Comfort','677000001','bih.mary@gmail.com'],
- ['Peter','Nkwenti','SJFS-25-0002','Form 2 B','M','2013-07-04','Douala','No','Mr. Nkwenti Paul','Mrs. Nkwenti Grace','677000002',''],
+ ['Mary','Bih','SJFS-25-0001','Form 1 A','F','2014-03-12','Yaoundé','No','Mr. Bih Tanyi','Mrs. Bih Comfort','677000001','677000002','bih.mary@gmail.com'],
+ ['Peter','Nkwenti','SJFS-25-0002','Form 2 B','M','2013-07-04','Douala','No','Mr. Nkwenti Paul','Mrs. Nkwenti Grace','677000003','',''],
  ];
  const csv = [headers, ...sample].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -6827,7 +7054,7 @@ function handleStudentImportFileSelect(evt) {
 }
 
 const STUDENT_IMPORT_EXPECTED_HEADERS = ['First Name','Last Name','Matricule/ID','Class','Gender',
- 'Date of Birth','Place of Birth','Repeater','Father Name','Mother Name','Parent Phone','Parent Email'];
+ 'Date of Birth','Place of Birth','Repeater','Father Name','Mother Name','Father Phone','Mother Phone','Parent Email'];
 
 // Same positional-repair strategy as buildRowObjects (teacher import), scoped
 // to the student header set so the two schemas can never cross-contaminate.
@@ -6888,7 +7115,8 @@ function processStudentImportRows(rows) {
  const repeater = ['yes','y','true','1'].includes(repeaterRaw) ? 'Yes' : 'No';
  const father = _getCol(row,'Father Name',"Father's Name",'Father','Parent/Guardian Name','Parent','Guardian','Parent Name');
  const mother = _getCol(row,'Mother Name',"Mother's Name",'Mother');
- const phone  = _getCol(row,'Parent Phone','Phone','Tel','Telephone');
+ const fatherPhone = _getCol(row,'Father Phone',"Father's Number",'Father Number','Parent Phone','Phone','Tel','Telephone');
+ const motherPhone = _getCol(row,'Mother Phone',"Mother's Number",'Mother Number');
  const email  = _getCol(row,'Parent Email','Email');
 
  if (!fname || !lname || !num) {
@@ -6912,7 +7140,7 @@ function processStudentImportRows(rows) {
 
  parsed.push({
  id: 'imp' + Date.now() + Math.random().toString(36).slice(2,6),
- num, fname, lname, cls, gender, dob, pob, repeater, father, mother, phone, email, photo: ''
+ num, fname, lname, cls, gender, dob, pob, repeater, father, mother, fatherPhone, motherPhone, email, photo: ''
  });
  });
 
@@ -6933,10 +7161,11 @@ function renderStudentImportPreview(warnings) {
  document.getElementById('import-students-preview-head').innerHTML =
  '<tr><th style="padding:6px 8px;text-align:left">Name</th><th style="padding:6px 8px">Matricule</th>' +
  '<th style="padding:6px 8px;text-align:left">Class</th><th style="padding:6px 8px">Gender</th>' +
- '<th style="padding:6px 8px;text-align:left">Father</th><th style="padding:6px 8px;text-align:left">Mother</th><th style="padding:6px 8px">Phone</th></tr>';
+ '<th style="padding:6px 8px;text-align:left">Father</th><th style="padding:6px 8px">Father\'s No.</th>' +
+ '<th style="padding:6px 8px;text-align:left">Mother</th><th style="padding:6px 8px">Mother\'s No.</th></tr>';
 
  document.getElementById('import-students-preview-body').innerHTML = list.map(s =>
- `<tr style="border-bottom:1px solid var(--border)"> <td style="padding:6px 8px"><strong>${s.fname} ${s.lname}</strong></td> <td style="padding:6px 8px;text-align:center;font-family:monospace">${s.num||'—'}</td> <td style="padding:6px 8px">${s.cls||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.gender||'—'}</td> <td style="padding:6px 8px">${s.father||'—'}</td> <td style="padding:6px 8px">${s.mother||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.phone||'—'}</td> </tr>`
+ `<tr style="border-bottom:1px solid var(--border)"> <td style="padding:6px 8px"><strong>${s.fname} ${s.lname}</strong></td> <td style="padding:6px 8px;text-align:center;font-family:monospace">${s.num||'—'}</td> <td style="padding:6px 8px">${s.cls||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.gender||'—'}</td> <td style="padding:6px 8px">${s.father||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.fatherPhone||'—'}</td> <td style="padding:6px 8px">${s.mother||'—'}</td> <td style="padding:6px 8px;text-align:center">${s.motherPhone||'—'}</td> </tr>`
  ).join('');
 
  const wEl = document.getElementById('import-students-warnings');
@@ -7542,6 +7771,94 @@ function getAssignmentsFromRows() {
  if (cls && subj) result.push({ cls, subject: subj, periodsPerWeek });
  });
  return result;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// DUPLICATE ASSIGNMENT CHECK — catches the pattern that caused the Sixth
+// Form fill-rate problem: a class+subject combo silently accumulating an
+// unrealistic combined periods/week (stale assignments never cleaned up
+// after staff reshuffles, re-imports, copy-paste during setup).
+//
+// Flags by AVERAGE periods-per-teacher, not a flat total and not raw
+// teacher count. Neither of those alone works: a flat total unfairly
+// penalizes a class+subject that's legitimately split across several
+// teachers (more teachers can mean a higher total without any of them
+// being overloaded), and raw teacher count on its own varies completely
+// normally school to school. Dividing total periods by how many teachers
+// are actually splitting the load is the one number that stays meaningful
+// however many teachers are involved — a stale/duplicate assignment shows
+// up as one specific teacher sitting on an unrealistic load, not as "many
+// teachers involved."
+//
+// Threshold is a default based on typical single-teacher subject loads
+// seen across this school's own reference timetables (most subjects run
+// 2-5 periods/week per teacher) — not yet calibrated against a confirmed-
+// correct dataset. Adjust DUP_ASSIGN_MAX_PERIODS_PER_TEACHER below once
+// real numbers are confirmed.
+// ══════════════════════════════════════════════════════════════════════
+var DUP_ASSIGN_MAX_PERIODS_PER_TEACHER = 4; // average periods/week per teacher above this gets flagged
+
+function _findDuplicateAssignments() {
+ var combos = {}; // "cls|||subject" -> [{teacherId, name, periods}]
+ teachers.forEach(function(t) {
+ (t.assignments || []).forEach(function(a) {
+ if (!a.cls || !a.subject) return;
+ var key = a.cls + '|||' + a.subject;
+ if (!combos[key]) combos[key] = [];
+ combos[key].push({
+ teacherId: t.id,
+ name: (t.fname || '') + ' ' + (t.lname || ''),
+ periods: parseInt(a.periodsPerWeek) || 0
+ });
+ });
+ });
+
+ var flagged = [];
+ Object.keys(combos).forEach(function(key) {
+ var parts = key.split('|||');
+ var list = combos[key];
+ var totalPeriods = list.reduce(function(s, x) { return s + x.periods; }, 0);
+ var avgPerTeacher = totalPeriods / list.length;
+ if (avgPerTeacher > DUP_ASSIGN_MAX_PERIODS_PER_TEACHER) {
+ flagged.push({ cls: parts[0], subject: parts[1], teachers: list, totalPeriods: totalPeriods, nTeachers: list.length, avgPerTeacher: avgPerTeacher });
+ }
+ });
+ flagged.sort(function(a, b) { return b.avgPerTeacher - a.avgPerTeacher; });
+ return flagged;
+}
+
+function openDuplicateAssignmentCheck() {
+ var flagged = _findDuplicateAssignments();
+ var summaryEl = document.getElementById('dup-assign-summary');
+ var bodyEl = document.getElementById('dup-assign-body');
+
+ if (!flagged.length) {
+ summaryEl.innerHTML = '<div style="padding:8px 12px;background:#eafaf0;border:1px solid #9fdcb5;border-radius:8px;color:#0a6b2e">' +
+ '\u2705 No class+subject combos with 3+ teachers or unusually high combined periods found.</div>';
+ bodyEl.innerHTML = '';
+ } else {
+ summaryEl.innerHTML = '<div style="padding:8px 12px;background:#fff4e0;border:1px solid #f0c060;border-radius:8px;color:#7a5c00">' +
+ '\u26a0 ' + flagged.length + ' class+subject combo(s) flagged \u2014 review below and remove any stale assignments from the wrong teacher\'s profile.</div>';
+ bodyEl.innerHTML = '<table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:.82rem">' +
+ '<thead><tr style="background:var(--navy);color:#fff">' +
+ '<th style="padding:6px 8px;text-align:left">Class</th><th style="padding:6px 8px;text-align:left">Subject</th>' +
+ '<th style="padding:6px 8px">Avg/Teacher</th><th style="padding:6px 8px">Total P/wk</th><th style="padding:6px 8px;text-align:left">Teachers assigned</th></tr></thead><tbody>' +
+ flagged.map(function(f, idx) {
+ var teacherLinks = f.teachers.map(function(t) {
+ return '<a href="#" onclick="closeModal(\'modal-dup-assign\');openEditTeacher(\'' + t.teacherId + '\');return false;" style="color:var(--blue)">' +
+ t.name + '</a> (' + t.periods + 'p)';
+ }).join(', ');
+ return '<tr style="background:' + (idx % 2 === 0 ? '#fff' : '#f9fafb') + '">' +
+ '<td style="padding:6px 8px">' + f.cls + '</td>' +
+ '<td style="padding:6px 8px">' + f.subject + '</td>' +
+ '<td style="padding:6px 8px;text-align:center;font-weight:700;color:#a02020">' + f.avgPerTeacher.toFixed(1) + '</td>' +
+ '<td style="padding:6px 8px;text-align:center">' + f.totalPeriods + ' <span style="color:var(--muted)">(' + f.nTeachers + ' teacher' + (f.nTeachers === 1 ? '' : 's') + ')</span></td>' +
+ '<td style="padding:6px 8px">' + teacherLinks + '</td>' +
+ '</tr>';
+ }).join('') + '</tbody></table>';
+ }
+
+ document.getElementById('modal-dup-assign').classList.add('open');
 }
 
 function openTeacherModal() {
@@ -8574,7 +8891,7 @@ function generateReport() {
 
 // ── Modal Helpers ─────────────────────────────────────────
 function openAddModal() {
- ['s-fname','s-lname','s-num','s-father','s-mother','s-phone','s-email','s-pob'].forEach(id => {
+ ['s-fname','s-lname','s-num','s-father','s-mother','s-father-phone','s-mother-phone','s-email','s-pob'].forEach(id => {
  const el = document.getElementById(id);
  if (el) el.value = '';
  });
@@ -11927,13 +12244,22 @@ function buildReportCardHTML(s, term, classMaster, enrolled) {
  const fmtSeq = (v) => v !== null ? `<span class="${colourFor(v)}">${v.toFixed(2)}</span>` : '<span style="color:#bbb">—</span>';
  const fmtAvg = (v) => v !== null ? `<span class="${colourFor(v)}" style="font-weight:800">${v.toFixed(2)}</span>` : '—';
  const subjRank = _subjectRank(r.subj);
- // Same 10/20 pass threshold already used to colour the marks themselves —
- // "Acquired" mirrors a pass, "Not Acquired" a fail, "—" when there's no
- // term average yet to judge (no marks recorded for that subject).
- const competenceLabel = r.termAvg === null ? '<span style="color:#bbb">—</span>'
- : r.termAvg >= 10 ? '<span class="rc-score-blue" style="font-weight:700">Acquired</span>'
- : '<span class="rc-score-red" style="font-weight:700">Not Acquired</span>';
- return `<tr> <td style="text-align:center;color:#666;font-size:.68rem">${idx+1}</td> <td style="text-align:left">${r.subj}</td> <td style="text-align:center;font-size:.66rem">${competenceLabel}</td> <td style="text-align:center">${r.coeff}</td> <td style="text-align:center">${fmtSeq(r.seq1_20)}</td> <td style="text-align:center">${fmtSeq(r.seq2_20)}</td> <td style="text-align:center">${fmtAvg(r.termAvg)}</td> <td style="text-align:center">${r.gt !== null ? r.gt.toFixed(2) : '—'}</td> <td style="text-align:center;font-size:.68rem;color:#888">${subjRank}</td> <td style="text-align:left;font-size:.62rem;color:#333;padding-left:4px">${_teacherNameForSubject(r.subj)}</td> </tr>`;
+ // Pulled directly from whatever the teacher typed into Class List's
+ // "Topic Tested" field for this subject — per sequence, since the two
+ // sequences can genuinely test different topics. Falls back to the old
+ // "Competence Tested" field for anything saved before that was folded
+ // into Topic, and falls back cleanly when only one sequence has it set.
+ const topic1 = (function() { var m = _loadTopicMeta(s.cls, r.subj, term, 1); return (m.topic || m.competence || '').trim(); })();
+ const topic2 = (function() { var m = _loadTopicMeta(s.cls, r.subj, term, 2); return (m.topic || m.competence || '').trim(); })();
+ let competenceLabel;
+ if (topic1 && topic2 && topic1 !== topic2) {
+ competenceLabel = `<span style="font-size:.56rem;line-height:1.3">Seq1: ${topic1}<br>Seq2: ${topic2}</span>`;
+ } else if (topic1 || topic2) {
+ competenceLabel = `<span style="font-size:.6rem">${topic1 || topic2}</span>`;
+ } else {
+ competenceLabel = '<span style="color:#bbb">—</span>';
+ }
+ return `<tr> <td style="text-align:center;color:#666;font-size:.68rem">${idx+1}</td> <td style="text-align:left">${r.subj}</td> <td style="text-align:left;font-size:.66rem">${competenceLabel}</td> <td style="text-align:center">${r.coeff}</td> <td style="text-align:center">${fmtSeq(r.seq1_20)}</td> <td style="text-align:center">${fmtSeq(r.seq2_20)}</td> <td style="text-align:center">${fmtAvg(r.termAvg)}</td> <td style="text-align:center">${r.gt !== null ? r.gt.toFixed(2) : '—'}</td> <td style="text-align:center;font-size:.68rem;color:#888">${subjRank}</td> <td style="text-align:left;font-size:.62rem;color:#333;padding-left:4px">${_teacherNameForSubject(r.subj)}</td> </tr>`;
  }).join('');
  const grpTotalRow = `<tr class="group-total"> <td colspan="3" style="text-align:right;font-size:.72rem">Group Total / Average</td> <td style="text-align:center;font-weight:700">${grp.coeff}</td> <td colspan="3"></td> <td style="font-weight:700">${grp.total.toFixed(2)}</td> <td style="font-weight:700;color:${grp.avg!==null&&grp.avg<10?'#cc0000':'var(--navy)'}">${grpAvgStr}</td> <td></td> </tr>`;
  return headerRow + dataRows + grpTotalRow;
@@ -11961,7 +12287,7 @@ function buildReportCardHTML(s, term, classMaster, enrolled) {
  Délégation Régionale du Centre — Délégation du Mfoundi<br> <strong style="font-size:.6rem">${lh.line1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.line2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong> </div> <div class="rc-header-center">
  ${lh.logo ? `<img src="${lh.logo}" alt="Logo" />` : '<div style="width:42px;height:42px;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.42rem;color:#aaa;text-align:center">Logo</div>'} </div> <div class="rc-header-right">
  Republic of Cameroon — Peace, Work, Fatherland<br>
- Ministry of Secondary Education<br> <strong style="font-size:.6rem">${lh.fr1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.fr2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong> <div><span class="rc-year-badge">2025-2026</span></div> </div> </div> <div class="rc-contact">Tel: ${lh.line3 || '673900245 / 677956018'} &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE</div>`} <div class="rc-title-bar">${termLabel} Term Report Card</div> <div class="rc-info"> <div class="rc-info-fields"> <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div> <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div> <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div> <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div> <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div> <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div> </div> <div class="rc-photo-box">${photoHtml}</div> </div> <table class="rc-table"> <thead><tr> <th style="width:24px">#</th> <th style="text-align:left;min-width:130px">Subject</th> <th style="width:62px">Competence</th> <th style="width:34px">Coef</th> <th style="width:44px">Seq 1<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Seq 2<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Term<br><span style="font-size:.5rem;font-weight:400">Avg/20</span></th> <th style="width:44px">Total<br><span style="font-size:.5rem;font-weight:400">×Coef</span></th> <th style="width:36px">Rank</th> <th style="width:70px;text-align:left">Teacher</th> </tr></thead> <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term.</td></tr>'}</tbody> </table> <div class="rc-summary-bar"> <span>COEFF: <strong>${totalCoeff}</strong></span> <span>TOTAL: <strong>${grandTotal.toFixed(2)}</strong></span> <span>TERM AVG: <strong style="font-size:1.1rem;color:${overallAvg!==null&&overallAvg>=10?'#0a7a0a':'#cc0000'}">${overallAvgStr}/20</strong></span> <span>RANK: <strong>${termRank > 0 ? termRank : '—'}</strong></span> </div> ${annualBlock} <div class="rc-bottom"> <div> <span class="rc-bottom-title">CLASS PROFILE</span> <table> <tr><td>Highest Average</td><td>${highestAvg.toFixed(2)}/20</td></tr> <tr><td>Lowest Average</td><td>${lowestAvg.toFixed(2)}/20</td></tr> <tr><td>Class Average</td><td>${classAvgAll.toFixed(2)}/20</td></tr> <tr><td>No. with Average ≥10</td><td>${passCount}</td></tr> <tr><td>% Passed (≥10)</td><td>${classSize>0?((passCount/classSize)*100).toFixed(1)+'%':'—'}</td></tr> <tr><td>Enrolled</td><td>${enrolled}</td></tr> </table> </div> <div> <span class="rc-bottom-title">DISCIPLINE</span> <table><tr><td>Unjustified Absences</td><td></td></tr><tr><td>Justified Absences</td><td></td></tr> <tr><td>Late coming</td><td></td></tr><tr><td>Punishments</td><td></td></tr> <tr><td>Warnings</td><td></td></tr><tr><td>Disciplinary Council</td><td></td></tr></table> </div> <div> <span class="rc-bottom-title">ACADEMIC APPRECIATION</span> <table> <tr><td>Distinction</td><td>${overallAvg!==null&&overallAvg>=18?'':''}</td></tr> <tr><td>Honour Roll</td><td>${overallAvg!==null&&overallAvg>=16&&overallAvg<18?'':''}</td></tr> <tr><td>Merit</td><td>${overallAvg!==null&&overallAvg>=14&&overallAvg<16?'':''}</td></tr> <tr><td>Passed</td><td>${overallAvg!==null&&overallAvg>=10?'Yes':'—'}</td></tr> <tr><td>Failed</td><td>${overallAvg!==null&&overallAvg<10?'Yes':'—'}</td></tr> <tr><td>Absent</td><td></td></tr> </table> </div> </div> <div class="rc-sigs"> <div><div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div></div> <div><div class="rc-sig-label">Discipline Master's Observation/Signature</div></div> <div><div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div></div> </div> </div>`;
+ Ministry of Secondary Education<br> <strong style="font-size:.6rem">${lh.fr1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.fr2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong> <div><span class="rc-year-badge">2025-2026</span></div> </div> </div> <div class="rc-contact">Tel: ${lh.line3 || '673900245 / 677956018'} &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE</div>`} <div class="rc-title-bar">${termLabel} Term Report Card</div> <div class="rc-info"> <div class="rc-info-fields"> <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div> <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div> <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div> <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div> <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div> <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div> </div> <div class="rc-photo-box">${photoHtml}</div> </div> <table class="rc-table"> <thead><tr> <th style="width:24px">#</th> <th style="text-align:left;min-width:130px">Subject</th> <th style="width:110px;text-align:left">COMPETENCES TESTED</th> <th style="width:34px">Coef</th> <th style="width:44px">Seq 1<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Seq 2<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Term<br><span style="font-size:.5rem;font-weight:400">Avg/20</span></th> <th style="width:44px">Total<br><span style="font-size:.5rem;font-weight:400">×Coef</span></th> <th style="width:36px">Rank</th> <th style="width:70px;text-align:left">Teacher</th> </tr></thead> <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term.</td></tr>'}</tbody> </table> <div class="rc-summary-bar"> <span>COEFF: <strong>${totalCoeff}</strong></span> <span>TOTAL: <strong>${grandTotal.toFixed(2)}</strong></span> <span>TERM AVG: <strong style="font-size:1.1rem;color:${overallAvg!==null&&overallAvg>=10?'#0a7a0a':'#cc0000'}">${overallAvgStr}/20</strong></span> <span>RANK: <strong>${termRank > 0 ? termRank : '—'}</strong></span> </div> ${annualBlock} <div class="rc-bottom"> <div> <span class="rc-bottom-title">CLASS PROFILE</span> <table> <tr><td>Highest Average</td><td>${highestAvg.toFixed(2)}/20</td></tr> <tr><td>Lowest Average</td><td>${lowestAvg.toFixed(2)}/20</td></tr> <tr><td>Class Average</td><td>${classAvgAll.toFixed(2)}/20</td></tr> <tr><td>No. with Average ≥10</td><td>${passCount}</td></tr> <tr><td>% Passed (≥10)</td><td>${classSize>0?((passCount/classSize)*100).toFixed(1)+'%':'—'}</td></tr> <tr><td>Enrolled</td><td>${enrolled}</td></tr> </table> </div> <div> <span class="rc-bottom-title">DISCIPLINE</span> <table><tr><td>Unjustified Absences</td><td></td></tr><tr><td>Justified Absences</td><td></td></tr> <tr><td>Late coming</td><td></td></tr><tr><td>Punishments</td><td></td></tr> <tr><td>Warnings</td><td></td></tr><tr><td>Disciplinary Council</td><td></td></tr></table> </div> <div> <span class="rc-bottom-title">ACADEMIC APPRECIATION</span> <table> <tr><td>Distinction</td><td>${overallAvg!==null&&overallAvg>=18?'':''}</td></tr> <tr><td>Honour Roll</td><td>${overallAvg!==null&&overallAvg>=16&&overallAvg<18?'':''}</td></tr> <tr><td>Merit</td><td>${overallAvg!==null&&overallAvg>=14&&overallAvg<16?'':''}</td></tr> <tr><td>Passed</td><td>${overallAvg!==null&&overallAvg>=10?'Yes':'—'}</td></tr> <tr><td>Failed</td><td>${overallAvg!==null&&overallAvg<10?'Yes':'—'}</td></tr> <tr><td>Absent</td><td></td></tr> </table> </div> </div> <div class="rc-sigs"> <div><div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div></div> <div><div class="rc-sig-label">Discipline Master's Observation/Signature</div></div> <div><div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div></div> </div> </div>`;
 }
 
 // ══════════════════════════════════════════════════════════
