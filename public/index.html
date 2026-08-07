@@ -1732,7 +1732,7 @@
  Settings </a> <a class="nav-link" id="nav-access" onclick="showPage('access', this)"> <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"> <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/> </svg>
  Access Control </a> </nav> <div class="sidebar-footer"> <div class="user-chip" style="cursor:pointer" onclick="openMyAccount()"> <div class="user-avatar" id="sb-avatar">AD</div> <div> <div class="user-name" id="sb-username">Admin User</div> <div class="user-role" id="sb-role">Administrator</div> </div> <span style="margin-left:auto;color:rgba(255,255,255,.3);font-size:.8rem"></span> </div> </div>
 </aside> <!-- ═══════════════════════════════════════════════════════ MAIN -->
-<div class="main"> <header class="topbar"> <div class="topbar-title" id="page-title">Admin Overview</div> <div class="topbar-right"> <button class="btn btn-ghost" onclick="topbarPrint()"> Print</button> <button class="btn btn-primary" id="topbar-action" onclick="openAddModal()">+ Add Student</button> <div class="topbar-user" onclick="openMyAccount()"> <div class="topbar-user-avatar" id="tb-avatar">AD</div> <span id="tb-username">Admin</span> <span style="color:var(--muted)">▾</span> </div> </div> </header> <div class="content"> <!-- ═══════════ DASHBOARD PAGE --> <div class="page active" id="page-dashboard"> <div id="backup-reminder-banner"></div> <div class="stats-grid"> <div class="stat-card blue">  <div class="stat-label">Total Students</div> <div class="stat-value" id="stat-students">248</div> <div class="stat-sub">Across 8 classes</div> </div> <div class="stat-card gold">  <div class="stat-label">Fees Collected</div> <div class="stat-value" id="stat-fees">18.6M</div> <div class="stat-sub">XAF — Term 1, 2024/25</div> </div> <div class="stat-card green">  <div class="stat-label">Class Average</div> <div class="stat-value">67%</div> <div class="stat-sub">Last term overall</div> </div> <div class="stat-card red">  <div class="stat-label">Fees Outstanding</div> <div class="stat-value">34</div> <div class="stat-sub">Students unpaid</div> </div> </div> <div class="panels-row"> <!-- Recent Payments --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Recent Payments</span> <button class="btn btn-ghost" style="font-size:.78rem;padding:5px 12px" onclick="showPage('payments', null)">View all</button> </div> <div class="panel-body"> <table> <thead> <tr> <th>Student</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th> </tr> </thead> <tbody id="recent-payments-body"> </tbody> </table> </div> </div> <!-- Quick Payment Entry --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Record a Payment</span> </div> <div class="quick-form"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;line-height:1.5">Record fees, search students, and view outstanding balances on the Payments page.</p> <button class="btn btn-success" style="width:100%;justify-content:center" onclick="showPage('payments', null)">Go to Payments</button> </div> </div> </div> </div> <!-- ═══════════ REGISTRATION PAGE -->
+<div class="main"> <header class="topbar"> <div class="topbar-title" id="page-title">Admin Overview</div> <div class="topbar-right"> <button class="btn btn-ghost" onclick="topbarPrint()"> Print</button> <button class="btn btn-primary" id="topbar-action" onclick="openAddModal()">+ Add Student</button> <div class="topbar-user" onclick="openMyAccount()"> <div class="topbar-user-avatar" id="tb-avatar">AD</div> <span id="tb-username">Admin</span> <span style="color:var(--muted)">▾</span> </div> </div> </header> <div class="content"> <!-- ═══════════ DASHBOARD PAGE --> <div class="page active" id="page-dashboard"> <div id="backup-reminder-banner"></div> <div class="stats-grid"> <div class="stat-card blue">  <div class="stat-label">Total Students</div> <div class="stat-value" id="stat-students">0</div> <div class="stat-sub" id="stat-students-sub">Across 0 classes</div> </div> <div class="stat-card gold">  <div class="stat-label">Fees Collected</div> <div class="stat-value" id="stat-fees">0</div> <div class="stat-sub" id="stat-fees-sub">XAF</div> </div> <div class="stat-card green">  <div class="stat-label">Class Average</div> <div class="stat-value" id="stat-classavg">—</div> <div class="stat-sub">Overall, all recorded marks</div> </div> <div class="stat-card red">  <div class="stat-label">Fees Outstanding</div> <div class="stat-value" id="stat-unpaid">0</div> <div class="stat-sub">Students with no payment on record</div> </div> </div> <div class="panels-row"> <!-- Recent Payments --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Recent Payments</span> <button class="btn btn-ghost" style="font-size:.78rem;padding:5px 12px" onclick="showPage('payments', null)">View all</button> </div> <div class="panel-body"> <table> <thead> <tr> <th>Student</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th> </tr> </thead> <tbody id="recent-payments-body"> </tbody> </table> </div> </div> <!-- Quick Payment Entry --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Record a Payment</span> </div> <div class="quick-form"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px;line-height:1.5">Record fees, search students, and view outstanding balances on the Payments page.</p> <button class="btn btn-success" style="width:100%;justify-content:center" onclick="showPage('payments', null)">Go to Payments</button> </div> </div> </div> </div> <!-- ═══════════ REGISTRATION PAGE -->
 <div class="page" id="page-registration">
   <div style="padding:16px">
 
@@ -1836,8 +1836,8 @@
   </div>
 </div>
 
-<!-- ═══════════ STUDENTS PAGE --> <div class="page" id="page-students"> <div class="search-bar"> <input type="text" id="student-search" placeholder="Search by name or ID…" oninput="filterStudents()" /> <select id="class-filter" onchange="filterStudents()"> <option value="">All Classes</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button> <button class="btn btn-ghost" onclick="openImportStudentsModal()"> Import Students</button> <button class="btn btn-ghost" onclick="printStudentDirectory()" title="Printable list of students with parent names and contacts"> Print Student List</button> <button class="btn btn-danger" onclick="openDeleteAllStudents()" title="Permanently delete every student and all their linked payments, grades and marks"> Delete All Students</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">All Students</span> <span class="panel-title" style="color:var(--muted);font-weight:400" id="student-count"></span> </div> <div class="panel-body"> <table> <thead> <tr><th>#</th><th>Name</th><th>Class</th><th>Father</th><th>Phone</th><th>Actions</th></tr> </thead> <tbody id="students-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ CLASS LIST / MARK SHEET PAGE --> <div class="page" id="page-grades"> <div class="classlist-toolbar no-print"> <select id="grades-class" onchange="renderClassList()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="grades-term" onchange="renderClassList()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="grades-subject" onchange="renderClassList()"> <option value="">— Select Subject —</option> <option>Mathematics</option><option>English Language</option> <option>Physics</option><option>Chemistry</option> <option>Biology</option><option>Computer Science</option> <option>History</option><option>Geography</option> <option>French</option><option>Economics</option> <option>ICT</option> </select> <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" /> <select id="grades-seq" onchange="renderClassList()" title="Each term has 2 sequences" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> <button class="btn btn-ghost" onclick="exportClassListWord()" title="Download this class list as a .doc file"> Export Word</button> <button class="btn btn-ghost" onclick="openOcrImportModal()" title="Import CA/Exam marks from a photo, PDF, or Word file of a printed class list"> Import Marks</button> </div> <!-- Formula bar — admin only --> <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end"> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>CA Max Score</label> <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Exam Max Score</label> <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Default Coeff</label> <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" /> </div> <div style="font-size:.78rem;color:var(--muted);align-self:center">
- Total/100 = CA + Exam &nbsp;|&nbsp; Total/20 = (Total/100 ÷ 100) × 20 &nbsp;|&nbsp; G.Total = Total/20 × Coeff </div> </div> <div class="mark-sheet" id="mark-sheet-container"> <div class="mark-sheet-header"> <div> <div style="font-family:var(--serif);font-size:1.1rem;color:var(--navy)" id="cl-title">Class List</div> <div style="font-size:.78rem;color:var(--muted)" id="cl-subtitle">Select a class and subject above</div> </div> <div style="font-size:.78rem;color:var(--muted);text-align:right" id="cl-meta"></div> </div> <div id="cl-topic-competence-row" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:#fafbfc;gap:14px;flex-wrap:wrap"></div> <div style="overflow-x:auto"> <table class="mark-table" id="mark-table"> <thead> <tr> <th style="width:36px">No</th> <th style="text-align:left;min-width:180px">Name</th> <th style="width:36px">Sex</th> <th id="th-ca" style="width:60px">CA/<span id="th-ca-max">30</span></th> <th id="th-exam" style="width:70px">Exam/<span id="th-exam-max">70</span></th> <th style="width:70px">Total/100</th> <th style="width:60px">Total/20</th> <th style="width:50px">Coeff</th> <th style="width:60px">G.Total</th> </tr> </thead> <tbody id="classlist-body"> <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr> </tbody> </table> <div id="classlist-avg" style="padding:8px 14px;border-top:1px solid var(--border);background:#f9fafb"></div> </div> </div> </div> <!-- ═══════════ MASTER SHEET PAGE (admin-only — see showPage() hard guard) --> <div class="page" id="page-mastersheet"> <div class="classlist-toolbar no-print"> <select id="ms-class" onchange="renderMasterSheet()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="ms-term" onchange="renderMasterSheet()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="ms-seq" onchange="renderMasterSheet()" title="Master Sheet is per-sequence, not term-combined" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> <button class="btn btn-ghost" onclick="exportMasterSheetWord()" title="Download this master sheet as a .doc file"> Export Word</button> </div> <div class="panel"> <div class="panel-body" id="mastersheet-container"> <div style="padding:32px;text-align:center;color:var(--muted)">Select a class to view its Master Sheet</div> </div> </div> </div> <!-- ═══════════ TIMETABLE PAGE --> <div class="page" id="page-timetable"> <div class="search-bar no-print"> <select id="tt-class-select" onchange="renderTimetable()"> <option value="">All Classes</option> </select> <button id="btn-tt-generate" class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()"> Auto-Generate</button> <button id="btn-tt-clear" class="btn btn-ghost no-print" onclick="clearTimetable()"> Clear All</button> <button class="btn btn-ghost no-print" onclick="fixConsecutiveViolations()" title="Find and move any Form 1-5 subject running more than 2 straight periods">Fix 3-in-a-row</button> <button class="btn btn-ghost no-print" onclick="printTimetable()"> Print View</button> <button class="btn btn-ghost no-print" onclick="exportTimetableWord()" title="Download the current view as a .doc file"> Export Word</button> <button class="btn btn-ghost no-print" onclick="printAllClassTimetables()"> Print All Classes</button> </div> <div class="panel" style="overflow-x:auto"> <div class="panel-header no-print"> <span class="panel-title" id="tt-panel-title">Weekly Timetable</span> <span id="tt-panel-hint" style="font-size:.78rem;color:var(--muted)">Click any cell to assign ·  to remove</span> </div> <div id="timetable-wrap" style="overflow-x:auto;font-size:.72rem"></div> </div> <!-- Subject Coverage Summary --> <div class="panel no-print" id="coverage-panel-section" style="margin-top:18px"> <div class="panel-header"> <span class="panel-title"> Subject Coverage — Periods Plotted Per Class</span> <div style="display:flex;gap:8px;align-items:center"> <select id="coverage-class-filter" onchange="renderCoverage()" style="font-size:.78rem"> <option value="">All Classes</option> </select> <button class="btn btn-ghost" style="font-size:.72rem;padding:3px 8px" onclick="renderCoverage()"> Refresh</button> </div> </div> <div style="padding:14px;overflow-x:auto"> <div id="coverage-wrap"></div> </div> </div> </div> <!-- ═══════════ REPORTS PAGE --> <div class="page" id="page-reports"> <div class="search-bar no-print"> <select id="report-mode" onchange="toggleReportMode()"> <option value="individual">Individual Student</option> <option value="class">Entire Class</option> </select> <select id="report-student" style="display:block" onchange="updateEnrolledCount()"> <option value="">Select student…</option> </select> <select id="report-class-sel" style="display:none" onchange="updateEnrolledCount()"> <option value="">— Select Class —</option> </select> <select id="report-term"> <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option> </select> <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" /> <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px;background:#f0f4f9;border-color:#b3d1f0" min="1" value="0" readonly title="Auto-calculated from students in this class" /> <button class="btn btn-primary" onclick="generateReport()">Generate</button> <button class="btn btn-ghost" onclick="if(typeof applyLHToPage==='function')applyLHToPage();window.print()"> Print</button> </div> <div id="report-output"></div> </div> <!-- ═══════════ PAYMENTS PAGE --> <div class="page" id="page-payments">
+<!-- ═══════════ STUDENTS PAGE --> <div class="page" id="page-students"> <div class="search-bar"> <input type="text" id="student-search" placeholder="Search by name or ID…" oninput="filterStudents()" /> <select id="class-filter" onchange="filterStudents()"> <option value="">All Classes</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <button class="btn btn-primary" id="btn-add-student" onclick="openAddModal()">+ Add Student</button> <button class="btn btn-ghost" onclick="openImportStudentsModal()"> Import Students</button> <button class="btn btn-ghost" onclick="printStudentDirectory()" title="Printable list of students with parent names and contacts"> Print Student List</button> <button class="btn btn-danger" onclick="openDeleteAllStudents()" title="Permanently delete every student and all their linked payments, grades and marks"> Delete All Students</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">All Students</span> <span class="panel-title" style="color:var(--muted);font-weight:400" id="student-count"></span> </div> <div class="panel-body"> <table> <thead> <tr><th>#</th><th>Name</th><th>Class</th><th>Father</th><th>Phone</th><th>Actions</th></tr> </thead> <tbody id="students-body"></tbody> </table> </div> </div> </div> <!-- ═══════════ CLASS LIST / MARK SHEET PAGE --> <div class="page" id="page-grades"> <div class="classlist-toolbar no-print"> <select id="grades-class" onchange="renderClassList()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="grades-term" onchange="renderClassList()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="grades-subject" onchange="renderClassList()"> <option value="">— Select Subject —</option> <option>Mathematics</option><option>English Language</option> <option>Physics</option><option>Chemistry</option> <option>Biology</option><option>Computer Science</option> <option>History</option><option>Geography</option> <option>French</option><option>Economics</option> <option>ICT</option> </select> <input type="text" id="grades-teacher" placeholder="Teacher name" style="max-width:160px" onchange="renderClassList()" /> <select id="grades-seq" onchange="renderClassList()" title="Each term has 2 sequences" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="gatedWindowPrint()"> Print</button> <button class="btn btn-ghost" onclick="exportClassListWord()" title="Download this class list as a .doc file"> Export Word</button> <button class="btn btn-ghost" onclick="openOcrImportModal()" title="Import CA/Exam marks from a photo, PDF, or Word file of a printed class list"> Import Marks</button> </div> <!-- Formula bar — admin only --> <div id="formula-bar" class="no-print" style="display:none;margin-bottom:16px;padding:14px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;gap:14px;align-items:flex-end"> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>CA Max Score</label> <input type="number" id="formula-ca-max" value="30" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Exam Max Score</label> <input type="number" id="formula-exam-max" value="70" min="1" max="100" style="width:90px" oninput="saveFormula()" /> </div> <div class="form-group" style="margin:0;flex:1;min-width:180px"> <label>Default Coeff</label> <input type="number" id="formula-coeff" value="2" min="1" max="10" style="width:70px" oninput="saveFormula()" /> </div> <div style="font-size:.78rem;color:var(--muted);align-self:center">
+ Total/100 = CA + Exam &nbsp;|&nbsp; Total/20 = (Total/100 ÷ 100) × 20 &nbsp;|&nbsp; G.Total = Total/20 × Coeff </div> </div> <div class="mark-sheet" id="mark-sheet-container"> <div class="mark-sheet-header"> <div> <div style="font-family:var(--serif);font-size:1.1rem;color:var(--navy)" id="cl-title">Class List</div> <div style="font-size:.78rem;color:var(--muted)" id="cl-subtitle">Select a class and subject above</div> </div> <div style="font-size:.78rem;color:var(--muted);text-align:right" id="cl-meta"></div> </div> <div id="cl-topic-competence-row" style="display:none;padding:8px 14px;border-bottom:1px solid var(--border);background:#fafbfc;gap:14px;flex-wrap:wrap"></div> <div style="overflow-x:auto"> <table class="mark-table" id="mark-table"> <thead> <tr> <th style="width:36px">No</th> <th style="text-align:left;min-width:180px">Name</th> <th style="width:36px">Sex</th> <th id="th-ca" style="width:60px">CA/<span id="th-ca-max">30</span></th> <th id="th-exam" style="width:70px">Exam/<span id="th-exam-max">70</span></th> <th style="width:70px">Total/100</th> <th style="width:60px">Total/20</th> <th style="width:50px">Coeff</th> <th style="width:60px">G.Total</th> </tr> </thead> <tbody id="classlist-body"> <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Select a class and subject to load students</td></tr> </tbody> </table> <div id="classlist-avg" style="padding:8px 14px;border-top:1px solid var(--border);background:#f9fafb"></div> </div> </div> </div> <!-- ═══════════ MASTER SHEET PAGE (admin-only — see showPage() hard guard) --> <div class="page" id="page-mastersheet"> <div class="classlist-toolbar no-print"> <select id="ms-class" onchange="renderMasterSheet()"> <option value="">— Select Class —</option> <option>Form 1A</option><option>Form 1B</option> <option>Form 2A</option><option>Form 2B</option> <option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> <select id="ms-term" onchange="renderMasterSheet()"> <option value="1">Term 1</option> <option value="2">Term 2</option> <option value="3">Term 3</option> </select> <select id="ms-seq" onchange="renderMasterSheet()" title="Master Sheet is per-sequence, not term-combined" style="max-width:130px"> <option value="1">Sequence 1</option> <option value="2">Sequence 2</option> </select> <button class="btn btn-ghost" onclick="gatedWindowPrint()"> Print</button> <button class="btn btn-ghost" onclick="exportMasterSheetWord()" title="Download this master sheet as a .doc file"> Export Word</button> </div> <div class="panel"> <div class="panel-body" id="mastersheet-container"> <div style="padding:32px;text-align:center;color:var(--muted)">Select a class to view its Master Sheet</div> </div> </div> </div> <!-- ═══════════ TIMETABLE PAGE --> <div class="page" id="page-timetable"> <div class="search-bar no-print"> <select id="tt-class-select" onchange="renderTimetable()"> <option value="">All Classes</option> </select> <button id="btn-tt-generate" class="btn btn-ghost no-print" onclick="autoGenerateAllTerms()"> Auto-Generate</button> <button id="btn-tt-clear" class="btn btn-ghost no-print" onclick="clearTimetable()"> Clear All</button> <button class="btn btn-ghost no-print" onclick="fixConsecutiveViolations()" title="Find and move any Form 1-5 subject running more than 2 straight periods">Fix 3-in-a-row</button> <button class="btn btn-ghost no-print" onclick="printTimetable()"> Print View</button> <button class="btn btn-ghost no-print" onclick="exportTimetableWord()" title="Download the current view as a .doc file"> Export Word</button> <button class="btn btn-ghost no-print" onclick="printAllClassTimetables()"> Print All Classes</button> </div> <div class="panel" style="overflow-x:auto"> <div class="panel-header no-print"> <span class="panel-title" id="tt-panel-title">Weekly Timetable</span> <span id="tt-panel-hint" style="font-size:.78rem;color:var(--muted)">Click any cell to assign ·  to remove</span> </div> <div id="timetable-wrap" style="overflow-x:auto;font-size:.72rem"></div> </div> <!-- Subject Coverage Summary --> <div class="panel no-print" id="coverage-panel-section" style="margin-top:18px"> <div class="panel-header"> <span class="panel-title"> Subject Coverage — Periods Plotted Per Class</span> <div style="display:flex;gap:8px;align-items:center"> <select id="coverage-class-filter" onchange="renderCoverage()" style="font-size:.78rem"> <option value="">All Classes</option> </select> <button class="btn btn-ghost" style="font-size:.72rem;padding:3px 8px" onclick="renderCoverage()"> Refresh</button> </div> </div> <div style="padding:14px;overflow-x:auto"> <div id="coverage-wrap"></div> </div> </div> </div> <!-- ═══════════ REPORTS PAGE --> <div class="page" id="page-reports"> <div class="search-bar no-print"> <select id="report-mode" onchange="toggleReportMode()"> <option value="individual">Individual Student</option> <option value="class">Entire Class</option> </select> <select id="report-student" style="display:block" onchange="updateEnrolledCount()"> <option value="">Select student…</option> </select> <select id="report-class-sel" style="display:none" onchange="updateEnrolledCount()"> <option value="">— Select Class —</option> </select> <select id="report-term"> <option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option> </select> <input type="text" id="report-classteacher" placeholder="Class Master name" style="max-width:180px" /> <input type="number" id="report-enrolled" placeholder="Enrolled" style="max-width:80px;background:#f0f4f9;border-color:#b3d1f0" min="1" value="0" readonly title="Auto-calculated from students in this class" /> <button class="btn btn-primary" onclick="generateReport()">Generate</button> <button class="btn btn-ghost" onclick="gatedWindowPrint()"> Print</button> </div> <div id="report-output"></div> </div> <!-- ═══════════ PAYMENTS PAGE --> <div class="page" id="page-payments">
  <div class="search-bar">
    <input type="text" id="payment-search-top" placeholder="Search student by name or receipt number…"
      oninput="syncPaymentSearch(this.value)"
@@ -1947,7 +1947,7 @@
      </div>
    </div>
  </div>
-</div> <!-- ═══════════ TEACHERS PAGE --> <div class="page" id="page-teachers"> <div class="search-bar"> <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="filterTeachers()" /> <button id="btn-import-teachers" class="btn btn-ghost" onclick="openImportTeachersModal()"> Import (CSV/Excel)</button> <button id="btn-export-csv" class="btn btn-ghost" onclick="exportTeachers('csv')"> Export CSV</button> <button id="btn-export-xlsx" class="btn btn-ghost" onclick="exportTeachers('xlsx')"> Export Excel</button> <button class="btn btn-ghost" onclick="printAllTeacherTimetables()"> Print All Timetables</button> <button class="btn btn-ghost" onclick="openDuplicateAssignmentCheck()" title="Flags class+subject combos assigned to unusually many teachers or unusually high combined periods"> Check Duplicate Assignments</button> <button id="btn-delete-all-teachers" class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()"> Delete All Teachers</button> <button id="btn-add-teacher" class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">Teaching Staff</span> <span id="teacher-count" style="color:var(--muted);font-size:.85rem"></span> </div> <div class="panel-body" style="overflow-x:auto"> <table style="table-layout:fixed;width:100%"> <thead> <tr><th style="width:16%">Name</th><th style="width:30%">Classes &amp; Subjects</th><th style="width:14%">Available Days</th><th style="width:12%">Phone</th><th style="width:110px">Actions</th></tr> </thead> <tbody id="teachers-body"></tbody> </table> </div> </div> </div> <!-- Duplicate Class+Subject Assignment Check Modal -->
+</div> <!-- ═══════════ TEACHERS PAGE --> <div class="page" id="page-teachers"> <div class="search-bar"> <input type="text" id="teacher-search" placeholder="Search teachers…" oninput="filterTeachers()" /> <button id="btn-import-teachers" class="btn btn-ghost" onclick="openImportTeachersModal()"> Import (CSV/Excel)</button> <button id="btn-export-csv" class="btn btn-ghost" onclick="exportTeachers('csv')"> Export CSV</button> <button id="btn-export-xlsx" class="btn btn-ghost" onclick="exportTeachers('xlsx')"> Export Excel</button> <button class="btn btn-ghost" onclick="printAllTeacherTimetables()"> Print All Timetables</button> <button class="btn btn-ghost" onclick="openDuplicateAssignmentCheck()" title="Flags class+subject combos assigned to unusually many teachers or unusually high combined periods"> Check Duplicate Assignments</button> <button id="btn-delete-all-teachers" class="btn btn-ghost" style="color:#cc0000;border-color:#cc0000" onclick="clearAllTeachers()"> Delete All Teachers</button> <button id="btn-add-teacher" class="btn btn-primary" onclick="openTeacherModal()">+ Add Teacher</button> </div> <div class="panel"> <div class="panel-header"> <span class="panel-title">Teaching Staff</span> <span id="teacher-count" style="color:var(--muted);font-size:.85rem"></span> </div> <div class="panel-body" style="overflow-x:auto"> <div id="teacher-trades-banner"></div> <div id="teacher-heavy-trades-banner"></div> <table style="table-layout:fixed;width:100%"> <thead> <tr><th style="width:16%">Name</th><th style="width:30%">Classes &amp; Subjects</th><th style="width:14%">Available Days</th><th style="width:12%">Phone</th><th style="width:110px">Actions</th></tr> </thead> <tbody id="teachers-body"></tbody> </table> </div> </div> </div> <!-- Duplicate Class+Subject Assignment Check Modal -->
 <div class="modal-overlay" id="modal-dup-assign"> <div class="modal" style="max-width:820px"> <div class="modal-header"> <span class="modal-title"> Duplicate Assignment Check</span> <button class="modal-close" onclick="closeModal('modal-dup-assign')">×</button> </div> <div class="modal-body" style="max-height:74vh;overflow-y:auto"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">
  Flags any class+subject combination where the <strong>average periods/week per teacher</strong> is unusually high — that's what actually causes the Sixth Form-style fill-rate problem (stale or duplicate teacher assignments left over from earlier setup/reshuffles). This scales with how many teachers are involved: a subject legitimately split across several teachers can have a higher combined total without any single teacher being overloaded, so raw totals and raw headcount are both misleading on their own. </p> <div id="dup-assign-summary" style="font-size:.85rem;margin-bottom:10px"></div> <div id="dup-assign-body"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-dup-assign')">Close</button> </div> </div>
 </div> <!-- ═══════════ ACCESS CONTROL PAGE --> <div class="page" id="page-access"> <div class="panels-row" style="grid-template-columns:1fr"> <!-- Staff Accounts Table --> <div class="panel"> <div class="panel-header"> <span class="panel-title">Staff Accounts & Permissions</span> <div style="display:flex;gap:8px"> <button class="btn btn-ghost" style="font-size:.78rem" onclick="syncAccountsFromTeachers()" title="Creates accounts for new teachers and removes accounts for teachers deleted from the system"> Sync from Teachers</button> <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" onclick="openAddStaffModal()">+ Add Staff Account</button> </div> </div> <!-- Default password notice --> <div id="default-pw-notice" style="margin:0 16px 12px;padding:10px 14px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;font-size:.8rem;display:none"> <strong style="color:#b06000"> Default Teacher Password:</strong> <span style="font-family:monospace;font-size:.9rem;background:#fffde7;padding:2px 8px;border-radius:4px;border:1px solid #ffe082;margin:0 6px">teacher@123</span>
@@ -1956,7 +1956,7 @@
  Set all non-admin to Read Only </button> <button class="btn btn-ghost" onclick="applyPreset('nofinance')">
  Remove Finance from all non-admin </button> </div> </div> </div> </div> </div><!-- /content -->
 </div><!-- /main --> <!-- ═══════════ SETTINGS PAGE (outside main, full width) -->
-<div class="page" id="page-settings" style="display:none"> <div style="padding:16px"> <div class="settings-grid"> <!-- Left text (English) + Right text (French) --> <div> <div class="panel" style="margin-bottom:20px"><div class="panel-header"><span class="panel-title">Letterhead Image</span></div><div style="padding:20px"><p style="font-size:.78rem;color:var(--muted);margin:0 0 10px;line-height:1.5">Upload a ready-made letterhead (scan or design). It is used on report cards, timetables and receipts.</p><div class="logo-upload-zone" id="lh-image-zone" onclick="document.getElementById('lh-image-input').click()"><img id="lh-image-preview" src="" alt="" style="display:none;max-width:100%;max-height:124px;object-fit:contain;margin:0 auto" /><div id="lh-image-hint"><div style="font-size:.85rem;color:var(--muted)">Click to upload letterhead image</div><div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG or JPG · auto-resized to fit storage</div></div></div><input type="file" id="lh-image-input" accept="image/*" style="display:none" onchange="handleLetterheadUpload(event)" /><div id="lh-image-note" style="font-size:.72rem;color:#1a7a3a;margin-top:8px"></div><button class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center" onclick="clearLetterheadImage()">Remove Letterhead Image</button></div></div></div> <!-- Logo + Preview --> <div> <div class="panel" style="margin-bottom:20px"> <div class="panel-header"><span class="panel-title">School Logo (Centre)</span></div> <div style="padding:20px"> <div class="logo-upload-zone" onclick="document.getElementById('logo-file-input').click()" id="logo-drop-zone"> <img id="logo-preview-img" src="" alt="" style="display:none;max-height:80px;max-width:160px;object-fit:contain;margin:0 auto" /> <div id="logo-upload-hint"> <div style="font-size:2rem;margin-bottom:6px"></div> <div style="font-size:.85rem;color:var(--muted)">Click to upload school logo</div> <div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG, JPG or SVG · max 3MB</div> </div> </div> <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="handleLogoUpload(event)" /> <button class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center" onclick="clearLogo()"> Remove Logo</button> </div> </div> <div class="panel"> <div class="panel-header"><span class="panel-title">Letterhead Preview</span></div> <div style="padding:16px 20px"> <div class="lh-preview-box" style="font-size:.72rem;overflow:hidden"> <div style="color:var(--muted);font-size:.78rem;text-align:center;padding:20px">
+<div class="page" id="page-settings" style="display:none"> <div style="padding:16px"> <div id="activation-status-panel"></div> <div class="settings-grid"> <!-- Left text (English) + Right text (French) --> <div> <div class="panel" style="margin-bottom:20px"><div class="panel-header"><span class="panel-title">Letterhead Image</span></div><div style="padding:20px"><p style="font-size:.78rem;color:var(--muted);margin:0 0 10px;line-height:1.5">Upload a ready-made letterhead (scan or design). It is used on report cards, timetables and receipts.</p><div class="logo-upload-zone" id="lh-image-zone" onclick="document.getElementById('lh-image-input').click()"><img id="lh-image-preview" src="" alt="" style="display:none;max-width:100%;max-height:124px;object-fit:contain;margin:0 auto" /><div id="lh-image-hint"><div style="font-size:.85rem;color:var(--muted)">Click to upload letterhead image</div><div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG or JPG · auto-resized to fit storage</div></div></div><input type="file" id="lh-image-input" accept="image/*" style="display:none" onchange="handleLetterheadUpload(event)" /><div id="lh-image-note" style="font-size:.72rem;color:#1a7a3a;margin-top:8px"></div><button class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center" onclick="clearLetterheadImage()">Remove Letterhead Image</button></div></div></div> <!-- Logo + Preview --> <div> <div class="panel" style="margin-bottom:20px"> <div class="panel-header"><span class="panel-title">School Logo (Centre)</span></div> <div style="padding:20px"> <div class="logo-upload-zone" onclick="document.getElementById('logo-file-input').click()" id="logo-drop-zone"> <img id="logo-preview-img" src="" alt="" style="display:none;max-height:80px;max-width:160px;object-fit:contain;margin:0 auto" /> <div id="logo-upload-hint"> <div style="font-size:2rem;margin-bottom:6px"></div> <div style="font-size:.85rem;color:var(--muted)">Click to upload school logo</div> <div style="font-size:.72rem;color:var(--muted);margin-top:4px">PNG, JPG or SVG · max 3MB</div> </div> </div> <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="handleLogoUpload(event)" /> <button class="btn btn-ghost" style="width:100%;margin-top:8px;justify-content:center" onclick="clearLogo()"> Remove Logo</button> </div> </div> <div class="panel"> <div class="panel-header"><span class="panel-title">Letterhead Preview</span></div> <div style="padding:16px 20px"> <div class="lh-preview-box" style="font-size:.72rem;overflow:hidden"> <div style="color:var(--muted);font-size:.78rem;text-align:center;padding:20px">
  Fill in the fields and click Save to see preview </div> </div> <div style="margin-top:14px;display:flex;gap:10px"> <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveLH()"> Save Letterhead</button> </div> </div> </div> </div> </div><!-- /settings-grid --> <div style="margin-top:24px"> <div class="panel"> <div class="panel-header"><span class="panel-title"> Time Slots / Periods</span></div> <div style="padding:20px"> <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Define your school's daily schedule — periods, breaks and duration. Labels appear on the timetable and in teacher hour totals.</p> <div style="overflow-x:auto"> <table style="width:100%;border-collapse:collapse;font-size:.8rem" id="timeslots-table"> <thead> <tr style="background:var(--navy);color:#fff"> <th style="padding:7px 10px;text-align:left">#</th> <th style="padding:7px 10px;text-align:left">Label</th> <th style="padding:7px 10px">Start</th> <th style="padding:7px 10px">End</th> <th style="padding:7px 10px">Duration</th> <th style="padding:7px 10px">Break?</th> <th style="padding:7px 10px" class="no-print">Remove</th> </tr> </thead> <tbody id="timeslots-body"></tbody> </table> </div> <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"> <button class="btn btn-primary" onclick="addTimeSlotRow(false)">+ Add Period</button> <button class="btn btn-ghost" onclick="addTimeSlotRow(true)">+ Add Break</button> <button class="btn btn-ghost" onclick="resetTimeSlots()">Reset to Default</button> <button class="btn btn-primary" style="margin-left:auto" onclick="saveTimeSlots()"> Save Schedule</button> </div> </div> </div> </div> <div style="margin-top:24px"> <div class="panel"> <div class="panel-header"><span class="panel-title"> Subjects &amp; Pairing Rules</span></div> <div style="padding:20px"> <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px">
  Manage all subjects. Define which subjects <strong style="color:#0e7a4e">can run in the same period</strong> across different classes,
  and which <strong style="color:#cc3300">cannot</strong>.
@@ -2020,7 +2020,11 @@
 </div> <!-- ═══════════════════════════════════════════════════════ MODALS --> <!-- Add Student Modal -->
 <div class="modal-overlay" id="modal-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Add New Student</span> <button class="modal-close" onclick="closeModal('modal-student')">×</button> </div> <div class="modal-body"> <!-- Photo upload --> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="s-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('s-photo-input').click()"> <img id="s-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="s-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('s-photo-input','s-photo-img','s-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="s-fname" placeholder="John" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="s-lname" placeholder="Doe" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="s-num" placeholder="JATEC24001" /></div> <div class="form-group"> <label>Class</label> <select id="s-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="s-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="s-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="s-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Father's Name</label><input type="text" id="s-father" placeholder="Mr. John Doe Sr." /></div> <div class="form-group"><label>Mother's Name</label><input type="text" id="s-mother" placeholder="Mrs. Jane Doe" /></div> <div class="form-row"> <div class="form-group"><label>Father's Number</label><input type="tel" id="s-father-phone" placeholder="677000001" /></div> <div class="form-group"><label>Mother's Number</label><input type="tel" id="s-mother-phone" placeholder="677000002" /></div> </div> <div class="form-row"> <div class="form-group"><label>Parent Email</label><input type="email" id="s-email" placeholder="parent@email.com" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-student')">Cancel</button> <button class="btn btn-primary" onclick="addStudent()">Save Student</button> </div> </div>
 </div> <!-- Grade Entry Modal -->
-<div class="modal-overlay" id="modal-grade"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Enter Grades</span> <button class="modal-close" onclick="closeModal('modal-grade')">×</button> </div> <div class="modal-body"> <div class="form-row"> <div class="form-group"><label>Student</label> <select id="g-student"><option value="">Select student…</option></select> </div> <div class="form-group"><label>Subject</label> <select id="g-subject"> <option>Mathematics</option><option>English</option><option>Physics</option> <option>Chemistry</option><option>Biology</option><option>History</option> <option>Geography</option><option>Computer Science</option> </select> </div> </div> <div class="form-row"> <div class="form-group"><label>Score</label><input type="number" id="g-score" placeholder="0–100" min="0" max="100" /></div> <div class="form-group"><label>Max Score</label><input type="number" id="g-max" value="100" /></div> </div> <div class="form-row"> <div class="form-group"><label>Term</label> <select id="g-term"><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select> </div> <div class="form-group"><label>Academic Year</label><input type="text" id="g-year" value="2024/2025" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-grade')">Cancel</button> <button class="btn btn-primary" onclick="saveGrade()">Save Grade</button> </div> </div>
+<div class="modal-overlay" id="modal-grade"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Enter Grades</span> <button class="modal-close" onclick="closeModal('modal-grade')">×</button> </div> <div class="modal-body"> <div class="form-row"> <div class="form-group"><label>Student</label> <select id="g-student"><option value="">Select student…</option></select> </div> <div class="form-group"><label>Subject</label> <select id="g-subject"> <option>Mathematics</option><option>English</option><option>Physics</option> <option>Chemistry</option><option>Biology</option><option>History</option> <option>Geography</option><option>Computer Science</option> </select> </div> </div> <div class="form-row"> <div class="form-group"><label>Score</label><input type="number" id="g-score" placeholder="0–100" min="0" max="100" /></div> <div class="form-group"><label>Max Score</label><input type="number" id="g-max" value="100" /></div> </div> <div class="form-row"> <div class="form-group"><label>Term</label> <select id="g-term"><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select> </div> <div class="form-group"><label>Academic Year</label><input type="text" id="g-year" /></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-grade')">Cancel</button> <button class="btn btn-primary" onclick="saveGrade()">Save Grade</button> </div> </div>
+</div>
+
+<!-- Print/Export Activation Modal -->
+<div class="modal-overlay" id="modal-activation"> <div class="modal"> <div class="modal-header"> <span class="modal-title"> Activate Printing</span> <button class="modal-close" onclick="closeModal('modal-activation')">×</button> </div> <div class="modal-body"> <p style="font-size:.85rem;color:var(--muted);line-height:1.5;margin:0 0 16px">Printing and exporting are locked. Contact ScholarSys team for an activation code and enter it below.</p> <div class="form-group"><label>Activation Code</label><input type="text" id="activation-code-input" placeholder="Enter code…" onkeydown="if(event.key==='Enter')confirmActivation()" /></div> <div id="activation-error" style="display:none;color:#cc0000;font-size:.8rem;margin-top:6px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-activation')">Cancel</button> <button class="btn btn-primary" onclick="confirmActivation()">Activate</button> </div> </div> </div>
 </div> <!-- Edit Student Modal -->
 <div class="modal-overlay" id="modal-edit-student"> <div class="modal"> <div class="modal-header"> <span class="modal-title">Edit Student</span> <button class="modal-close" onclick="closeModal('modal-edit-student')">×</button> </div> <div class="modal-body"> <input type="hidden" id="es-id" /> <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:14px"> <div> <div id="es-photo-preview" style="width:80px;height:96px;border:2px dashed var(--border);border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="document.getElementById('es-photo-input').click()"> <img id="es-photo-img" src="" style="display:none;width:80px;height:96px;object-fit:cover" /> <span id="es-photo-hint" style="font-size:.65rem;color:var(--muted);text-align:center;padding:6px"><br>Photo</span> </div> <input type="file" id="es-photo-input" accept="image/*" style="display:none" onchange="previewStudentPhoto('es-photo-input','es-photo-img','es-photo-hint')" /> </div> <div style="flex:1"> <div class="form-row"> <div class="form-group"><label>First Name</label><input type="text" id="es-fname" /></div> <div class="form-group"><label>Last Name</label><input type="text" id="es-lname" /></div> </div> <div class="form-row"> <div class="form-group"><label>Matricule / ID</label><input type="text" id="es-num" /></div> <div class="form-group"> <label>Class</label> <select id="es-class"> <option>Form 1A</option><option>Form 1B</option><option>Form 2A</option> <option>Form 2B</option><option>Form 3A</option><option>Form 3B</option> <option>Form 4A</option><option>Form 5A</option> </select> </div> </div> </div> </div> <div class="form-row"> <div class="form-group"><label>Date of Birth</label><input type="date" id="es-dob" /></div> <div class="form-group"><label>Place of Birth</label><input type="text" id="es-pob" placeholder="Yaoundé" /></div> </div> <div class="form-row"> <div class="form-group"><label>Gender</label> <select id="es-gender"><option value="M">Male</option><option value="F">Female</option></select> </div> <div class="form-group"><label>Repeater?</label> <select id="es-repeater"><option value="No">No</option><option value="Yes">Yes</option></select> </div> </div> <div class="form-group"><label>Father's Name</label><input type="text" id="es-father" /></div> <div class="form-group"><label>Mother's Name</label><input type="text" id="es-mother" /></div> <div class="form-row"> <div class="form-group"><label>Father's Number</label><input type="tel" id="es-father-phone" /></div> <div class="form-group"><label>Mother's Number</label><input type="tel" id="es-mother-phone" /></div> </div> <div class="form-row"> <div class="form-group"><label>Parent Email</label><input type="email" id="es-email" /></div> </div> <div id="es-data-note" style="margin-top:10px;padding:10px 14px;background:#eef5fb;border-radius:8px;font-size:.8rem;color:var(--muted)"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-edit-student')">Cancel</button> <button class="btn btn-primary" onclick="saveEditStudent()">Save Changes</button> </div> </div>
 </div> <!-- Delete Confirmation Modal -->
@@ -2051,10 +2055,9 @@
 <div class="modal-overlay" id="modal-import-teachers"> <div class="modal" style="max-width:640px"> <div class="modal-header"> <span class="modal-title"> Import Teachers (CSV / Excel)</span> <button class="modal-close" onclick="closeModal('modal-import-teachers')">×</button> </div> <div class="modal-body"> <div id="import-step-upload"> <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">
  Upload a <strong>.csv</strong>, <strong>.xls</strong> or <strong>.xlsx</strong> file. The first row should be column headers. </p> <div class="logo-upload-zone" onclick="document.getElementById('import-file-input').click()" style="padding:30px"> <div style="font-size:2rem;margin-bottom:6px"></div> <div style="font-size:.85rem;color:var(--muted)">Click to choose a file</div> <div style="font-size:.72rem;color:var(--muted);margin-top:4px" id="import-file-name">No file selected</div> </div> <input type="file" id="import-file-input" accept=".csv,.xls,.xlsx" style="display:none" onchange="handleImportFileSelect(event)" /> <div style="margin-top:16px;padding:12px 14px;background:#eef5fb;border-radius:8px;font-size:.78rem;color:var(--navy)"> <strong>Expected columns</strong> (case-insensitive, order doesn't matter):<br> <code>First Name</code>, <code>Last Name</code>, <code>Code</code>, <code>Email</code>, <code>Phone</code>, <code>Class</code>, <code>Subject</code>, <code>Periods/Week</code><br> <span style="color:var(--muted)">If a teacher teaches multiple class/subject combos, repeat the row with the same First+Last Name for each combo — they'll be merged into one teacher.</span> </div> <div style="margin-top:10px"> <button class="btn btn-ghost" onclick="downloadImportTemplate()">⬇ Download CSV Template</button> </div> </div> <div id="import-step-preview" style="display:none"> <p style="font-size:.85rem;margin-bottom:10px"><span id="import-summary"></span></p> <div style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:8px"> <table style="width:100%;font-size:.75rem;border-collapse:collapse"> <thead id="import-preview-head" style="background:var(--navy);color:#fff;position:sticky;top:0"></thead> <tbody id="import-preview-body"></tbody> </table> </div> <div id="import-warnings" style="margin-top:10px;font-size:.78rem;color:#b85c00"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-import-teachers')">Cancel</button> <button class="btn btn-ghost" id="import-back-btn" style="display:none" onclick="importGoBack()"> Back</button> <button class="btn btn-primary" id="import-confirm-btn" style="display:none" onclick="confirmImportTeachers()">Import Teachers</button> </div> </div>
 </div> <!-- Timetable slot assignment modal -->
-<div class="modal-overlay" id="modal-tt-assign"> <div class="modal" style="max-width:420px"> <div class="modal-header"> <span class="modal-title" id="tt-assign-title">Assign Slot</span> <button class="modal-close" onclick="closeModal('modal-tt-assign')">×</button> </div> <div class="modal-body"> <input type="hidden" id="tta-class" /> <input type="hidden" id="tta-day" /> <input type="hidden" id="tta-period" /> <input type="hidden" id="tta-term" /> <div class="form-group"> <label>Teacher</label> <select id="tta-teacher" onchange="filterTeacherSubjects()"> <option value="">Select teacher…</option> </select> </div> <div class="form-group"> <label>Subject</label> <select id="tta-subject"> <option value="">Select subject…</option> </select> </div> <div id="tta-conflict-note" style="display:none;background:#fff8f0;border:1px solid #f5c97a;border-radius:8px;padding:10px 12px;font-size:.8rem;color:#a06b0a;margin-top:8px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-tt-assign')">Cancel</button> <button class="btn btn-primary" onclick="confirmTTAssign()">Assign</button> </div> </div>
+<div class="modal-overlay" id="modal-tt-assign"> <div class="modal" style="max-width:420px"> <div class="modal-header"> <span class="modal-title" id="tt-assign-title">Assign Slot</span> <button class="modal-close" onclick="closeModal('modal-tt-assign')">×</button> </div> <div class="modal-body"> <input type="hidden" id="tta-class" /> <input type="hidden" id="tta-day" /> <input type="hidden" id="tta-period" /> <input type="hidden" id="tta-term" /> <div class="form-group"> <label style="display:flex;justify-content:space-between;align-items:center"> <span>Teacher</span> <span style="font-weight:400;font-size:.72rem;color:var(--muted)"><label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="tta-show-all-teachers" onchange="_populateTTATeacherSelect()" style="margin:0" /> Show all teachers</label></span> </label> <select id="tta-teacher" onchange="filterTeacherSubjects()"> <option value="">Select teacher…</option> </select> </div> <div class="form-group"> <label>Subject</label> <select id="tta-subject"> <option value="">Select subject…</option> </select> </div> <div id="tta-conflict-note" style="display:none;background:#fff8f0;border:1px solid #f5c97a;border-radius:8px;padding:10px 12px;font-size:.8rem;color:#a06b0a;margin-top:8px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-tt-assign')">Cancel</button> <button class="btn btn-primary" onclick="confirmTTAssign()">Assign</button> </div> </div>
 </div> <!-- Gap Suggestions modal -->
-<div class="modal-overlay" id="modal-gap-suggestions"> <div class="modal" style="max-width:460px"> <div class="modal-header"> <span class="modal-title" id="gap-suggest-title">Suggested Periods</span> <button class="modal-close" onclick="closeModal('modal-gap-suggestions')">×</button> </div> <div class="modal-body"> <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px" id="gap-suggest-desc">Suggestions respect every placement rule already in force. Click an option to place it directly on the timetable — nothing is added automatically.</p> <div id="gap-suggest-list" style="display:flex;flex-direction:column;gap:6px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-gap-suggestions')">Close</button> </div> </div> </div>
-</div> <!-- Add Staff Account Modal -->
+<div class="modal-overlay" id="modal-gap-suggestions"> <div class="modal" style="max-width:460px"> <div class="modal-header"> <span class="modal-title" id="gap-suggest-title">Suggested Periods</span> <button class="modal-close" onclick="closeModal('modal-gap-suggestions')">×</button> </div> <div class="modal-body"> <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px" id="gap-suggest-desc">Suggestions respect every placement rule already in force. Click an option to place it directly on the timetable — nothing is added automatically.</p> <div id="gap-suggest-list" style="display:flex;flex-direction:column;gap:6px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-gap-suggestions')">Close</button> </div> </div> </div> <!-- Add Staff Account Modal -->
 <div class="modal-overlay" id="modal-add-staff"> <div class="modal" style="max-width:480px"> <div class="modal-header"> <span class="modal-title" id="staff-modal-title">Add Staff Account</span> <button class="modal-close" onclick="closeModal('modal-add-staff')">×</button> </div> <div class="modal-body"> <input type="hidden" id="sa-uid" /> <div class="form-row"> <div class="form-group"><label>Full Name *</label><input type="text" id="sa-name" placeholder="Mary Akor" /></div> <div class="form-group"><label>Username *</label><input type="text" id="sa-username" placeholder="mary.akor" /></div> </div> <div class="form-group"> <label>Role</label> <select id="sa-role" onchange="applyRoleDefaults()"> <option value="teacher">Teacher</option> <option value="staff">Staff</option> <option value="readonly">Read Only</option> <option value="admin">Admin</option> </select> </div> <div class="form-group" id="sa-pw-group"> <label>Initial Password *</label> <div class="pw-toggle"> <input type="password" id="sa-pw" placeholder="Set their password" /> <button type="button" class="pw-eye" onclick="togglePwVis('sa-pw',this)"><svg class="eye-show" viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-hide" viewBox="0 0 24 24" style="display:none;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button> </div> <p style="font-size:.72rem;color:var(--muted);margin-top:4px">Staff can change this after first login.</p> </div> <div class="assign-section-label" style="margin-top:16px">Page Permissions</div> <div id="sa-perms" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px"> <!-- Rendered by applyRoleDefaults() --> </div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-add-staff')">Cancel</button> <button class="btn btn-primary" onclick="saveStaffAccount()">Save Account</button> </div> </div>
 </div> <!-- Orphaned Accounts Cleanup Modal -->
 <div class="modal-overlay" id="modal-cleanup-accounts"> <div class="modal" style="max-width:560px"> <div class="modal-header"> <span class="modal-title" style="color:var(--red)"> Clean Up Orphaned Staff Accounts</span> <button class="modal-close" onclick="closeModal('modal-cleanup-accounts')">×</button> </div> <div class="modal-body"> <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px" id="cleanup-summary"></p> <div style="display:flex;gap:12px;margin-bottom:8px"> <a href="#" style="font-size:.78rem" onclick="event.preventDefault();_setAllCleanupChecks(true)">Select all</a> <a href="#" style="font-size:.78rem" onclick="event.preventDefault();_setAllCleanupChecks(false)">Deselect all</a> </div> <div id="cleanup-list" style="max-height:50vh;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px"></div> </div> <div class="modal-footer"> <button class="btn btn-ghost" onclick="closeModal('modal-cleanup-accounts')">Cancel</button> <button class="btn btn-danger" onclick="confirmCleanupOrphanedAccounts()">Remove Selected</button> </div> </div> </div>
@@ -2089,6 +2092,15 @@ let __idbReady = false;
 function load(key, def) {
  try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
 }
+// Computes the current school year label (e.g. "2026/2027") from today's date
+// instead of a fixed string, so it never goes stale. Cameroon's school year
+// runs Sept—June; August (month index 7) is treated as the rollover point.
+function _currentAcademicYearLabel() {
+ var now = new Date();
+ var y = now.getFullYear();
+ var startYear = now.getMonth() >= 7 ? y : y - 1;
+ return startYear + '/' + (startYear + 1);
+}
 function save(key, val) {
  localStorage.setItem(key, JSON.stringify(val));
  _idbSet(key, val);
@@ -2104,6 +2116,154 @@ function save(key, val) {
 function removeData(key) {
  localStorage.removeItem(key);
  _idbDelete(key);
+}
+
+// ═══════════ PRINT/EXPORT ACTIVATION ═══════════════════════════════════
+// Per-school licensing gate. ACTIVATION_CODE and LICENSE_DAYS are baked
+// into the build for each delivery (see PRE-DELIVERY REQUIREMENT below —
+// this MUST be changed before shipping to a school; 'CHANGE_ME' will never
+// validate against anything, so an unconfigured build stays permanently
+// locked, which is intentional — it forces the step to not be skipped).
+//
+// LICENSE_DAYS is a DURATION (e.g. 300), not a fixed calendar date — the
+// countdown starts the moment the code is actually entered, not on some
+// pre-guessed delivery date. That also means renewal is just "ship a new
+// ACTIVATION_CODE": entering a code that differs from whatever's currently
+// stored is treated as a fresh activation and restarts the 300-day count,
+// so there's no separate expiry-date field to keep synced with the code.
+var ACTIVATION_CODE = 'CHANGE_ME';
+var LICENSE_DAYS  = 300; // days of active use, counted from actual activation
+
+function _isPrintActivated() {
+ // An unconfigured build (the placeholder never swapped for a real
+ // per-school code — see PRE-DELIVERY REQUIREMENT) must never validate,
+ // even if 'CHANGE_ME' is literally what someone types in. Otherwise the
+ // one thing meant to force that step to not be skipped silently doesn't.
+ if (ACTIVATION_CODE === 'CHANGE_ME') return false;
+ const entered = load('sm_print_activation', null);
+ if (!entered || entered !== ACTIVATION_CODE) return false;
+ const activatedDate = load('sm_license_activated_date', null);
+ if (!activatedDate) return false; // code matches but no activation date on record — treat as not activated
+ return _daysBetween(activatedDate, _effectiveToday()) <= LICENSE_DAYS;
+}
+
+// A school's computer clock is trusted for nothing else in this app, but
+// the day-count depends on it — and this is a fully offline, no-server
+// app, so there's no trusted external time source to check against. Two
+// failure modes matter: an innocently wrong clock (dead CMOS battery,
+// never synced, wrong timezone) and someone deliberately winding the
+// clock back to dodge the count. Both are addressed the same way —
+// remember the latest date the app has genuinely observed (persisted via
+// save(), so it survives reloads) and never let the effective "today"
+// used for the day-count move backward from that, no matter what the
+// system clock currently claims. Rolling the real clock back by a day or
+// two (e.g. a timezone glitch) doesn't cost any days, since the ratchet
+// only ever pushes the effective date forward, matching the most-advanced
+// date this specific browser profile has ever seen. This doesn't defend
+// against a clock that's wrong in the FUTURE direction — nothing offline
+// can, without a trusted server — but that failure mode only ever hurts
+// the school (days burn faster than real time), never helps anyone
+// stretch their count, so it's the acceptable side to leave unguarded.
+function _effectiveToday() {
+ const systemToday = new Date().toISOString().slice(0, 10);
+ const lastSeen = load('sm_license_last_seen', null);
+ const effective = (lastSeen && lastSeen > systemToday) ? lastSeen : systemToday;
+ if (effective !== lastSeen) save('sm_license_last_seen', effective);
+ return effective;
+}
+
+function _daysBetween(dateStrA, dateStrB) {
+ const a = new Date(dateStrA + 'T00:00:00Z');
+ const b = new Date(dateStrB + 'T00:00:00Z');
+ return Math.round((b - a) / 86400000);
+}
+
+function _addDays(dateStr, days) {
+ const d = new Date(dateStr + 'T00:00:00Z');
+ d.setUTCDate(d.getUTCDate() + days);
+ return d.toISOString().slice(0, 10);
+}
+
+// Call this as the FIRST line of any function that prints or exports.
+// Returns true and lets the caller proceed if activated; otherwise opens
+// the activation modal and returns false so the caller does nothing further.
+// Centralizing the check here (rather than gating each button's onclick)
+// means a print/export function can never accidentally ship ungated —
+// there's exactly one place this logic lives.
+function _requirePrintActivation() {
+ if (_isPrintActivated()) return true;
+ openActivationModal();
+ return false;
+}
+
+function openActivationModal() {
+ const el = document.getElementById('modal-activation');
+ if (!el) { alert('Printing is locked. Contact ScholarSys team for an activation code.'); return; }
+ document.getElementById('activation-code-input').value = '';
+ document.getElementById('activation-error').style.display = 'none';
+ el.classList.add('open');
+}
+
+function confirmActivation() {
+ const entered = document.getElementById('activation-code-input').value.trim();
+ const errEl = document.getElementById('activation-error');
+ if (!entered) { errEl.textContent = 'Enter the activation code.'; errEl.style.display = 'block'; return; }
+ if (ACTIVATION_CODE === 'CHANGE_ME') {
+ errEl.textContent = 'This build has not been configured with a per-school activation code yet. Contact ScholarSys team.';
+ errEl.style.display = 'block';
+ return;
+ }
+ if (entered !== ACTIVATION_CODE) {
+ errEl.textContent = 'Incorrect code. Contact ScholarSys team for the current activation code.';
+ errEl.style.display = 'block';
+ return;
+ }
+ // A DIFFERENT code than whatever's currently stored (including nothing
+ // stored yet) is a fresh activation — resets the day-count clock to zero,
+ // starting today. Re-entering the SAME code that's already active and
+ // already valid just no-ops through to the success path below without
+ // touching the activation date, so it can't be used to keep resetting
+ // the counter back to zero by repeatedly re-entering an unexpired code.
+ const previousCode = load('sm_print_activation', null);
+ if (previousCode !== entered) {
+ save('sm_print_activation', entered);
+ save('sm_license_activated_date', _effectiveToday());
+ }
+ if (!_isPrintActivated()) {
+ // Same code as before, but the day-count has run out — re-entering it
+ // again doesn't restart the clock (see above), so this is reachable
+ // and needs its own message rather than assuming success.
+ errEl.textContent = 'This code\u2019s license period has ended. Contact ScholarSys team to renew.';
+ errEl.style.display = 'block';
+ return;
+ }
+ closeModal('modal-activation');
+ showToast('Printing activated ');
+ if (typeof renderActivationStatus === 'function') renderActivationStatus();
+}
+
+function renderActivationStatus() {
+ const el = document.getElementById('activation-status-panel');
+ if (!el) return;
+ const entered = load('sm_print_activation', null);
+ const activatedDate = load('sm_license_activated_date', null);
+ const today = _effectiveToday();
+ const daysUsed = activatedDate ? _daysBetween(activatedDate, today) : null;
+ const daysLeft = daysUsed !== null ? LICENSE_DAYS - daysUsed : null;
+ let label, color, bg, border;
+ if (ACTIVATION_CODE === 'CHANGE_ME') {
+ label = 'Not Configured — this build still has the placeholder activation code (see PRE-DELIVERY REQUIREMENT before shipping to a school).'; color = '#b03024'; bg = '#fdecea'; border = '#f5b8ae';
+ } else if (entered === ACTIVATION_CODE && activatedDate && daysUsed <= LICENSE_DAYS) {
+ label = `Thank you for trusting us \u2014 licensed through ${_addDays(activatedDate, LICENSE_DAYS)} (${daysLeft} day${daysLeft === 1 ? '' : 's'} remaining)`; color = '#1a7a3a'; bg = '#e6f4ea'; border = '#b6dfc2';
+ } else if (entered === ACTIVATION_CODE && activatedDate && daysUsed > LICENSE_DAYS) {
+ label = `Expired — license period ended ${daysUsed - LICENSE_DAYS} day${daysUsed - LICENSE_DAYS === 1 ? '' : 's'} ago. Contact ScholarSys team to renew.`; color = '#b03024'; bg = '#fdecea'; border = '#f5b8ae';
+ } else {
+ label = 'Not Activated — printing and exports are locked. Contact ScholarSys team for an activation code.'; color = '#b85c00'; bg = '#fff8e1'; border = '#ffd54f';
+ }
+ el.innerHTML = `<div style="background:${bg};border:1px solid ${border};border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+ <span style="color:${color};font-weight:600"> Printing/Export: ${label}</span>
+ <button class="btn btn-ghost" style="font-size:.72rem;padding:4px 10px" onclick="openActivationModal()">Activate / Change Code</button>
+ </div>`;
 }
 
 function _idbOpen() {
@@ -2241,29 +2401,11 @@ async function _requestPersistentStorage() {
  } catch (e) { console.warn('storage.persist() request failed', e); }
 }
 
-let students = load('sm_students', [
- { id: 's1', num: '2024001', fname: 'Ambe', lname: 'Collins', cls: 'Form 1A', father: 'Mr Collins Sr', phone: '677001001', email: '' },
- { id: 's2', num: '2024002', fname: 'Ngum', lname: 'Beatrice', cls: 'Form 1A', father: 'Mr Ngum', phone: '677001002', email: '' },
- { id: 's3', num: '2024003', fname: 'Tabi', lname: 'Emmanuel', cls: 'Form 2A', father: 'Mr Tabi', phone: '677001003', email: '' },
- { id: 's4', num: '2024004', fname: 'Fon', lname: 'Grace', cls: 'Form 2A', father: 'Mr Fon', phone: '677001004', email: '' },
- { id: 's5', num: '2024005', fname: 'Nkeng', lname: 'Peter', cls: 'Form 3A', father: 'Mr Nkeng', phone: '677001005', email: '' },
-]);
+let students = load('sm_students', []);
 
-let payments = load('sm_payments', [
- { id: 'p1', studentId: 's1', type: 'school_fees', amount: 75000, term: 1, date: '2024-09-05', receipt: 'RCP-0001' },
- { id: 'p2', studentId: 's2', type: 'school_fees', amount: 75000, term: 1, date: '2024-09-06', receipt: 'RCP-0002' },
- { id: 'p3', studentId: 's3', type: 'exam_fees',  amount: 15000, term: 1, date: '2024-09-07', receipt: 'RCP-0003' },
- { id: 'p4', studentId: 's4', type: 'pta',  amount: 5000,  term: 1, date: '2024-09-08', receipt: 'RCP-0004' },
-]);
+let payments = load('sm_payments', []);
 
-let grades = load('sm_grades', [
- { id: 'g1', studentId: 's1', subject: 'Mathematics', score: 84, max: 100, term: 1, year: '2024/2025' },
- { id: 'g2', studentId: 's1', subject: 'English',  score: 72, max: 100, term: 1, year: '2024/2025' },
- { id: 'g3', studentId: 's2', subject: 'Mathematics', score: 91, max: 100, term: 1, year: '2024/2025' },
- { id: 'g4', studentId: 's2', subject: 'English',  score: 78, max: 100, term: 1, year: '2024/2025' },
- { id: 'g5', studentId: 's3', subject: 'Mathematics', score: 55, max: 100, term: 1, year: '2024/2025' },
- { id: 'g6', studentId: 's3', subject: 'Physics',  score: 63, max: 100, term: 1, year: '2024/2025' },
-]);
+let grades = load('sm_grades', []);
 
 // ── Sixth Form (L6/U6) Arts & Science test teachers (16 periods/wk ≈ 14 hrs) ──
 const SIXTH_FORM_TEST_TEACHERS = [];
@@ -2459,6 +2601,7 @@ function renderAll() {
  renderCoverage();
  applyTeacherRestrictions(); // always re-apply after render
  if (typeof renderBackupReminderBanner === 'function') renderBackupReminderBanner();
+ if (typeof renderActivationStatus === 'function') renderActivationStatus();
 }
 
 function getStudentName(id) {
@@ -2491,9 +2634,32 @@ function paymentTypeBadge(t) {
 
 function updateDashboardStats() {
  document.getElementById('stat-students').textContent = students.length;
+ const classCount = new Set(students.map(s => s.cls).filter(Boolean)).size;
+ const studentsSubEl = document.getElementById('stat-students-sub');
+ if (studentsSubEl) studentsSubEl.textContent = 'Across ' + classCount + ' class' + (classCount === 1 ? '' : 'es');
+
  const total = payments.reduce((s, p) => s + p.amount, 0);
  document.getElementById('stat-fees').textContent =
  total >= 1e6 ? (total / 1e6).toFixed(1) + 'M' : total.toLocaleString();
+ const feesSubEl = document.getElementById('stat-fees-sub');
+ if (feesSubEl) feesSubEl.textContent = 'XAF — ' + _currentAcademicYearLabel();
+
+ const avgEl = document.getElementById('stat-classavg');
+ if (avgEl) {
+ if (grades.length) {
+ const pct = grades.reduce((s, g) => s + (g.score / (g.max || 100)) * 100, 0) / grades.length;
+ avgEl.textContent = pct.toFixed(0) + '%';
+ } else {
+ avgEl.textContent = '—';
+ }
+ }
+
+ const unpaidEl = document.getElementById('stat-unpaid');
+ if (unpaidEl) {
+ const paidIds = new Set(payments.map(p => p.studentId));
+ const unpaidCount = students.filter(s => !paidIds.has(s.id)).length;
+ unpaidEl.textContent = unpaidCount;
+ }
 
  // Recent payments table
  const tbody = document.getElementById('recent-payments-body');
@@ -2535,6 +2701,7 @@ function _openStudentListPrintWindow(content, title) {
 // Respects whatever search text / class filter is currently applied on the
 // Students page, so what prints always matches what's on screen.
 function printStudentDirectory() {
+ if (!_requirePrintActivation()) return;
  const search = (document.getElementById('student-search')?.value || '').toLowerCase();
  const cls = document.getElementById('class-filter')?.value || '';
  const filtered = students.filter(s =>
@@ -2857,6 +3024,7 @@ function renderPayments() {
 // EXPORT PAYMENT HISTORY (Excel / CSV)
 // ══════════════════════════════════════════════════════════
 function exportPayments(format) {
+ if (!_requirePrintActivation()) return;
   const filtered = _getFilteredPayments();
   if (!filtered.length) return showToast('No payments to export');
 
@@ -2998,6 +3166,7 @@ function clearPaymentSearch() {
 // mark-sheet panel (same class/subject/term/sequence selection the Print
 // button uses), so Export Word and Print always show the same data.
 function exportClassListWord() {
+ if (!_requirePrintActivation()) return;
  var container = document.getElementById('mark-sheet-container');
  if (!container) return;
  var cls = document.getElementById('grades-class')?.value || '';
@@ -3752,7 +3921,7 @@ function renderClassList() {
 
  if (titleEl)  titleEl.textContent  = cls + ' — ' + subject;
  if (subtitleEl) subtitleEl.textContent = 'Term ' + term + ' | Sequence ' + seqNo + (teacher ? ' | Teacher: ' + teacher : '');
- if (metaEl)  metaEl.innerHTML  = 'Academic Year: 2025/2026';
+ if (metaEl)  metaEl.innerHTML  = 'Academic Year: ' + _currentAcademicYearLabel();
 
  // Get students for this class, sorted alphabetically by last name then first name
  var clsStudents = students.filter(function(s) { return s.cls === cls; });
@@ -4251,6 +4420,7 @@ function renderMasterSheet() {
 }
 
 function exportMasterSheetWord() {
+ if (!_requirePrintActivation()) return;
  if (!currentUser || currentUser.role !== 'admin') return;
  var cls = document.getElementById('ms-class')?.value || '';
  if (!cls) return showToast('Select a class first');
@@ -4634,6 +4804,7 @@ function _downloadAsWordDoc(bodyHtml, filename, opts) {
 // agree on scope. Reuses _buildClassTimetableHTML per class — same builder
 // Print View uses — so the two outputs can never show different data.
 function exportTimetableWord() {
+ if (!_requirePrintActivation()) return;
  var selCls = document.getElementById('tt-class-select')?.value || '';
  var withSlots = loadCustomClasses().filter(function(cls) {
  return ttSlots.some(function(s) { return s.cls === cls && s.term === 1; });
@@ -4687,6 +4858,7 @@ function _openClassTTPrintWindow(classList, title) {
 // Timetable page would output the *interactive* grid — X placeholders, + Add
 // boxes and all. Route it to the proper print builder instead.
 function topbarPrint() {
+ if (!_requirePrintActivation()) return;
  var active = document.querySelector('.page.active');
  var id = active ? active.id : '';
  if (id === 'page-timetable') { printTimetable(); return; }
@@ -4697,7 +4869,18 @@ function topbarPrint() {
  window.print();
 }
 
+// Shared handler for the inline "Print" buttons on Class List, Master Sheet,
+// and Reports — replaces the old bare onclick="applyLHToPage();window.print()"
+// so those three also go through the same activation gate as every other
+// print/export path instead of bypassing it.
+function gatedWindowPrint() {
+ if (!_requirePrintActivation()) return;
+ if (typeof applyLHToPage === 'function') applyLHToPage();
+ window.print();
+}
+
 function printTimetable() {
+ if (!_requirePrintActivation()) return;
  var selCls = document.getElementById('tt-class-select')?.value || '';
  var withSlots = loadCustomClasses().filter(function(cls) {
  return ttSlots.some(function(s) { return s.cls === cls && s.term === 1; });
@@ -4774,6 +4957,7 @@ function _buildClassTimetableHTML(cls) {
 }
 
 function printAllClassTimetables() {
+ if (!_requirePrintActivation()) return;
  var withSlots = loadCustomClasses().filter(function(cls) {
  return ttSlots.some(function(s) { return s.cls === cls && s.term === 1; });
  });
@@ -4826,6 +5010,204 @@ function _getClassesWithGenerationProblems(term) {
 // array of short human-readable reason strings; empty if none apply (in
 // which case the shortfall is likely ordinary slot contention from queue
 // order, not a structural cause).
+// Per-teacher/subject breakdown of exactly which assignments are behind a
+// class's shortfall — the class-level "Xp short" number on its own doesn't
+// say who's missing; this turns it into an actionable list of teacher +
+// subject + placed/target, sorted worst-gap-first, for the Generation
+// problems banner in the Subject Coverage panel.
+function _getClassTeacherGaps(cls, term) {
+ term = term || 1;
+ const rows = [];
+ teachers.forEach(t => {
+ (t.assignments || []).forEach(a => {
+ if (a.cls !== cls) return;
+ const target = parseInt(a.periodsPerWeek) || 2;
+ const placed = ttSlots.filter(s => s.teacherId === t.id && s.cls === cls && s.subject === a.subject && s.term === term).length;
+ const gap = target - placed;
+ if (gap > 0) {
+ rows.push({ teacherName: (t.fname || '') + ' ' + (t.lname || ''), subject: a.subject, placed, target, gap });
+ }
+ });
+ });
+ return rows.sort((a, b) => b.gap - a.gap);
+}
+
+// Finds candidate "surplus → gap" trades. A donor slot is a period that's
+// already BEYOND that teacher's own target for that assignment (the same
+// "extra" periods v246 started flagging as red pills) — donors are never
+// teachers giving up a period they're genuinely supposed to have, only ones
+// sitting on a stray/duplicate one. A recipient is a teacher with a genuine,
+// still-unfilled assignment. A trade only gets proposed when the exact same
+// (day, slotId, cls) the donor currently occupies would also work for the
+// recipient — same class (so the class's own grid actually has room there
+// once the donor's subject is lifted out) and the recipient is free at that
+// slot. Nothing is changed here — this only returns proposals for review;
+// applySurplusTrade() below performs the actual swap once approved.
+//
+// Scoped to teachers carrying a real full load (TRADE_MIN_LOAD periods/week
+// or more) on BOTH sides of the trade — a stray period matters a lot less,
+// proportionally, for someone with a light 8p/wk assignment, and a 1-2p
+// swing shouldn't be engineered around a lightly-loaded teacher's schedule.
+const TRADE_MIN_LOAD = 20;
+function _findSurplusTrades(term) {
+ term = term || 1;
+ const totalLoad = t => (t.assignments || []).reduce((sum, a) => sum + (parseInt(a.periodsPerWeek) || 2), 0);
+
+ const surplusSlots = [];
+ teachers.filter(t => totalLoad(t) >= TRADE_MIN_LOAD).forEach(donor => {
+ (donor.assignments || []).forEach(a => {
+ const target = parseInt(a.periodsPerWeek) || 2;
+ const slots = ttSlots.filter(s => s.teacherId === donor.id && s.cls === a.cls && s.subject === a.subject && s.term === term);
+ if (slots.length > target) {
+ slots.slice(target).forEach(s => surplusSlots.push({ slot: s, donor, subject: a.subject }));
+ }
+ });
+ });
+
+ const gaps = [];
+ teachers.filter(t => totalLoad(t) >= TRADE_MIN_LOAD).forEach(recipient => {
+ (recipient.assignments || []).forEach(a => {
+ const target = parseInt(a.periodsPerWeek) || 2;
+ const placed = ttSlots.filter(s => s.teacherId === recipient.id && s.cls === a.cls && s.subject === a.subject && s.term === term).length;
+ if (placed < target) {
+ gaps.push({ recipient, cls: a.cls, subject: a.subject, need: target - placed });
+ }
+ });
+ });
+
+ const trades = [];
+ surplusSlots.forEach(({ slot, donor, subject }) => {
+ const match = gaps.find(g =>
+ g.need > 0 &&
+ g.cls === slot.cls &&
+ (g.recipient.availability?.[slot.day] || []).includes(slot.slotId) &&
+ !ttSlots.some(s => s.teacherId === g.recipient.id && s.day === slot.day && s.slotId === slot.slotId && s.term === term)
+ );
+ if (match) {
+ trades.push({
+ day: slot.day, slotId: slot.slotId, cls: slot.cls, term,
+ donorId: donor.id, donorName: ((donor.fname||'')+' '+(donor.lname||'')).trim(), donorSubject: subject,
+ recipientId: match.recipient.id, recipientName: ((match.recipient.fname||'')+' '+(match.recipient.lname||'')).trim(), recipientSubject: match.subject
+ });
+ match.need--;
+ }
+ });
+ return trades;
+}
+
+// Performs one approved trade: removes the donor's stray slot and places
+// the recipient into that exact (day, slotId, cls) instead. Re-validated
+// against live ttSlots at call time (not the array captured when the
+// banner was drawn) in case something else changed the schedule in
+// between — if either side is no longer true, the trade is aborted rather
+// than silently corrupting the timetable.
+function applySurplusTrade(donorId, donorSubject, recipientId, recipientSubject, cls, day, slotId, term) {
+ term = parseInt(term);
+ slotId = parseInt(slotId);
+ const donorIdx = ttSlots.findIndex(s =>
+ s.teacherId === donorId && s.subject === donorSubject && s.cls === cls &&
+ s.day === day && s.slotId === slotId && s.term === term
+ );
+ if (donorIdx === -1) {
+ alert('This trade is no longer valid — the donor slot has already changed. Refreshing the list.');
+ renderTeachers();
+ return;
+ }
+ const recipientStillBusy = ttSlots.some(s => s.teacherId === recipientId && s.day === day && s.slotId === slotId && s.term === term);
+ if (recipientStillBusy) {
+ alert('This trade is no longer valid — the recipient is already booked at that slot now. Refreshing the list.');
+ renderTeachers();
+ return;
+ }
+ ttSlots.splice(donorIdx, 1);
+ ttSlots.push({ teacherId: recipientId, cls, subject: recipientSubject, day, slotId, term });
+ save('sm_ttslots', ttSlots);
+ // Full refresh, not just this panel — a trade changes ttSlots, which
+ // Timetable, Subject Coverage, and both trade banners on this same page
+ // all read from. Re-rendering only the Teachers table (as earlier
+ // versions did) left every other open view showing the pre-trade state
+ // until the next unrelated action happened to trigger it, which is
+ // exactly the class of staleness bug fixed elsewhere (v242's coverage
+ // panel). renderAll() is the same full-refresh path every other write
+ // in the app already goes through — this brings trades in line with it.
+ renderAll();
+}
+
+// Second, more permissive tier: for recipients with a genuinely large
+// shortfall (LARGE_GAP_THRESHOLD+ periods still unplotted, matched
+// per-assignment the same way v246 computes "real" shortfall so it can't
+// be masked by an unrelated surplus elsewhere on their own record), also
+// pull candidate donors from teachers carrying a heavy load
+// (HEAVY_DONOR_MIN_LOAD+ periods/week) — not limited to their stray/
+// over-target periods this time. A teacher with that much on their plate
+// giving up 1-2 of their own periods for someone with a much bigger gap is
+// the actual trade-off this was requested for. Unlike the safe stray-only
+// trades above, this DOES take a period a donor is genuinely assigned —
+// each one needs a deliberate look before applying, so it's rendered as
+// its own clearly separate, differently-coloured section with its own
+// confirm step (applyHeavyDonorTrade below), never silently folded into
+// the safe trade list or applied with a single casual click.
+const HEAVY_DONOR_MIN_LOAD = 22;
+const LARGE_GAP_THRESHOLD = 3;
+function _findHeavyDonorTrades(term) {
+ term = term || 1;
+ const totalLoad = t => (t.assignments || []).reduce((sum, a) => sum + (parseInt(a.periodsPerWeek) || 2), 0);
+
+ // Recipients: real (matched) shortfall, summed across all their
+ // assignments, of LARGE_GAP_THRESHOLD periods or more.
+ const gaps = [];
+ teachers.forEach(recipient => {
+ (recipient.assignments || []).forEach(a => {
+ const target = parseInt(a.periodsPerWeek) || 2;
+ const placed = ttSlots.filter(s => s.teacherId === recipient.id && s.cls === a.cls && s.subject === a.subject && s.term === term).length;
+ if (placed < target) gaps.push({ recipient, cls: a.cls, subject: a.subject, need: target - placed });
+ });
+ });
+ const gapTotalByRecipient = {};
+ gaps.forEach(g => { gapTotalByRecipient[g.recipient.id] = (gapTotalByRecipient[g.recipient.id] || 0) + g.need; });
+ const eligibleGaps = gaps.filter(g => (gapTotalByRecipient[g.recipient.id] || 0) >= LARGE_GAP_THRESHOLD);
+ if (!eligibleGaps.length) return [];
+
+ // Donors: every placed period belonging to a heavily-loaded teacher —
+ // deliberately not restricted to their surplus/over-target ones, since
+ // the whole point of this tier is a genuine, reviewed sacrifice.
+ const donorSlots = [];
+ teachers.filter(t => totalLoad(t) >= HEAVY_DONOR_MIN_LOAD).forEach(donor => {
+ (donor.assignments || []).forEach(a => {
+ ttSlots.filter(s => s.teacherId === donor.id && s.cls === a.cls && s.subject === a.subject && s.term === term)
+ .forEach(s => donorSlots.push({ slot: s, donor, subject: a.subject }));
+ });
+ });
+
+ const trades = [];
+ donorSlots.forEach(({ slot, donor, subject }) => {
+ const match = eligibleGaps.find(g =>
+ g.need > 0 &&
+ g.cls === slot.cls &&
+ g.recipient.id !== donor.id &&
+ (g.recipient.availability?.[slot.day] || []).includes(slot.slotId) &&
+ !ttSlots.some(s => s.teacherId === g.recipient.id && s.day === slot.day && s.slotId === slot.slotId && s.term === term)
+ );
+ if (match) {
+ trades.push({
+ day: slot.day, slotId: slot.slotId, cls: slot.cls, term,
+ donorId: donor.id, donorName: ((donor.fname||'')+' '+(donor.lname||'')).trim(), donorSubject: subject,
+ recipientId: match.recipient.id, recipientName: ((match.recipient.fname||'')+' '+(match.recipient.lname||'')).trim(), recipientSubject: match.subject
+ });
+ match.need--;
+ }
+ });
+ return trades;
+}
+
+// Same swap mechanics as applySurplusTrade, gated behind an explicit
+// confirm() since this tier removes a period the donor is genuinely
+// assigned, not a stray one.
+function applyHeavyDonorTrade(donorId, donorName, donorSubject, recipientId, recipientName, recipientSubject, cls, day, slotId, term) {
+ if (!confirm(`This will remove a genuinely assigned period from ${donorName} (${cls}: ${donorSubject}, ${day}) and give that slot to ${recipientName} (${cls}: ${recipientSubject}) instead. ${donorName} will end up below their own target for that assignment. Continue?`)) return;
+ applySurplusTrade(donorId, donorSubject, recipientId, recipientSubject, cls, day, slotId, term);
+}
+
 function _getClassProblemReasons(cls) {
  const reasons = [];
  const teachSlots = getTeachingSlots();
@@ -5179,11 +5561,25 @@ function renderCoverage() {
  return `<li style="margin-bottom:5px">${r.reason}<div style="margin:3px 0 0;padding:4px 8px;background:#f4f7fb;border-left:3px solid #1a3a5c;color:#1a3a5c;font-style:normal"><strong>→ Proposed solution:</strong> ${r.solution}${pairHtml}</div></li>`;
  }).join('')}</ul>`
  : `<div style="margin:4px 0 0;color:#888;font-style:italic">No structural cause found — likely ordinary slot contention from queue order (try the repair pass or reduce competing periods).</div>`;
+ const teacherGaps = _getClassTeacherGaps(x.cls, term);
+ const teacherGapHtml = teacherGaps.length
+ ? `<div style="margin-top:6px">
+ <div style="font-weight:600;color:#1a3a5c">Which teachers/subjects account for the ${x.gap}p:</div>
+ <table style="width:100%;border-collapse:collapse;margin-top:4px;font-size:.72rem">
+ ${teacherGaps.map(g => `<tr>
+ <td style="padding:2px 6px;border-bottom:1px solid #f0e0dc;color:#333">${g.teacherName}</td>
+ <td style="padding:2px 6px;border-bottom:1px solid #f0e0dc;color:#555">${g.subject}</td>
+ <td style="padding:2px 6px;border-bottom:1px solid #f0e0dc;text-align:right;font-weight:600;color:${g.placed===0?'#cc0000':'#b85c00'}">${g.placed}/${g.target}p</td>
+ </tr>`).join('')}
+ </table>
+ </div>`
+ : '';
  return `<div style="background:#fff;border:1px solid #f5b8ae;border-radius:6px;padding:7px 10px">
  <strong style="color:#7a2a1a">${x.cls}</strong>
  <span style="color:#555"> — ${x.plotted}/${x.planned}p (${pct}%), </span>
  <span style="color:#cc0000;font-weight:700">${x.gap}p short</span>
  ${reasonHtml}
+ ${teacherGapHtml}
  </div>`;
  }).join('')}
  </div>
@@ -5276,6 +5672,8 @@ function clearTimetable() {
  ttSlots = [];
  save('sm_ttslots', ttSlots);
  renderTimetable();
+ renderTeachers();
+ if (typeof renderCoverage === 'function') renderCoverage();
  showToast('Timetable cleared');
 }
 
@@ -5716,8 +6114,9 @@ function autoGenerateAllTerms() {
 
  save('sm_ttslots', ttSlots);
  renderTimetable();
- // Refresh coverage panel if open
- if (document.getElementById('coverage-panel')?.style.display !== 'none') renderCoverage();
+ renderTeachers(); // per-teacher plotted counts must reflect the new slots immediately —
+ // waiting for the person to navigate away and back was the original bug.
+ if (typeof renderCoverage === 'function') renderCoverage();
  showToast('Timetable generated  — periods packed to minimise teacher free time');
 }
 
@@ -5864,6 +6263,8 @@ function fixConsecutiveViolations() {
 
  save('sm_ttslots', ttSlots);
  renderTimetable();
+ renderTeachers();
+ if (typeof renderCoverage === 'function') renderCoverage();
  if (stuck.length) {
  showToast(`Moved ${moved}. ${stuck.length} could not be moved — no free slot fits: ${stuck.slice(0,2).join(', ')}`);
  } else {
@@ -6035,6 +6436,7 @@ function fixClassDayBalance(cls, targetDay) {
 
  save('sm_ttslots', ttSlots);
  renderTimetable();
+ renderTeachers();
  if (typeof renderCoverage === 'function') renderCoverage();
 
  if (moved > 0) {
@@ -6622,6 +7024,57 @@ function renderTeachers() {
 
  document.getElementById('teacher-count').textContent = `${filtered.length} teacher${filtered.length !== 1 ? 's' : ''}`;
 
+ // ── Suggested surplus trades ────────────────────────────────────────
+ // Admin-only — teachers viewing their own record don't need to see or
+ // act on trades involving other staff.
+ const tradesBanner = document.getElementById('teacher-trades-banner');
+ if (tradesBanner) {
+ if (isTeacher) {
+ tradesBanner.innerHTML = '';
+ } else {
+ const trades = _findSurplusTrades(1);
+ tradesBanner.innerHTML = trades.length
+ ? `<div style="background:#eef5fb;border:1px solid #b3d1f0;border-radius:8px;padding:10px 14px;font-size:.78rem;margin-bottom:12px">
+ <strong style="color:var(--navy)">\u2192 ${trades.length} suggested trade${trades.length!==1?'s':''}</strong>
+ <span style="color:#555"> — a stray/over-target period sitting in the same slot a short-staffed assignment could actually use. Donors only give up periods beyond their own target; nobody's real workload is reduced. Limited to teachers carrying ${TRADE_MIN_LOAD}p/wk or more on both sides of the trade.</span>
+ <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+ ${trades.map(tr => `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #cfd8e3;border-radius:6px;padding:6px 10px;flex-wrap:wrap">
+ <span><strong>${tr.cls}</strong> — ${tr.day} period, currently ${tr.donorName}: ${tr.donorSubject} <span style="color:#888">(stray)</span> \u2192 give to ${tr.recipientName}: ${tr.recipientSubject} <span style="color:#888">(short)</span></span>
+ <button class="btn btn-primary" style="font-size:.68rem;padding:3px 8px;white-space:nowrap" onclick="applySurplusTrade('${tr.donorId}','${tr.donorSubject.replace(/'/g,"\\'")}','${tr.recipientId}','${tr.recipientSubject.replace(/'/g,"\\'")}','${tr.cls.replace(/'/g,"\\'")}','${tr.day}',${tr.slotId},${tr.term})">Apply</button>
+ </div>`).join('')}
+ </div>
+ </div>`
+ : '';
+ }
+ }
+
+ // ── Additional suggestions for large gaps, from heavily-loaded donors ──
+ // A second, more permissive tier: recipients with a genuinely large
+ // shortfall also see candidates sourced from teachers carrying
+ // HEAVY_DONOR_MIN_LOAD+ periods/week, not limited to stray periods this
+ // time — a real sacrifice, so it's kept visually distinct (amber, not
+ // blue) and gated behind its own confirm step rather than a plain Apply.
+ const heavyTradesBanner = document.getElementById('teacher-heavy-trades-banner');
+ if (heavyTradesBanner) {
+ if (isTeacher) {
+ heavyTradesBanner.innerHTML = '';
+ } else {
+ const heavyTrades = _findHeavyDonorTrades(1);
+ heavyTradesBanner.innerHTML = heavyTrades.length
+ ? `<div style="background:#fff8e1;border:1px solid #ffd54f;border-radius:8px;padding:10px 14px;font-size:.78rem;margin-bottom:12px">
+ <strong style="color:#b85c00">\u26a0 ${heavyTrades.length} additional suggestion${heavyTrades.length!==1?'s':''} for large gaps</strong>
+ <span style="color:#555"> — these take a genuinely assigned period from a heavily-loaded teacher (${HEAVY_DONOR_MIN_LOAD}p/wk or more), not just a stray one, to help a recipient short by ${LARGE_GAP_THRESHOLD}p or more overall. Each asks the donor to drop below their own target — review before applying, not a casual click.</span>
+ <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+ ${heavyTrades.map(tr => `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid #ffe082;border-radius:6px;padding:6px 10px;flex-wrap:wrap">
+ <span><strong>${tr.cls}</strong> — ${tr.day} period, currently ${tr.donorName}: ${tr.donorSubject} <span style="color:#b85c00">(would drop below target)</span> \u2192 give to ${tr.recipientName}: ${tr.recipientSubject} <span style="color:#888">(large gap)</span></span>
+ <button class="btn" style="font-size:.68rem;padding:3px 8px;white-space:nowrap;background:#ffd54f;border:1px solid #b85c00;color:#7a4a00" onclick="applyHeavyDonorTrade('${tr.donorId}','${tr.donorName.replace(/'/g,"\\'")}','${tr.donorSubject.replace(/'/g,"\\'")}','${tr.recipientId}','${tr.recipientName.replace(/'/g,"\\'")}','${tr.recipientSubject.replace(/'/g,"\\'")}','${tr.cls.replace(/'/g,"\\'")}','${tr.day}',${tr.slotId},${tr.term})">Review & Apply</button>
+ </div>`).join('')}
+ </div>
+ </div>`
+ : '';
+ }
+ }
+
  // Hoisted out of the per-row loop below: none of these depend on the
  // specific teacher being rendered, so recomputing them for every row was
  // pure wasted work (each a localStorage read + JSON.parse).
@@ -6658,37 +7111,102 @@ function renderTeachers() {
  const placedTerm1  = ttSlots.filter(s => s.teacherId === t.id && s.term === 1);
  const slotCount  = placedTerm1.length;
  const placedHrs  = ((slotCount * avgPeriodMins) / 60).toFixed(1);
- const unplacedPeriods = Math.max(0, totalPeriodsPlanned - slotCount);
- const unplacedHrs  = ((unplacedPeriods * avgPeriodMins) / 60).toFixed(1);
 
- // Per-assignment placement status
+ // ── Capacity check: total planned periods vs total availability, and
+ // which days this teacher's own availability is already fully consumed.
+ // Computed once per teacher so per-assignment overlap checks below can
+ // reuse it instead of re-scanning ttSlots for every single assignment.
+ const teacherBusyKeys = new Set(placedTerm1.map(s => s.day + ':' + s.slotId));
+ const teacherAvail  = t.availability || {};
+ const totalAvailSlots = DAYS.reduce((sum, d) => sum + (teacherAvail[d] || []).length, 0);
+ const teacherFreeByDay = {};
+ DAYS.forEach(d => {
+ teacherFreeByDay[d] = (teacherAvail[d] || []).filter(id => !teacherBusyKeys.has(d + ':' + id));
+ });
+ const teacherSaturatedDays = DAYS.filter(d => (teacherAvail[d]||[]).length > 0 && teacherFreeByDay[d].length === 0);
+ const capacityPct = totalAvailSlots > 0 ? Math.round((totalPeriodsPlanned / totalAvailSlots) * 100) : 0;
+ const capacityTight = totalAvailSlots > 0 && (totalPeriodsPlanned > totalAvailSlots || capacityPct >= 90);
+ const capacityLine = totalAvailSlots > 0
+ ? `<div style="font-size:.68rem;margin-top:3px;color:${capacityTight ? '#cc3300' : 'var(--muted)'}" title="Total periods assigned vs total availability slots — a teacher can look fine overall and still be deadlocked if the free slots don't land on the same days a class still has room.">
+ Capacity: ${totalPeriodsPlanned}p / ${totalAvailSlots} available slots (${capacityPct}%)${teacherSaturatedDays.length ? ' · fully booked: ' + teacherSaturatedDays.map(d=>dayAbbr[d]).join(', ') : ''}
+ </div>`
+ : '';
+
+ // Diagnoses WHY a short/missing assignment can't be placed: is there ANY
+ // (day,slot) where the teacher is free AND the class still has room? If
+ // yes, it's an ordinary generation gap (regenerate / check pairing rules).
+ // If no, it's a genuine deadlock — the teacher's free days and the class's
+ // free days simply never coincide, and no amount of regenerating will fix
+ // it; only availability, load, or reassignment changes will.
+ function _diagnoseGap(cls, subject) {
+ const classBusyKeys = new Set(
+ ttSlots.filter(s => s.cls === cls && s.term === 1).map(s => s.day + ':' + s.slotId)
+ );
+ const overlap = [];
+ DAYS.forEach(day => {
+ teacherFreeByDay[day].forEach(slotId => {
+ if (!classBusyKeys.has(day + ':' + slotId)) overlap.push(day);
+ });
+ });
+ if (overlap.length) {
+ return ` ${overlap.length} open overlapping slot${overlap.length===1?'':'s'} (e.g. ${overlap[0]}) — should be placeable. Try Auto-Generate again, or check Can-Pair / Subject-Classes rules.`;
+ }
+ const satNote = teacherSaturatedDays.length ? `fully booked on ${teacherSaturatedDays.map(d=>dayAbbr[d]).join(', ')}` : '';
+ const noAvailDays = DAYS.filter(d => !(teacherAvail[d]||[]).length);
+ const noAvailNote = noAvailDays.length ? `no availability at all on ${noAvailDays.map(d=>dayAbbr[d]).join(', ')}` : '';
+ const reason = [satNote, noAvailNote].filter(Boolean).join(' and ');
+ return ` No overlapping free slot found — ${reason || 'availability and class schedule never coincide'}. Regenerating won\u2019t fix this; add availability on a day ${cls} still has room, free up a slot on ${cls}, or reassign this period to another teacher.`;
+ }
+
+ // Per-assignment placement status — computed once and reused to build the
+ // headline summary below. Using raw totals (sum of all placed vs sum of
+ // all targets) lets errors cancel out silently: one assignment short by 1p
+ // and a different one over-plotted by 1p nets to zero difference, so a
+ // teacher can show "fully plotted" while genuinely missing a period
+ // somewhere and carrying a stray/duplicate slot somewhere else. Matching
+ // per-assignment (min(placed,target) summed) avoids that.
+ let matchedTotal = 0, overTotal = 0;
  const assignStatus = (t.assignments || []).map(a => {
  const placed = placedTerm1.filter(s => s.cls === a.cls && s.subject === a.subject).length;
  const target = a.periodsPerWeek || 2;
  const short  = target - placed;
- if (short <= 0) {
+ matchedTotal += Math.min(placed, target);
+ overTotal += Math.max(0, placed - target);
+ if (placed > target) {
+ return `<span class="pill pill-class" style="background:#fdecea;color:#b03024;border:1px solid #f5b8ae" title="Placed more than the ${target}p target for this assignment — likely a stray or duplicate slot.">
+ ${a.cls}: ${a.subject}  ${placed}/${target}p — ${placed-target}p extra </span>`;
+ } else if (short <= 0) {
  return `<span class="pill pill-class" style="background:#e6f4ea;color:#1a7a3a;border:1px solid #b6dfc2">
  ${a.cls}: ${a.subject}  ${placed}/${target}p </span>`;
  } else if (placed === 0) {
- return `<span class="pill pill-class" style="background:#fff0f0;color:#cc0000;border:1px solid #ffb3b3">
+ return `<span class="pill pill-class" style="background:#fff0f0;color:#cc0000;border:1px solid #ffb3b3" title="${_diagnoseGap(a.cls, a.subject).replace(/"/g,'&quot;')}">
  ${a.cls}: ${a.subject}  0/${target}p — not plotted </span>`;
  } else {
- return `<span class="pill pill-class" style="background:#fff8e1;color:#b85c00;border:1px solid #ffd54f">
+ return `<span class="pill pill-class" style="background:#fff8e1;color:#b85c00;border:1px solid #ffd54f" title="${_diagnoseGap(a.cls, a.subject).replace(/"/g,'&quot;')}">
  ${a.cls}: ${a.subject}  ${placed}/${target}p — ${short}p missing </span>`;
  }
  }).join('');
 
- // Summary line
+ // Summary line — driven by matchedTotal (correctness), not raw slotCount,
+ // so a stray extra slot can never mask a genuine shortfall elsewhere.
+ const realUnplaced = Math.max(0, totalPeriodsPlanned - matchedTotal);
+ const realUnplacedHrs = ((realUnplaced * avgPeriodMins) / 60).toFixed(1);
+ const strayNote = overTotal > 0
+ ? `<br><span style="font-size:.72rem;color:#b03024;font-weight:600"> ${overTotal}p placed beyond target (stray/duplicate — see red pill${overTotal===1?'':'s'} below)</span>`
+ : '';
  let summaryHtml = '';
  if (totalPeriodsPlanned === 0) {
  summaryHtml = '<span style="font-size:.72rem;color:var(--muted)">No subjects assigned</span>';
  } else if (slotCount === 0) {
  summaryHtml = `<span style="font-size:.72rem;color:var(--sky);font-weight:600">${totalPeriodsPlanned}p/wk planned · ${totalHrsPlanned} hrs</span> <br><span style="font-size:.72rem;color:#cc0000;font-weight:600"> 0 periods plotted — not yet on timetable</span>`;
- } else if (unplacedPeriods === 0) {
- summaryHtml = `<span style="font-size:.72rem;color:#1a7a3a;font-weight:600"> ${slotCount}/${totalPeriodsPlanned}p plotted · ${placedHrs} hrs/wk</span>`;
+ } else if (realUnplaced === 0 && overTotal === 0) {
+ summaryHtml = `<span style="font-size:.72rem;color:#1a7a3a;font-weight:600"> ${matchedTotal}/${totalPeriodsPlanned}p plotted · ${placedHrs} hrs/wk</span>`;
  } else {
- summaryHtml = `<span style="font-size:.72rem;color:var(--sky);font-weight:600">${slotCount}/${totalPeriodsPlanned}p plotted · ${placedHrs} hrs/wk</span> <br><span style="font-size:.72rem;color:#cc3300;font-weight:600"> ${unplacedPeriods}p (${unplacedHrs} hrs) could not be plotted</span>`;
+ summaryHtml = `<span style="font-size:.72rem;color:var(--sky);font-weight:600">${matchedTotal}/${totalPeriodsPlanned}p plotted · ${placedHrs} hrs/wk</span>` +
+ (realUnplaced > 0 ? `<br><span style="font-size:.72rem;color:#cc3300;font-weight:600"> ${realUnplaced}p (${realUnplacedHrs} hrs) could not be plotted</span>` : '') +
+ strayNote;
  }
+ summaryHtml += capacityLine;
 
  // Build individual timetable mini-grid for this teacher
  const teacherSlotsByDay = {};
@@ -8005,6 +8523,7 @@ function _buildTeacherTimetableHTML(t) {
 }
 
 function printTeacherTimetable(id) {
+ if (!_requirePrintActivation()) return;
  const t = teachers.find(x => x.id === id);
  if (!t) return;
  const lh = loadLH();
@@ -8036,6 +8555,7 @@ function printTeacherTimetable(id) {
 }
 
 function printAllTeacherTimetables() {
+ if (!_requirePrintActivation()) return;
  if (!teachers.length) return showToast('No teachers to print');
  const filtered = teachers.filter(t =>
  ttSlots.some(s => s.teacherId === t.id && s.term === 1)
@@ -8108,6 +8628,7 @@ function deleteTeacher(id) {
 // EXPORT TEACHERS TO CSV / EXCEL
 // ══════════════════════════════════════════════════════════
 function exportTeachers(format) {
+ if (!_requirePrintActivation()) return;
  if (!teachers.length) return showToast('No teachers to export');
 
  // Days as columns: Monday–Saturday
@@ -8687,6 +9208,11 @@ function removeTTSlot(id) {
  ttSlots = ttSlots.filter(s => s.id !== id);
  save('sm_ttslots', ttSlots);
  if (gone) _refreshClassBlock(gone.cls); else renderTimetable();
+ // _refreshClassBlock only patches the Timetable page's own DOM — it never
+ // touches the Teachers page or Coverage panel, so a removed period kept
+ // showing as "plotted" there until an unrelated action forced a refresh.
+ renderTeachers();
+ if (typeof renderCoverage === 'function') renderCoverage();
  showToast('Slot removed');
 }
 
@@ -8700,18 +9226,45 @@ function openTTAssign(cls, day, slotId, term) {
  const slotLabel = slot ? `${slot.label} (${slot.start}–${slot.end})` : `Slot ${slotId}`;
  document.getElementById('tt-assign-title').textContent = `Assign: ${cls} — ${day} ${slotLabel}`;
 
- const tSel = document.getElementById('tta-teacher');
- tSel.innerHTML = '<option value="">Select teacher…</option>' +
- teachers
- .filter(t => (t.availability[day] || []).includes(slotId))
- .map(t => {
- const busy = ttSlots.find(s => s.teacherId === t.id && s.day === day && s.slotId === slotId && s.term === term);
- return `<option value="${t.id}" ${busy ? 'disabled' : ''}>${t.fname} ${t.lname}${busy ? ' (busy)' : ''}</option>`;
- }).join('');
+ document.getElementById('tta-show-all-teachers').checked = false;
+ _populateTTATeacherSelect();
 
  document.getElementById('tta-subject').innerHTML = '<option value="">Select teacher first…</option>';
  document.getElementById('tta-conflict-note').style.display = 'none';
  document.getElementById('modal-tt-assign').classList.add('open');
+}
+
+// Fills the teacher dropdown for the Assign-slot modal. Defaults to only
+// teachers who actually have an assignment for this class — picking from
+// the full staff list made it too easy to hand a period to someone with no
+// connection to the class at all, since the subject dropdown's fallback
+// (any subject, when nothing matches) meant nothing else stopped that.
+// The "Show all teachers" checkbox is an explicit escape hatch for the
+// legitimate rare case (a substitute, or a class assignment not yet
+// formalized on the Teachers page) rather than a silent bypass.
+function _populateTTATeacherSelect() {
+ const cls  = document.getElementById('tta-class').value;
+ const day  = document.getElementById('tta-day').value;
+ const slotId = parseInt(document.getElementById('tta-period').value);
+ const term = parseInt(document.getElementById('tta-term').value) || 1;
+ const showAll = document.getElementById('tta-show-all-teachers').checked;
+
+ const pool = showAll ? teachers : teachers.filter(t => (t.assignments || []).some(a => a.cls === cls));
+
+ const tSel = document.getElementById('tta-teacher');
+ if (!pool.length) {
+ tSel.innerHTML = `<option value="">No teachers assigned to ${cls} yet</option>`;
+ return;
+ }
+
+ tSel.innerHTML = '<option value="">Select teacher…</option>' +
+ pool.map(t => {
+ const unavailable = !(t.availability[day] || []).includes(slotId);
+ const busy = ttSlots.find(s => s.teacherId === t.id && s.day === day && s.slotId === slotId && s.term === term);
+ const disabled = unavailable || busy;
+ const note = busy ? ' (busy)' : unavailable ? ' (not available)' : '';
+ return `<option value="${t.id}" ${disabled ? 'disabled' : ''}>${t.fname} ${t.lname}${note}</option>`;
+ }).join('');
 }
 
 function filterTeacherSubjects() {
@@ -8838,6 +9391,11 @@ function confirmTTAssign() {
  save('sm_ttslots', ttSlots);
  closeModal('modal-tt-assign');
  _refreshClassBlock(cls);
+ // Same as removeTTSlot — _refreshClassBlock is Timetable-page-only, so the
+ // teacher's plotted count and the Coverage panel both need their own
+ // explicit refresh or they keep showing the pre-assignment numbers.
+ renderTeachers();
+ if (typeof renderCoverage === 'function') renderCoverage();
  showToast('Slot assigned ');
 }
 
@@ -8874,8 +9432,16 @@ function generateReport() {
  // Enrolled = actual number of students in this class
  const enrolled = classStudents.length;
  document.getElementById('report-enrolled').value = enrolled;
+ // Class-wide rankings computed ONCE here and shared across every report
+ // card below — each buildReportCardHTML() call used to independently
+ // recompute every other student's average from scratch (an O(N²)
+ // pattern that got genuinely slow on the school's larger classes).
+ const termRanking = _computeClassTermRanking(cls, term);
+ const precomputed = term === 3
+ ? { ...termRanking, annualRanked: _computeClassAnnualRanking(cls) }
+ : termRanking;
  document.getElementById('report-output').innerHTML =
- classStudents.map(s => buildReportCardHTML(s, term, classMaster, enrolled)).join('');
+ classStudents.map(s => buildReportCardHTML(s, term, classMaster, enrolled, precomputed)).join('');
  showToast(`${classStudents.length} report cards generated `);
  } else {
  const sid = document.getElementById('report-student').value;
@@ -8900,7 +9466,11 @@ function openAddModal() {
  const fi = document.getElementById('s-photo-input'); if(fi) fi.value='';
  document.getElementById('modal-student').classList.add('open');
 }
-function openGradeModal()  { document.getElementById('modal-grade').classList.add('open'); }
+function openGradeModal()  {
+ document.getElementById('modal-grade').classList.add('open');
+ var yearEl = document.getElementById('g-year');
+ if (yearEl && !yearEl.value) yearEl.value = _currentAcademicYearLabel();
+}
 function closeModal(id)  { document.getElementById(id).classList.remove('open'); }
 
 document.querySelectorAll('.modal-overlay').forEach(m => {
@@ -9018,7 +9588,7 @@ function buildLHHtml(lh) {
  (lh.fr1 ? '<div style="font-weight:800;font-size:.62rem;color:#1a3a5c;margin-top:2px">' + lh.fr1 + '</div>' : '') +
  (lh.fr2 ? '<div style="font-weight:700;font-size:.48rem;color:#1a3a5c">' + lh.fr2 + '</div>' : '') +
  (lh.fr3 ? '<div style="font-size:.44rem;color:#666">' + lh.fr3 + '</div>' : '') +
- '<div style="margin-top:2px"><span style="background:#1a3a5c;color:#fff;font-size:.4rem;padding:1px 5px;border-radius:6px">2025-2026</span></div>' +
+ '<div style="margin-top:2px"><span style="background:#1a3a5c;color:#fff;font-size:.4rem;padding:1px 5px;border-radius:6px">' + _currentAcademicYearLabel().replace("/","-") + '</span></div>' +
  '</div>';
 
  var centerBlock =
@@ -11921,6 +12491,9 @@ function promptRenameBaseClass(oldName) {
  _rebuildAndPreview();
  populateAllClassDropdowns();
  renderTimetable();
+ renderTeachers(); // teacher assignments' .cls field was just renamed above —
+ // their plotted/target matching breaks silently until this refreshes.
+ if (typeof renderCoverage === 'function') renderCoverage();
  showToast(`Renamed "${oldName}" \u2192 "${trimmed}" \u2014 ${touched} linked record${touched!==1?'s':''} updated \u2713`);
 }
 
@@ -12007,12 +12580,14 @@ function _openReceiptPrintWindow(content, title) {
 }
 
 function printReceipt() {
+ if (!_requirePrintActivation()) return;
  _openReceiptPrintWindow(document.getElementById('receipt-content').innerHTML, 'Receipt');
 }
 
 // Print every receipt belonging to one student — one receipt per page,
 // oldest first so the account reads forward in time.
 function printStudentReceipts(studentId) {
+ if (!_requirePrintActivation()) return;
  const list = payments.filter(p => p.studentId === studentId).sort((a, b) => {
  const d = String(a.date || '').localeCompare(String(b.date || ''));
  if (d !== 0) return d;
@@ -12054,7 +12629,63 @@ function toggleReportMode() {
 // ══════════════════════════════════════════════════════════
 // REPORT CARD HTML BUILDER (shared by individual + class)
 // ══════════════════════════════════════════════════════════
-function buildReportCardHTML(s, term, classMaster, enrolled) {
+// Computes term ranking for an ENTIRE class ONCE — reused across every
+// student's report card when generating "Entire Class" reports, instead of
+// each of N report cards independently recomputing every other student's
+// average. That O(N²) pattern was cheap for a handful of students but
+// genuinely slow at real scale (e.g. ~130 students in Form 1A/1B) — this
+// is the exact same math, just computed once and shared.
+function _computeClassTermRanking(cls, term) {
+ const fullSeq1 = _msGetSheet(cls, term, 1);
+ const fullSeq2 = _msGetSheet(cls, term, 2);
+ function studentAvg(sid) {
+ const s1 = fullSeq1[sid] || {};
+ const s2 = fullSeq2[sid] || {};
+ const allSubjs = [...new Set([...Object.keys(s1), ...Object.keys(s2)])];
+ let tot = 0, coefSum = 0;
+ allSubjs.forEach(subj => {
+ const c = parseFloat((s1[subj]&&s1[subj][2]) || (s2[subj]&&s2[subj][2]) || 2);
+ const v1 = s1[subj] ? _calcSeq20(s1[subj][0], s1[subj][1]) : null;
+ const v2 = s2[subj] ? _calcSeq20(s2[subj][0], s2[subj][1]) : null;
+ let avg = null;
+ if (v1!==null && v2!==null) avg=(v1+v2)/2;
+ else if (v1!==null) avg=v1;
+ else if (v2!==null) avg=v2;
+ if (avg !== null) { tot += avg*c; coefSum += c; }
+ });
+ return coefSum > 0 ? tot/coefSum : 0;
+ }
+ const allClsStudents = [...new Set([...Object.keys(fullSeq1), ...Object.keys(fullSeq2)])];
+ const clsAvgs = allClsStudents.map(sid => ({ sid, avg: studentAvg(sid) })).sort((a,b) => b.avg - a.avg);
+ const classSize = clsAvgs.length;
+ const classAvgAll = classSize > 0 ? clsAvgs.reduce((sum,x) => sum + x.avg, 0) / classSize : 0;
+ const highestAvg = clsAvgs.length > 0 ? clsAvgs[0].avg : 0;
+ const lowestAvg = clsAvgs.length > 0 ? clsAvgs[clsAvgs.length-1].avg : 0;
+ const passCount = clsAvgs.filter(x => x.avg >= 10).length;
+ return { clsAvgs, classSize, classAvgAll, highestAvg, lowestAvg, passCount };
+}
+
+// Same rationale as above, for annual ranking — this one was worse pre-fix
+// since it evaluates THREE terms per student instead of one, so the O(N²)
+// cost was roughly triple the term-ranking case above.
+function _computeClassAnnualRanking(cls) {
+ const classRoster = students.filter(st => st.cls === cls);
+ function studentAnnualAvg(stu) {
+ const t1 = _getStudentTermTotals(stu, 1);
+ const t2 = _getStudentTermTotals(stu, 2);
+ const t3 = _getStudentTermTotals(stu, 3);
+ const a1 = t1.totalCoeff > 0 ? t1.grandTotal / t1.totalCoeff : null;
+ const a2 = t2.totalCoeff > 0 ? t2.grandTotal / t2.totalCoeff : null;
+ const a3 = t3.totalCoeff > 0 ? t3.grandTotal / t3.totalCoeff : null;
+ if (a1 === null || a2 === null || a3 === null) return null;
+ return (a1 + a2 + a3) / 3;
+ }
+ return classRoster.map(stu => ({ id: stu.id, avg: studentAnnualAvg(stu) }))
+ .filter(x => x.avg !== null)
+ .sort((a, b) => b.avg - a.avg);
+}
+
+function buildReportCardHTML(s, term, classMaster, enrolled, precomputed) {
  const lh  = loadLH();
  const termLabel = ['First','Second','Third'][term - 1] || 'First';
  const formula  = loadFormula();
@@ -12155,57 +12786,58 @@ function buildReportCardHTML(s, term, classMaster, enrolled) {
  const overallAvgStr = overallAvg !== null ? overallAvg.toFixed(2) : '—';
 
  // ── Class ranks ───────────────────────────────────────────────────────
- // Compute average for every student in this class (same term) for ranking
- function _studentTermAvg(sid) {
- let tot = 0, coefSum = 0;
- [seq1marks, seq2marks].forEach((seqMarks, seqIdx) => {
- // We need to load from storage for other students
- });
- // Load both seqs for this student from fullSeq1
- const s1 = fullSeq1[sid] || {};
- const s2 = (_msGetSheet(s.cls, term, 2))[sid] || {};
- const allSubjs = [...new Set([...Object.keys(s1), ...Object.keys(s2)])];
- allSubjs.forEach(subj => {
- const c = parseFloat((s1[subj]&&s1[subj][2]) || (s2[subj]&&s2[subj][2]) || 2);
- const v1 = s1[subj] ? _calcSeq20(s1[subj][0], s1[subj][1]) : null;
- const v2 = s2[subj] ? _calcSeq20(s2[subj][0], s2[subj][1]) : null;
- let avg = null;
- if (v1!==null && v2!==null) avg=(v1+v2)/2;
- else if (v1!==null) avg=v1;
- else if (v2!==null) avg=v2;
- if (avg !== null) { tot += avg*c; coefSum += c; }
- });
- return coefSum > 0 ? tot/coefSum : 0;
- }
-
- // Get all student IDs in this class
- const fullSeq2Sheet = _msGetSheet(s.cls, term, 2);
- const allClsStudents = [...new Set([...Object.keys(fullSeq1), ...Object.keys(fullSeq2Sheet)])];
- const clsAvgs = allClsStudents.map(sid => ({ sid, avg: _studentTermAvg(sid) }))
- .sort((a,b) => b.avg - a.avg);
+ // Uses precomputed class-wide ranking when supplied (Entire Class mode —
+ // computed once by generateReport(), not once per student here). Falls
+ // back to computing it directly when absent (Individual Student mode,
+ // where it's genuinely only needed once anyway).
+ const termRanking = (precomputed && precomputed.clsAvgs) ? precomputed : _computeClassTermRanking(s.cls, term);
+ const clsAvgs = termRanking.clsAvgs;
+ const classSize = termRanking.classSize;
+ const classAvgAll = termRanking.classAvgAll;
+ const highestAvg = termRanking.highestAvg;
+ const lowestAvg = termRanking.lowestAvg;
+ const passCount = termRanking.passCount;
 
  // Term rank for this student
  const myTermAvg = overallAvg !== null ? overallAvg : 0;
  const termRank  = clsAvgs.findIndex(x => x.sid === s.id) + 1;
- const classSize = clsAvgs.length;
- const classAvgAll = classSize > 0
- ? clsAvgs.reduce((sum,x) => sum + x.avg, 0) / classSize
- : 0;
- const highestAvg = clsAvgs.length > 0 ? clsAvgs[0].avg : 0;
- const lowestAvg  = clsAvgs.length > 0 ? clsAvgs[clsAvgs.length-1].avg : 0;
- const passCount  = clsAvgs.filter(x => x.avg >= 10).length;
 
- // ── Annual Average (Third Term report only) ─────────────────────────
- // Annual Average = (sum of the three terms' Grade Totals) / Total Coefficient
+ // ── Annual Average & Rank (Third Term report only) ───────────────────
+ // Annual Average = (Term 1 avg + Term 2 avg + Term 3 avg) / 3 — a simple
+ // average of the three terms' own averages. NOT a coefficient-reweighted
+ // total across the year (summing all three terms' grade-totals over all
+ // three terms' summed coefficients) — that's a subtly different number
+ // whenever coefficients aren't perfectly identical across all three terms,
+ // and doesn't match what "annual average" is meant to mean here. Uses
+ // _getStudentTermTotals() uniformly for all three terms (confirmed to use
+ // the exact same per-subject/coefficient logic as this report's own Term 3
+ // computation above), so the Term 3 component always matches what's shown
+ // in this same report's own TERM AVG line.
  let annualBlock = '';
  if (term === 3) {
+ // This student's own three term averages — t1/t2 fetched directly;
+ // t3 reuses `overallAvg` (already computed above for this exact
+ // report) rather than recomputing it a second time via
+ // _getStudentTermTotals(s, 3), which would just re-derive the same
+ // number from the same data.
  const t1 = _getStudentTermTotals(s, 1);
  const t2 = _getStudentTermTotals(s, 2);
- const annualTotal   = t1.grandTotal + t2.grandTotal + grandTotal; // grandTotal here is Term 3's
- const annualCoeff  = t1.totalCoeff + t2.totalCoeff + totalCoeff; // totalCoeff here is Term 3's
- const annualAvg   = annualCoeff > 0 ? annualTotal / annualCoeff : null;
- const annualAvgStr  = annualAvg !== null ? annualAvg.toFixed(2) : '—';
- annualBlock = `<div class="rc-summary-bar" style="margin-top:6px;background:#0a3d1f"> <span>ANNUAL TOTAL: <strong>${annualTotal.toFixed(2)}</strong></span> <span>TOTAL COEFF: <strong>${annualCoeff}</strong></span> <span>ANNUAL AVG: <strong style="font-size:1.1rem;color:${annualAvg!==null&&annualAvg>=10?'#8fffb0':'#ffb3b3'}">${annualAvgStr}/20</strong></span> </div>`;
+ const a1 = t1.totalCoeff > 0 ? t1.grandTotal / t1.totalCoeff : null;
+ const a2 = t2.totalCoeff > 0 ? t2.grandTotal / t2.totalCoeff : null;
+ const annualAvg  = (a1 !== null && a2 !== null && overallAvg !== null) ? (a1 + a2 + overallAvg) / 3 : null;
+ const annualAvgStr = annualAvg !== null ? annualAvg.toFixed(2) : '—';
+
+ // Rank among classmates who ALSO have all three terms recorded — someone
+ // missing a term isn't a fair comparison point and is excluded from the
+ // ranking pool entirely, not treated as a last-place score. Uses the
+ // precomputed class-wide ranking when supplied (Entire Class mode),
+ // instead of recomputing all three terms for all N classmates again
+ // for every single one of the N report cards being generated.
+ const annualRanked = (precomputed && precomputed.annualRanked) ? precomputed.annualRanked : _computeClassAnnualRanking(s.cls);
+ const annualRank = annualAvg !== null ? annualRanked.findIndex(x => x.id === s.id) + 1 : 0;
+ const annualRankStr = annualRank > 0 ? `${annualRank} / ${annualRanked.length}` : '—';
+
+ annualBlock = `<div class="rc-summary-bar" style="margin-top:6px;background:#0a3d1f"> <span>ANNUAL AVG: <strong style="display:inline-block;border:2.5px solid ${annualAvg!==null&&annualAvg>=10?'#8fffb0':'#ff8080'};border-radius:50%;padding:2px 13px;line-height:1.3;font-size:1.1rem;color:${annualAvg!==null&&annualAvg>=10?'#8fffb0':'#ffb3b3'}">${annualAvgStr}/20</strong></span> <span>ANNUAL RANK: <strong style="font-size:1.1rem">${annualRankStr}</strong></span> </div>`;
  }
 
  // ── Subject ranks ──────────────────────────────────────────────────────
@@ -12287,7 +12919,7 @@ function buildReportCardHTML(s, term, classMaster, enrolled) {
  Délégation Régionale du Centre — Délégation du Mfoundi<br> <strong style="font-size:.6rem">${lh.line1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.line2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong> </div> <div class="rc-header-center">
  ${lh.logo ? `<img src="${lh.logo}" alt="Logo" />` : '<div style="width:42px;height:42px;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.42rem;color:#aaa;text-align:center">Logo</div>'} </div> <div class="rc-header-right">
  Republic of Cameroon — Peace, Work, Fatherland<br>
- Ministry of Secondary Education<br> <strong style="font-size:.6rem">${lh.fr1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.fr2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong> <div><span class="rc-year-badge">2025-2026</span></div> </div> </div> <div class="rc-contact">Tel: ${lh.line3 || '673900245 / 677956018'} &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE</div>`} <div class="rc-title-bar">${termLabel} Term Report Card</div> <div class="rc-info"> <div class="rc-info-fields"> <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div> <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div> <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div> <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div> <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div> <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div> </div> <div class="rc-photo-box">${photoHtml}</div> </div> <table class="rc-table"> <thead><tr> <th style="width:24px">#</th> <th style="text-align:left;min-width:130px">Subject</th> <th style="width:110px;text-align:left">COMPETENCES TESTED</th> <th style="width:34px">Coef</th> <th style="width:44px">Seq 1<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Seq 2<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Term<br><span style="font-size:.5rem;font-weight:400">Avg/20</span></th> <th style="width:44px">Total<br><span style="font-size:.5rem;font-weight:400">×Coef</span></th> <th style="width:36px">Rank</th> <th style="width:70px;text-align:left">Teacher</th> </tr></thead> <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term.</td></tr>'}</tbody> </table> <div class="rc-summary-bar"> <span>COEFF: <strong>${totalCoeff}</strong></span> <span>TOTAL: <strong>${grandTotal.toFixed(2)}</strong></span> <span>TERM AVG: <strong style="font-size:1.1rem;color:${overallAvg!==null&&overallAvg>=10?'#0a7a0a':'#cc0000'}">${overallAvgStr}/20</strong></span> <span>RANK: <strong>${termRank > 0 ? termRank : '—'}</strong></span> </div> ${annualBlock} <div class="rc-bottom"> <div> <span class="rc-bottom-title">CLASS PROFILE</span> <table> <tr><td>Highest Average</td><td>${highestAvg.toFixed(2)}/20</td></tr> <tr><td>Lowest Average</td><td>${lowestAvg.toFixed(2)}/20</td></tr> <tr><td>Class Average</td><td>${classAvgAll.toFixed(2)}/20</td></tr> <tr><td>No. with Average ≥10</td><td>${passCount}</td></tr> <tr><td>% Passed (≥10)</td><td>${classSize>0?((passCount/classSize)*100).toFixed(1)+'%':'—'}</td></tr> <tr><td>Enrolled</td><td>${enrolled}</td></tr> </table> </div> <div> <span class="rc-bottom-title">DISCIPLINE</span> <table><tr><td>Unjustified Absences</td><td></td></tr><tr><td>Justified Absences</td><td></td></tr> <tr><td>Late coming</td><td></td></tr><tr><td>Punishments</td><td></td></tr> <tr><td>Warnings</td><td></td></tr><tr><td>Disciplinary Council</td><td></td></tr></table> </div> <div> <span class="rc-bottom-title">ACADEMIC APPRECIATION</span> <table> <tr><td>Distinction</td><td>${overallAvg!==null&&overallAvg>=18?'':''}</td></tr> <tr><td>Honour Roll</td><td>${overallAvg!==null&&overallAvg>=16&&overallAvg<18?'':''}</td></tr> <tr><td>Merit</td><td>${overallAvg!==null&&overallAvg>=14&&overallAvg<16?'':''}</td></tr> <tr><td>Passed</td><td>${overallAvg!==null&&overallAvg>=10?'Yes':'—'}</td></tr> <tr><td>Failed</td><td>${overallAvg!==null&&overallAvg<10?'Yes':'—'}</td></tr> <tr><td>Absent</td><td></td></tr> </table> </div> </div> <div class="rc-sigs"> <div><div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div></div> <div><div class="rc-sig-label">Discipline Master's Observation/Signature</div></div> <div><div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div></div> </div> </div>`;
+ Ministry of Secondary Education<br> <strong style="font-size:.6rem">${lh.fr1 || 'ST JOSEPH\'S FOUNDATION ANGLO-SAXON'}<br>${lh.fr2 || 'TECHNICAL COLLEGE (ST. JATEC)'}</strong> <div><span class="rc-year-badge">${_currentAcademicYearLabel().replace('/','-')}</span></div> </div> </div> <div class="rc-contact">Tel: ${lh.line3 || '673900245 / 677956018'} &nbsp;|&nbsp; BP/Po Box 19042 YAOUNDE</div>`} <div class="rc-title-bar">${termLabel} Term Report Card</div> <div class="rc-info"> <div class="rc-info-fields"> <div class="rc-info-field"><span class="rc-info-label">Matricule:</span><span class="rc-info-value">${s.num}</span></div> <div class="rc-info-field"><span class="rc-info-label">Full Name:</span><span class="rc-info-value" style="min-width:160px">${s.lname.toUpperCase()} ${s.fname}</span></div> <div class="rc-info-field"><span class="rc-info-label">Born on:</span><span class="rc-info-value">${dobStr}</span></div> <div class="rc-info-field"><span class="rc-info-label">At:</span><span class="rc-info-value">${s.pob || '—'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class:</span><span class="rc-info-value">${s.cls}</span></div> <div class="rc-info-field"><span class="rc-info-label">Enrolled:</span><span class="rc-info-value">${enrolled}</span></div> <div class="rc-info-field"><span class="rc-info-label">Repeater:</span><span class="rc-info-value">${s.repeater || 'No'}</span></div> <div class="rc-info-field"><span class="rc-info-label">Class Master:</span><span class="rc-info-value">${classMaster}</span></div> </div> <div class="rc-photo-box">${photoHtml}</div> </div> <table class="rc-table"> <thead><tr> <th style="width:24px">#</th> <th style="text-align:left;min-width:130px">Subject</th> <th style="width:110px;text-align:left">COMPETENCES TESTED</th> <th style="width:34px">Coef</th> <th style="width:44px">Seq 1<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Seq 2<br><span style="font-size:.5rem;font-weight:400">/20</span></th> <th style="width:44px">Term<br><span style="font-size:.5rem;font-weight:400">Avg/20</span></th> <th style="width:44px">Total<br><span style="font-size:.5rem;font-weight:400">×Coef</span></th> <th style="width:36px">Rank</th> <th style="width:70px;text-align:left">Teacher</th> </tr></thead> <tbody>${tableRows || '<tr><td colspan="10" style="text-align:center;padding:20px;color:#888">No marks recorded for this term.</td></tr>'}</tbody> </table> <div class="rc-summary-bar"> <span>COEFF: <strong>${totalCoeff}</strong></span> <span>TOTAL: <strong>${grandTotal.toFixed(2)}</strong></span> <span>${termLabel.toUpperCase()} TERM AVG: <strong style="display:inline-block;border:2.5px solid ${overallAvg!==null&&overallAvg>=10?'#0a7a0a':'#cc0000'};border-radius:50%;padding:2px 13px;line-height:1.3;font-size:1.1rem;color:${overallAvg!==null&&overallAvg>=10?'#0a7a0a':'#cc0000'}">${overallAvgStr}/20</strong></span> <span>${termLabel.toUpperCase()} TERM RANK: <strong>${termRank > 0 ? termRank : '—'}</strong></span> </div> ${annualBlock} <div class="rc-bottom"> <div> <span class="rc-bottom-title">CLASS PROFILE</span> <table> <tr><td>Highest Average</td><td>${highestAvg.toFixed(2)}/20</td></tr> <tr><td>Lowest Average</td><td>${lowestAvg.toFixed(2)}/20</td></tr> <tr><td>Class Average</td><td>${classAvgAll.toFixed(2)}/20</td></tr> <tr><td>No. with Average ≥10</td><td>${passCount}</td></tr> <tr><td>% Passed (≥10)</td><td>${classSize>0?((passCount/classSize)*100).toFixed(1)+'%':'—'}</td></tr> <tr><td>Enrolled</td><td>${enrolled}</td></tr> </table> </div> <div> <span class="rc-bottom-title">DISCIPLINE</span> <table><tr><td>Unjustified Absences</td><td></td></tr><tr><td>Justified Absences</td><td></td></tr> <tr><td>Late coming</td><td></td></tr><tr><td>Punishments</td><td></td></tr> <tr><td>Warnings</td><td></td></tr><tr><td>Disciplinary Council</td><td></td></tr></table> </div> <div> <span class="rc-bottom-title">ACADEMIC APPRECIATION</span> <table> <tr><td>Distinction</td><td>${overallAvg!==null&&overallAvg>=18?'':''}</td></tr> <tr><td>Honour Roll</td><td>${overallAvg!==null&&overallAvg>=16&&overallAvg<18?'':''}</td></tr> <tr><td>Merit</td><td>${overallAvg!==null&&overallAvg>=14&&overallAvg<16?'':''}</td></tr> <tr><td>Passed</td><td>${overallAvg!==null&&overallAvg>=10?'Yes':'—'}</td></tr> <tr><td>Failed</td><td>${overallAvg!==null&&overallAvg<10?'Yes':'—'}</td></tr> <tr><td>Absent</td><td></td></tr> </table> </div> </div> <div class="rc-sigs"> <div><div class="rc-sig-label">Parent's/Guardian's Remarks &amp; Signature</div></div> <div><div class="rc-sig-label">Discipline Master's Observation/Signature</div></div> <div><div class="rc-sig-label">Class Master's Remarks &amp; Signature / Principal's Signature</div></div> </div> </div>`;
 }
 
 // ══════════════════════════════════════════════════════════
